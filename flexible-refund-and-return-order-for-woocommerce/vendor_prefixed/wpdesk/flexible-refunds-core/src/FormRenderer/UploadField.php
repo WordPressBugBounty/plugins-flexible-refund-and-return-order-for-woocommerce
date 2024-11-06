@@ -8,16 +8,16 @@ use FRFreeVendor\WPDesk\Forms\Field\InputTextField;
  *
  * @package WPDesk\Library\FlexibleRefundsCore\FormRenderer
  */
-class UploadField extends \FRFreeVendor\WPDesk\Forms\Field\InputTextField
+class UploadField extends InputTextField
 {
-    public function get_type() : string
+    public function get_type(): string
     {
         return 'file';
     }
     /**
      * @return string
      */
-    public function get_template_name() : string
+    public function get_template_name(): string
     {
         return 'upload-input';
     }

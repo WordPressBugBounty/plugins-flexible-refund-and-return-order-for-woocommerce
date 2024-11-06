@@ -17,11 +17,11 @@ class FormValues
      *
      * @throws DuplicatedFormValueKeyException
      */
-    public function set_value(\FRFreeVendor\WPDesk\DeactivationModal\Model\FormValue $new_value) : self
+    public function set_value(FormValue $new_value): self
     {
         foreach ($this->values as $value) {
             if ($value->get_key() === $new_value->get_key()) {
-                throw new \FRFreeVendor\WPDesk\DeactivationModal\Exception\DuplicatedFormValueKeyException($new_value->get_key());
+                throw new DuplicatedFormValueKeyException($new_value->get_key());
             }
         }
         $this->values[] = $new_value;
@@ -30,7 +30,7 @@ class FormValues
     /**
      * @return FormValue[]
      */
-    public function get_values() : array
+    public function get_values(): array
     {
         return $this->values;
     }

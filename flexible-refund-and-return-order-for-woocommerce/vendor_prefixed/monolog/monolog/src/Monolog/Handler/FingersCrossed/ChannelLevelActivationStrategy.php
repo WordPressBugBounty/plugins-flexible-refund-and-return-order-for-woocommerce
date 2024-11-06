@@ -37,7 +37,7 @@ use FRFreeVendor\Psr\Log\LogLevel;
  * @phpstan-import-type Level from \Monolog\Logger
  * @phpstan-import-type LevelName from \Monolog\Logger
  */
-class ChannelLevelActivationStrategy implements \FRFreeVendor\Monolog\Handler\FingersCrossed\ActivationStrategyInterface
+class ChannelLevelActivationStrategy implements ActivationStrategyInterface
 {
     /**
      * @var Level
@@ -56,13 +56,13 @@ class ChannelLevelActivationStrategy implements \FRFreeVendor\Monolog\Handler\Fi
      */
     public function __construct($defaultActionLevel, array $channelToActionLevel = [])
     {
-        $this->defaultActionLevel = \FRFreeVendor\Monolog\Logger::toMonologLevel($defaultActionLevel);
-        $this->channelToActionLevel = \array_map('Monolog\\Logger::toMonologLevel', $channelToActionLevel);
+        $this->defaultActionLevel = Logger::toMonologLevel($defaultActionLevel);
+        $this->channelToActionLevel = array_map('FRFreeVendor\Monolog\Logger::toMonologLevel', $channelToActionLevel);
     }
     /**
      * @phpstan-param Record $record
      */
-    public function isHandlerActivated(array $record) : bool
+    public function isHandlerActivated(array $record): bool
     {
         if (isset($this->channelToActionLevel[$record['channel']])) {
             return $record['level'] >= $this->channelToActionLevel[$record['channel']];

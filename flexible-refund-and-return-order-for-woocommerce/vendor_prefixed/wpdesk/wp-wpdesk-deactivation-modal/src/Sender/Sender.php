@@ -11,7 +11,7 @@ interface Sender
      *
      * @return array
      */
-    public function generate_request_data(\FRFreeVendor\WPDesk\DeactivationModal\Model\RequestData $request_data) : array;
+    public function generate_request_data(RequestData $request_data): array;
     /**
      * @param RequestData $request_data .
      *
@@ -19,5 +19,5 @@ interface Sender
      *
      * @throws SenderRequestFailedException
      */
-    public function send_request(\FRFreeVendor\WPDesk\DeactivationModal\Model\RequestData $request_data) : bool;
+    public function send_request(RequestData $request_data): bool;
 }

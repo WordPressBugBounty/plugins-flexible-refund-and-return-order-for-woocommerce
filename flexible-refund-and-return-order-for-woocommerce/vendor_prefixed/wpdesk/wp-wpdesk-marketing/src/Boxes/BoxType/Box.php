@@ -12,7 +12,7 @@ use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 /**
  * Abstraction for defining boxes.
  */
-class Box implements \FRFreeVendor\WPDesk\Library\Marketing\Boxes\Abstracts\BoxInterface
+class Box implements BoxInterface
 {
     const TYPE = 'simple';
     /**
@@ -34,62 +34,62 @@ class Box implements \FRFreeVendor\WPDesk\Library\Marketing\Boxes\Abstracts\BoxI
     /**
      * @param array    $box
      */
-    public function __construct(array $box, \FRFreeVendor\WPDesk\View\Renderer\Renderer $renderer)
+    public function __construct(array $box, Renderer $renderer)
     {
         $this->box = $box;
         $this->renderer = $renderer;
     }
-    public function get_title() : string
+    public function get_title(): string
     {
-        return \is_string($this->box['title']) ? $this->box['title'] : '';
+        return is_string($this->box['title']) ? $this->box['title'] : '';
     }
-    public function get_slug() : string
+    public function get_slug(): string
     {
-        return \is_string($this->box['slug']) ? $this->box['slug'] : '';
+        return is_string($this->box['slug']) ? $this->box['slug'] : '';
     }
-    public function get_type() : string
+    public function get_type(): string
     {
         return static::TYPE;
     }
-    public function get_description() : string
+    public function get_description(): string
     {
-        return \is_string($this->box['description']) ? $this->box['description'] : '';
+        return is_string($this->box['description']) ? $this->box['description'] : '';
     }
     /**
      * @return array
      */
-    public function get_links() : array
+    public function get_links(): array
     {
-        return \is_array($this->box['links']) ? $this->box['links'] : [];
+        return is_array($this->box['links']) ? $this->box['links'] : [];
     }
-    public function get_class() : string
+    public function get_class(): string
     {
-        return \is_string($this->box['className']) ? $this->box['className'] : '';
+        return is_string($this->box['className']) ? $this->box['className'] : '';
     }
     public function get_field(string $slug)
     {
         return $this->box[$slug] ?? '';
     }
-    public function get_row_open() : bool
+    public function get_row_open(): bool
     {
         return isset($this->box['open_row'][0]) && 'yes' === $this->box['open_row'][0];
     }
-    public function get_row_close() : bool
+    public function get_row_close(): bool
     {
         return isset($this->box['close_row'][0]) && 'yes' === $this->box['close_row'][0];
     }
     /**
      * @return array
      */
-    public function get_button() : array
+    public function get_button(): array
     {
-        return \is_array($this->box['button']) ? $this->box['button'] : [];
+        return is_array($this->box['button']) ? $this->box['button'] : [];
     }
     /**
      * @param array $args
      */
-    public function render(array $args = []) : string
+    public function render(array $args = []): string
     {
-        return $this->renderer->render(static::TYPE, \array_merge(['box' => $this], $args));
+        return $this->renderer->render(static::TYPE, array_merge(['box' => $this], $args));
     }
 }

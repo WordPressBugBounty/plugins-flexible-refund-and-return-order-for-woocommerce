@@ -46,7 +46,7 @@ if (!empty($box->get_title())) {
 						<div class="item-video">
 							<?php 
             echo \wp_oembed_get($link['video']);
-            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
             ?>
 						</div>
 					<?php 

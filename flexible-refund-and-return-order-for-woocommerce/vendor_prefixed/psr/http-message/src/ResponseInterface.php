@@ -17,7 +17,7 @@ namespace FRFreeVendor\Psr\Http\Message;
  * be implemented such that they retain the internal state of the current
  * message and return an instance that contains the changed state.
  */
-interface ResponseInterface extends \FRFreeVendor\Psr\Http\Message\MessageInterface
+interface ResponseInterface extends MessageInterface
 {
     /**
      * Gets the response status code.
@@ -27,7 +27,7 @@ interface ResponseInterface extends \FRFreeVendor\Psr\Http\Message\MessageInterf
      *
      * @return int Status code.
      */
-    public function getStatusCode() : int;
+    public function getStatusCode(): int;
     /**
      * Return an instance with the specified status code and, optionally, reason phrase.
      *
@@ -48,7 +48,7 @@ interface ResponseInterface extends \FRFreeVendor\Psr\Http\Message\MessageInterf
      * @return static
      * @throws \InvalidArgumentException For invalid status code arguments.
      */
-    public function withStatus(int $code, string $reasonPhrase = '') : \FRFreeVendor\Psr\Http\Message\ResponseInterface;
+    public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface;
     /**
      * Gets the response reason phrase associated with the status code.
      *
@@ -62,5 +62,5 @@ interface ResponseInterface extends \FRFreeVendor\Psr\Http\Message\MessageInterf
      * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
      * @return string Reason phrase; must return an empty string if none present.
      */
-    public function getReasonPhrase() : string;
+    public function getReasonPhrase(): string;
 }

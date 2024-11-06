@@ -22,7 +22,7 @@ $request_note = $order->get_meta('fr_refund_request_note');
 ?>
 
 <h2><?php 
-\printf(\esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::get_status_label($request_status));
+\printf(\esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), Statuses::get_status_label($request_status));
 ?></h2>
 <?php 
 if (!empty($request_note)) {
@@ -35,7 +35,7 @@ if (!empty($request_note)) {
 if (\in_array($request_status, ['requested', 'verifying'])) {
     ?>
 	<?php 
-    $cancel_request_url = \wp_nonce_url(\add_query_arg(['delete_refund_request' => $order->get_id()]), \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\MyAccount::CANCEL_NONCE_ACTION);
+    $cancel_request_url = \wp_nonce_url(\add_query_arg(['delete_refund_request' => $order->get_id()]), MyAccount::CANCEL_NONCE_ACTION);
     ?>
 	<section id="fr-cancel-request-section" class="fr-cancel-request-description">
 		<p><?php 
@@ -171,7 +171,7 @@ foreach ($order_items as $item_id => $item) {
         ?>
 				<?php 
         echo \wc_price($item_price_refund, ['currency' => $order->get_currency()]);
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
         ?>
 			<?php 
     }
@@ -300,4 +300,4 @@ echo \wc_price($total_refund_sum, ['currency' => $order->get_currency()]);
 	</tfoot>
 </table>
 <?php 
-echo (new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FormValuesRenderer())->output($order);
+echo (new FormValuesRenderer())->output($order);

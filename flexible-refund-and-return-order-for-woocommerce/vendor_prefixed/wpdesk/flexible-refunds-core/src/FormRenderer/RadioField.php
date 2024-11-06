@@ -9,10 +9,10 @@ use FRFreeVendor\WPDesk\Forms\Field\InputTextField;
  *
  * @package WPDesk\Library\FlexibleRefundsCore\FormRenderer
  */
-class RadioField extends \FRFreeVendor\WPDesk\Forms\Field\InputTextField
+class RadioField extends InputTextField
 {
     /** @param string[] $options */
-    public function set_options(array $options) : \FRFreeVendor\WPDesk\Forms\Field
+    public function set_options(array $options): Field
     {
         $this->meta['possible_values'] = $options;
         return $this;
@@ -20,7 +20,7 @@ class RadioField extends \FRFreeVendor\WPDesk\Forms\Field\InputTextField
     /**
      * @return string
      */
-    public function get_template_name() : string
+    public function get_template_name(): string
     {
         return 'radio-input';
     }

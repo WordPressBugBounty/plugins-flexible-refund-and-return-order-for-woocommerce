@@ -279,7 +279,7 @@ class Configuration
      */
     private function putEnv($env_variable, $value)
     {
-        \putenv($env_variable . '=' . $value);
+        putenv($env_variable . '=' . $value);
     }
     /**
      * @param array $configuration .
@@ -288,7 +288,7 @@ class Configuration
      */
     public static function createFromEnvAndConfiguration(array $configuration)
     {
-        $dotenv = \FRFreeVendor\Dotenv\Dotenv::createImmutable(\getcwd() . '/../');
+        $dotenv = Dotenv::createImmutable(getcwd() . '/../');
         $dotenv->safeLoad();
         $apache_document_root = self::prepareFromEnv(self::APACHE_DOCUMENT_ROOT, self::prepareApacheDocumentRoot());
         $wptests_ip = self::prepareFromEnv(self::WOOTESTS_IP, 'wptests.lh');
@@ -301,19 +301,19 @@ class Configuration
         if (isset($configuration['plugin-slug'])) {
             $plugin_slug = $configuration['plugin-slug'];
         } else {
-            throw new \FRFreeVendor\WPDesk\Composer\Codeception\Commands\SettingsException('Missing plugin-slug setting!');
+            throw new SettingsException('Missing plugin-slug setting!');
         }
         if (isset($configuration['plugin-file'])) {
             $plugin_file = $configuration['plugin-file'];
         } else {
-            throw new \FRFreeVendor\WPDesk\Composer\Codeception\Commands\SettingsException('Missing plugin-file setting!');
+            throw new SettingsException('Missing plugin-file setting!');
         }
-        $plugin_file_exploded = \explode('/', $plugin_file);
+        $plugin_file_exploded = explode('/', $plugin_file);
         $plugin_dir = $plugin_file_exploded[0];
         if (isset($configuration['plugin-title'])) {
             $plugin_title = $configuration['plugin-title'];
         } else {
-            throw new \FRFreeVendor\WPDesk\Composer\Codeception\Commands\SettingsException('Missing plugin-title setting!');
+            throw new SettingsException('Missing plugin-title setting!');
         }
         if (isset($configuration['plugin-product-id'])) {
             $plugin_product_id = $configuration['plugin-product-id'];
@@ -321,11 +321,11 @@ class Configuration
             $plugin_product_id = '';
         }
         $prepare_database = array();
-        if (isset($configuration['prepare-database']) && \is_array($configuration['prepare-database'])) {
+        if (isset($configuration['prepare-database']) && is_array($configuration['prepare-database'])) {
             $prepare_database = $configuration['prepare-database'];
         }
         $theme_files = array();
-        if (isset($configuration['theme-files']) && \is_array($configuration['theme-files'])) {
+        if (isset($configuration['theme-files']) && is_array($configuration['theme-files'])) {
             $theme_files = $configuration['theme-files'];
         }
         $repository_plugins = self::getPluginsSettings($configuration, 'repository');
@@ -341,7 +341,7 @@ class Configuration
      */
     private static function prepareFromEnv($env_variable, $default_value)
     {
-        $value = \getenv($env_variable);
+        $value = getenv($env_variable);
         $value = $value ? $value : $default_value;
         return $value;
     }
@@ -350,14 +350,14 @@ class Configuration
      */
     private static function prepareApacheDocumentRoot()
     {
-        return self::isWindows() ? 'c:\\xampp\\htdocs\\wptests' : '/tmp/wptests';
+        return self::isWindows() ? 'c:\xampp\htdocs\wptests' : '/tmp/wptests';
     }
     /**
      * @return bool
      */
     public static function isWindows()
     {
-        return \false !== \stristr(\PHP_OS, 'WIN') && \false === \stristr(\PHP_OS, 'DARWIN');
+        return \false !== stristr(\PHP_OS, 'WIN') && \false === stristr(\PHP_OS, 'DARWIN');
     }
     /**
      * @param array  $configuration .
@@ -367,7 +367,7 @@ class Configuration
      */
     private static function getPluginsSettings(array $configuration, $plugins_section)
     {
-        if (\is_array($configuration) && isset($configuration['plugins'], $configuration['plugins'][$plugins_section]) && \is_array($configuration['plugins'][$plugins_section])) {
+        if (is_array($configuration) && isset($configuration['plugins'], $configuration['plugins'][$plugins_section]) && is_array($configuration['plugins'][$plugins_section])) {
             return $configuration['plugins'][$plugins_section];
         }
         return array();

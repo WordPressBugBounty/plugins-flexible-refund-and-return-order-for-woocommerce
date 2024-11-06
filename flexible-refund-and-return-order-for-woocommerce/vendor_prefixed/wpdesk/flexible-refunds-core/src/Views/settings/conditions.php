@@ -32,7 +32,7 @@ $operator_options = ['is' => \esc_html__('is', 'flexible-refund-and-return-order
 \esc_html_e('Add rule &rarr;', 'flexible-refund-and-return-order-for-woocommerce');
 ?>
 					<a class="<?php 
-echo \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::add_row_class();
+echo Plugin::add_row_class();
 ?>" href="#"><span class="dashicons dashicons-insert"></span></span></a>
 					<input type="hidden" name="fr_refund_refund_conditions_setting"/>
 				</td>
@@ -40,13 +40,13 @@ echo \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::add_row_cl
 			</thead>
 			<tbody>
 			<?php 
-if (!\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super()) {
+if (!Integration::is_super()) {
     ?>
 				<tr>
 					<td colspan="5">
 						<?php 
-    $pro_url = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::get_url_to_pro();
-    $docs_url = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::get_url_to_docs();
+    $pro_url = Plugin::get_url_to_pro();
+    $docs_url = Plugin::get_url_to_docs();
     \printf(\esc_html__('It is available in the PRO version of the plugin. Read about the option in the %1$splugin documentation%2$s. %3$sUpgrade to PRO &rarr;%4$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . \esc_url($docs_url) . '?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-docs&utm_content=main-settings-button-visibility" target="_blank" style="color: #D27334;">', '</a>', '<a href="' . \esc_url($pro_url) . '?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-pro&utm_content=main-settings-button-visibility" target="_blank" style="color:#FF9743;font-weight:600;">', '</a>');
     ?>
 					</td>
@@ -55,7 +55,7 @@ if (!\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super()) {
 }
 ?>
 			<?php 
-if (\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super()) {
+if (Integration::is_super()) {
     $condition_key = 0;
     if (!empty($condition_types)) {
         foreach ($condition_types as $condition_key => $condition_type) {
@@ -131,31 +131,31 @@ if (\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super()) {
 <script type="text/template" id="products_select">
 	<?php 
 echo $custom_fields->get_products_select(['index' => '__index__']);
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 ?>
 </script>
 <script type="text/template" id="product_cats_select">
 	<?php 
 echo $custom_fields->get_product_cats_select(['index' => '__index__']);
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 ?>
 </script>
 <script type="text/template" id="order_statuses_select">
 	<?php 
 echo $custom_fields->get_order_statuses_select(['index' => '__index__']);
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 ?>
 </script>
 <script type="text/template" id="user_roles_select">
 	<?php 
 echo $custom_fields->get_user_roles_select(['index' => '__index__']);
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 ?>
 </script>
 <script type="text/template" id="payment_methods_select">
 	<?php 
 echo $custom_fields->get_payment_methods_select(['index' => '__index__']);
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 ?>
 </script>
 

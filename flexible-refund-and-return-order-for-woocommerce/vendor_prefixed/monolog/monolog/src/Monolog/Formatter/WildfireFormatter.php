@@ -21,14 +21,14 @@ use FRFreeVendor\Monolog\Logger;
  *
  * @phpstan-import-type Level from \Monolog\Logger
  */
-class WildfireFormatter extends \FRFreeVendor\Monolog\Formatter\NormalizerFormatter
+class WildfireFormatter extends NormalizerFormatter
 {
     /**
      * Translates Monolog log levels to Wildfire levels.
      *
      * @var array<Level, string>
      */
-    private $logLevels = [\FRFreeVendor\Monolog\Logger::DEBUG => 'LOG', \FRFreeVendor\Monolog\Logger::INFO => 'INFO', \FRFreeVendor\Monolog\Logger::NOTICE => 'INFO', \FRFreeVendor\Monolog\Logger::WARNING => 'WARN', \FRFreeVendor\Monolog\Logger::ERROR => 'ERROR', \FRFreeVendor\Monolog\Logger::CRITICAL => 'ERROR', \FRFreeVendor\Monolog\Logger::ALERT => 'ERROR', \FRFreeVendor\Monolog\Logger::EMERGENCY => 'ERROR'];
+    private $logLevels = [Logger::DEBUG => 'LOG', Logger::INFO => 'INFO', Logger::NOTICE => 'INFO', Logger::WARNING => 'WARN', Logger::ERROR => 'ERROR', Logger::CRITICAL => 'ERROR', Logger::ALERT => 'ERROR', Logger::EMERGENCY => 'ERROR'];
     /**
      * @param string|null $dateFormat The format of the timestamp: one supported by DateTime::format
      */
@@ -43,7 +43,7 @@ class WildfireFormatter extends \FRFreeVendor\Monolog\Formatter\NormalizerFormat
      *
      * @return string
      */
-    public function format(array $record) : string
+    public function format(array $record): string
     {
         // Retrieve the line and file if set and remove them from the formatted extra
         $file = $line = '';
@@ -67,8 +67,8 @@ class WildfireFormatter extends \FRFreeVendor\Monolog\Formatter\NormalizerFormat
             $message['extra'] = $record['extra'];
             $handleError = \true;
         }
-        if (\count($message) === 1) {
-            $message = \reset($message);
+        if (count($message) === 1) {
+            $message = reset($message);
         }
         if (isset($record['context']['table'])) {
             $type = 'TABLE';
@@ -81,7 +81,7 @@ class WildfireFormatter extends \FRFreeVendor\Monolog\Formatter\NormalizerFormat
         // Create JSON object describing the appearance of the message in the console
         $json = $this->toJson([['Type' => $type, 'File' => $file, 'Line' => $line, 'Label' => $label], $message], $handleError);
         // The message itself is a serialization of the above JSON object + it's length
-        return \sprintf('%d|%s|', \strlen($json), $json);
+        return sprintf('%d|%s|', strlen($json), $json);
     }
     /**
      * {@inheritDoc}
@@ -99,7 +99,7 @@ class WildfireFormatter extends \FRFreeVendor\Monolog\Formatter\NormalizerFormat
      */
     protected function normalize($data, int $depth = 0)
     {
-        if (\is_object($data) && !$data instanceof \DateTimeInterface) {
+        if (is_object($data) && !$data instanceof \DateTimeInterface) {
             return $data;
         }
         return parent::normalize($data, $depth);

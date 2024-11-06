@@ -56,10 +56,10 @@ final class DashboardWidget
     private $utm_base = 'utm_source=dashboard-metabox&utm_campaign=dashboard-metabox';
     public function __construct()
     {
-        $this->widget_title = \__('Grow your business with WP Desk', 'flexible-refund-and-return-order-for-woocommerce');
+        $this->widget_title = __('Grow your business with WP Desk', 'flexible-refund-and-return-order-for-woocommerce');
         $this->cache_timeout = 24 * 60 * 60;
         $this->cache_retry_timeout = 6 * 60 * 60;
-        $this->locale = \get_user_locale();
+        $this->locale = get_user_locale();
     }
     public function set_widget_title(string $title)
     {
@@ -91,42 +91,44 @@ final class DashboardWidget
     }
     public function hooks()
     {
-        if (\apply_filters('wpdesk/ltvdashboard/disable', \false) === \true) {
+        if (apply_filters('wpdesk/ltvdashboard/disable', \false) === \true) {
             return;
         }
-        if (\apply_filters(self::MUTEX_HOOK, \false) === \false) {
-            \add_filter(self::MUTEX_HOOK, '__return_true');
-            \add_action('wp_dashboard_setup', [$this, 'add_widget']);
+        if (apply_filters(self::MUTEX_HOOK, \false) === \false) {
+            add_filter(self::MUTEX_HOOK, '__return_true');
+            add_action('wp_dashboard_setup', [$this, 'add_widget']);
         }
     }
     public function add_widget()
     {
-        \wp_add_dashboard_widget(self::ID, $this->widget_title, [$this, 'widget_output'], null, null, 'normal', 'high');
+        wp_add_dashboard_widget(self::ID, $this->widget_title, [$this, 'widget_output'], null, null, 'normal', 'high');
     }
-    private function get_all_plugins_dirs() : array
+    private function get_all_plugins_dirs(): array
     {
-        $all_plugins = \array_keys(\get_plugins());
-        return \array_map('dirname', $all_plugins);
+        $all_plugins = array_keys(get_plugins());
+        return array_map('dirname', $all_plugins);
     }
-    private function filter_plugins_to_show(array $plugins, int $limit, bool $for_free = \false) : array
+    private function filter_plugins_to_show(array $plugins, int $limit, bool $for_free = \false): array
     {
         if ($limit === 0) {
             return [];
         }
-        \usort($plugins, static function ($a, $b) {
-            return \strnatcmp($a['priority'], $b['priority']);
+        usort($plugins, static function ($a, $b) {
+            $a['priority'] = $a['priority'] ?? '0';
+            $b['priority'] = $b['priority'] ?? '0';
+            return strnatcmp($a['priority'], $b['priority']);
         });
         $installed_plugins_dir = $this->get_all_plugins_dirs();
-        $plugins = \array_filter($plugins, static function ($plugin) use($installed_plugins_dir, $for_free) {
+        $plugins = array_filter($plugins, static function ($plugin) use ($installed_plugins_dir, $for_free) {
             $installed = !\in_array($plugin['slug'], $installed_plugins_dir, \true);
             if ($for_free) {
                 $installed = \in_array($plugin['free_plugin_slug'], $installed_plugins_dir, \true) && $installed;
             }
             return $installed;
         });
-        return \array_slice($plugins, 0, $limit);
+        return array_slice($plugins, 0, $limit);
     }
-    private function get_server() : string
+    private function get_server(): string
     {
         $locale = $this->locale;
         if ($locale === self::PL_LOCALE) {
@@ -134,7 +136,7 @@ final class DashboardWidget
         }
         return 'www.wpdesk.net';
     }
-    private function has_cached_data() : bool
+    private function has_cached_data(): bool
     {
         if ($this->cache_timeout <= 0) {
             return \false;
@@ -142,9 +144,9 @@ final class DashboardWidget
         $cache_data = $this->get_raw_cached_data();
         return null === $cache_data || \is_array($cache_data);
     }
-    private function get_cached_data_key() : string
+    private function get_cached_data_key(): string
     {
-        return \sprintf('wpdesk_ltv_%1$s_%2$s', self::ID, $this->locale);
+        return sprintf('wpdesk_ltv_%1$s_%2$s', self::ID, $this->locale);
     }
     /**
      *
@@ -152,15 +154,15 @@ final class DashboardWidget
      */
     private function get_raw_cached_data()
     {
-        return \get_transient($this->get_cached_data_key());
+        return get_transient($this->get_cached_data_key());
     }
-    private function get_cached_data() : array
+    private function get_cached_data(): array
     {
         if (!empty($this->cache_data)) {
             return $this->cache_data;
         }
         $cache_data = $this->get_raw_cached_data();
-        $this->cache_data = \is_array($cache_data) ? $cache_data : [];
+        $this->cache_data = is_array($cache_data) ? $cache_data : [];
         return $this->cache_data;
     }
     /**
@@ -173,9 +175,9 @@ final class DashboardWidget
     private function set_data_to_cache($data, int $timeout)
     {
         $cache_key = $this->get_cached_data_key();
-        \set_transient($cache_key, $data, $timeout);
+        set_transient($cache_key, $data, $timeout);
     }
-    private function get_widget_data() : array
+    private function get_widget_data(): array
     {
         if ($this->has_cached_data()) {
             return $this->get_cached_data();
@@ -194,16 +196,16 @@ final class DashboardWidget
      */
     private function get_widget_data_from_remote()
     {
-        $response = \wp_remote_get(\sprintf('https://%s?wpdesk_api=1&t=1', $this->get_server()), ['timeout' => 10, 'sslverify' => \false]);
-        if (!\is_array($response)) {
+        $response = wp_remote_get(sprintf('https://%s?wpdesk_api=1&t=1', $this->get_server()), ['timeout' => 10, 'sslverify' => \false]);
+        if (!is_array($response)) {
             return null;
         }
-        $ret = \json_decode($response['body'], \true);
-        if (!$ret || !\is_array($ret)) {
+        $ret = json_decode($response['body'], \true);
+        if (!$ret || !is_array($ret)) {
             return null;
         }
         $for_free_plugins = $this->filter_plugins_to_show($ret['for_free_plugins'] ?? [], $this->plugins_limit, \true);
-        $plugins = $this->filter_plugins_to_show($ret['plugins'] ?? [], $this->plugins_limit - \count($for_free_plugins), \false);
+        $plugins = $this->filter_plugins_to_show($ret['plugins'] ?? [], $this->plugins_limit - count($for_free_plugins), \false);
         return ['header' => $ret['header'] ?? null, 'for_free_plugins' => $for_free_plugins, 'plugins' => $plugins, 'footer' => $ret['footer'] ?? null];
     }
     public function widget_output()
@@ -212,7 +214,7 @@ final class DashboardWidget
         if (!empty($widget_data)) {
             echo '<div class="wpdesk_ltv_dashboard_widget">';
             if ($this->show_widget_header && $widget_data['header']) {
-                echo \wp_kses_post($widget_data['header']);
+                echo wp_kses_post($widget_data['header']);
             }
             echo '<ul class="ltv-rows">';
             $this->show_plugins($widget_data['for_free_plugins'] ?? [], \true);
@@ -220,7 +222,7 @@ final class DashboardWidget
             echo '</ul>';
             echo '<div class="ltv-footer">';
             if ($this->show_widget_footer && $widget_data['footer']) {
-                echo \wp_kses_post($widget_data['footer']);
+                echo wp_kses_post($widget_data['footer']);
             }
             echo '</div>';
             echo '</div>';
@@ -281,30 +283,28 @@ final class DashboardWidget
             if ($for_free && isset($plugin['free_plugin_slug'])) {
                 $slug = $plugin['free_plugin_slug'];
             }
-            $plugin_url = \sprintf('%1$s?%2$s&utm_medium=more-info-button&utm_term=%3$s', $plugin['url'], $utm_base, $slug);
-            $add_to_cart_url = \sprintf('https://%1$s/?add-to-cart=%2$s&%3$s&utm_medium=buy-now-button&utm_term=%4$s', $server, $plugin['add_to_cart_id'], $utm_base, $slug);
-            $add_to_cart_button_label = \esc_html__('Buy now', 'flexible-refund-and-return-order-for-woocommerce');
+            $plugin_url = sprintf('%1$s?%2$s&utm_medium=more-info-button&utm_term=%3$s', $plugin['url'], $utm_base, $slug);
+            $add_to_cart_url = sprintf('https://%1$s/?add-to-cart=%2$s&%3$s&utm_medium=buy-now-button&utm_term=%4$s', $server, $plugin['add_to_cart_id'], $utm_base, $slug);
+            $add_to_cart_button_label = esc_html__('Buy now', 'flexible-refund-and-return-order-for-woocommerce');
             if ($plugin['add_to_cart_id'] === self::WP_DESK_CARE_ID) {
-                $add_to_cart_button_label = \esc_html__('Learn more', 'flexible-refund-and-return-order-for-woocommerce');
+                $add_to_cart_button_label = esc_html__('Learn more', 'flexible-refund-and-return-order-for-woocommerce');
                 $add_to_cart_url = $plugin_url;
-            } else {
-                if ($plugin['add_to_cart_id'] === self::AUTOPAY_ID) {
-                    $add_to_cart_button_label = \esc_html__('Download', 'flexible-refund-and-return-order-for-woocommerce');
-                    $add_to_cart_url = \esc_url("https://wpde.sk/autopay-wpdeskpl");
-                }
+            } else if ($plugin['add_to_cart_id'] === self::AUTOPAY_ID) {
+                $add_to_cart_button_label = esc_html__('Download', 'flexible-refund-and-return-order-for-woocommerce');
+                $add_to_cart_url = esc_url("https://wpde.sk/autopay-wpdeskpl");
             }
             echo '<li class="ltv-row">';
             if ($plugin['image']) {
-                echo '<img src="' . \esc_url($plugin['image']) . '" alt="" />';
+                echo '<img src="' . esc_url($plugin['image']) . '" alt="" />';
             }
-            echo '<p><strong>' . \esc_html($plugin['name']) . '</strong></p>';
-            echo '<div class="ltv-row-description">' . \wp_kses_post($plugin['description']) . '</div>';
+            echo '<p><strong>' . esc_html($plugin['name']) . '</strong></p>';
+            echo '<div class="ltv-row-description">' . wp_kses_post($plugin['description']) . '</div>';
             echo '<div class="ltv-buttons">';
             if ($for_free) {
-                echo '<a class="button button-primary" href="' . \esc_url($plugin_url) . '" target="_blank">' . \esc_html__('More info', 'flexible-refund-and-return-order-for-woocommerce') . '</a>';
+                echo '<a class="button button-primary" href="' . \esc_url($plugin_url) . '" target="_blank">' . esc_html__('More info', 'flexible-refund-and-return-order-for-woocommerce') . '</a>';
                 echo '<a class="button button-secondary" href="' . \esc_url($add_to_cart_url) . '" target="_blank">' . $add_to_cart_button_label . '</a>';
             } else {
-                echo '<a class="button button-primary button-large" href="' . \esc_url($add_to_cart_url) . '" target="_blank">' . $add_to_cart_button_label . '</a>';
+                echo '<a class="button button-primary button-large" href="' . esc_url($add_to_cart_url) . '" target="_blank">' . $add_to_cart_button_label . '</a>';
             }
             echo '</div>';
             echo '</li>';

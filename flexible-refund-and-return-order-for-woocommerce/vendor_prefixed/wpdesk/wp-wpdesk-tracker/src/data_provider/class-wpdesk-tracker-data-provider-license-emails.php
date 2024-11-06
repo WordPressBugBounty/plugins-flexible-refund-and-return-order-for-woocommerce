@@ -14,7 +14,7 @@ namespace FRFreeVendor;
 if (!\defined('ABSPATH')) {
     exit;
 }
-if (!\class_exists('FRFreeVendor\\WPDesk_Tracker_Data_Provider_License_Emails')) {
+if (!\class_exists('FRFreeVendor\WPDesk_Tracker_Data_Provider_License_Emails')) {
     /**
      * Class WPDesk_Tracker_Data_Provider_License_Emails
      */

@@ -13,31 +13,31 @@ abstract class AbstractSettingsTab
     /**
      * @param Renderer $renderer
      */
-    public function __construct(\FRFreeVendor\WPDesk\View\Renderer\Renderer $renderer)
+    public function __construct(Renderer $renderer)
     {
         $this->renderer = $renderer;
     }
     /**
      * @return Renderer
      */
-    protected function get_renderer() : \FRFreeVendor\WPDesk\View\Renderer\Renderer
+    protected function get_renderer(): Renderer
     {
         return $this->renderer;
     }
-    protected function get_condition_fields() : \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\ConditionSettingFactory
+    protected function get_condition_fields(): ConditionSettingFactory
     {
-        return new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\ConditionSettingFactory(self::get_renderer());
+        return new ConditionSettingFactory(self::get_renderer());
     }
     /**
      * @return array
      */
-    public abstract function get_fields() : array;
+    abstract public function get_fields(): array;
     /**
      * @return string
      */
-    public static abstract function get_tab_slug() : string;
+    abstract public static function get_tab_slug(): string;
     /**
      * @return string
      */
-    public static abstract function get_tab_name() : string;
+    abstract public static function get_tab_name(): string;
 }

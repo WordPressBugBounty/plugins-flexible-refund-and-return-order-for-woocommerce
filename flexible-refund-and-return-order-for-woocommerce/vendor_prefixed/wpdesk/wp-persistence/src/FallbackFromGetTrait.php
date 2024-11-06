@@ -9,7 +9,7 @@ trait FallbackFromGetTrait
     {
         try {
             return $this->get($id);
-        } catch (\FRFreeVendor\Psr\Container\NotFoundExceptionInterface $e) {
+        } catch (NotFoundExceptionInterface $e) {
             return $fallback;
         }
     }

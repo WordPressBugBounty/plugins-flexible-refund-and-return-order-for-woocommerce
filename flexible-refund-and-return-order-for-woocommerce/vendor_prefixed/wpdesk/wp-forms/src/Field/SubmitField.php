@@ -2,17 +2,17 @@
 
 namespace FRFreeVendor\WPDesk\Forms\Field;
 
-class SubmitField extends \FRFreeVendor\WPDesk\Forms\Field\NoValueField
+class SubmitField extends NoValueField
 {
-    public function get_template_name() : string
+    public function get_template_name(): string
     {
         return 'input-submit';
     }
-    public function get_type() : string
+    public function get_type(): string
     {
         return 'submit';
     }
-    public function should_override_form_template() : bool
+    public function should_override_form_template(): bool
     {
         return \true;
     }

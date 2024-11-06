@@ -13,9 +13,9 @@ class RateBox
 {
     /** @var Renderer */
     private $renderer;
-    public function __construct(?\FRFreeVendor\WPDesk\View\Renderer\Renderer $renderer = null)
+    public function __construct(?Renderer $renderer = null)
     {
-        $this->renderer = $renderer ?? new \FRFreeVendor\WPDesk\View\Renderer\SimplePhpRenderer(new \FRFreeVendor\WPDesk\View\Resolver\DirResolver(__DIR__ . '/Views/'));
+        $this->renderer = $renderer ?? new SimplePhpRenderer(new DirResolver(__DIR__ . '/Views/'));
     }
     /**
      * @param string $url
@@ -25,7 +25,7 @@ class RateBox
      *
      * @return string
      */
-    public function render(string $url, string $description = '', string $header = '', string $footer = '') : string
+    public function render(string $url, string $description = '', string $header = '', string $footer = ''): string
     {
         return $this->renderer->render('rate-plugin', ['url' => $url, 'description' => $description, 'header' => $header, 'footer' => $footer]);
     }

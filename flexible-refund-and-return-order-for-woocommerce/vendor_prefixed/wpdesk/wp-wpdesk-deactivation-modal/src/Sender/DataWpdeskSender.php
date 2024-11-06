@@ -9,7 +9,7 @@ use FRFreeVendor\WPDesk_Tracker_Sender_Wordpress_To_WPDesk;
 /**
  * Sends a deactivation report to data.wpdesk.org.
  */
-class DataWpdeskSender implements \FRFreeVendor\WPDesk\DeactivationModal\Sender\Sender
+class DataWpdeskSender implements Sender
 {
     const HOOK_TRACKER_DEACTIVATION_DATA = 'wpdesk_tracker_deactivation_data';
     const NO_REASON_CHOSEN_KEY = 'null';
@@ -33,32 +33,32 @@ class DataWpdeskSender implements \FRFreeVendor\WPDesk\DeactivationModal\Sender\
     {
         $this->plugin_file_name = $plugin_file_name;
         $this->plugin_name = $plugin_name;
-        $this->tracker_sender = new \FRFreeVendor\WPDesk_Tracker_Sender_Wordpress_To_WPDesk();
+        $this->tracker_sender = new WPDesk_Tracker_Sender_Wordpress_To_WPDesk();
     }
     /**
      * {@inheritdoc}
      */
-    public function generate_request_data(\FRFreeVendor\WPDesk\DeactivationModal\Model\RequestData $request_data) : array
+    public function generate_request_data(RequestData $request_data): array
     {
         $request_body = ['click_action' => 'plugin_deactivation', 'plugin' => $this->plugin_file_name, 'plugin_name' => $this->plugin_name, 'reason' => $request_data->get_reason_key() ?: self::NO_REASON_CHOSEN_KEY, 'additional_data' => $request_data->get_additional_data()];
         if ($request_data->get_additional_info() !== null && $request_data->get_additional_info() !== '') {
             $request_body['additional_info'] = $request_data->get_additional_info();
         }
-        return \apply_filters(self::HOOK_TRACKER_DEACTIVATION_DATA, $request_body, $this->plugin_file_name);
+        return apply_filters(self::HOOK_TRACKER_DEACTIVATION_DATA, $request_body, $this->plugin_file_name);
     }
     /**
      * {@inheritdoc}
      *
      * @throws SenderRequestFailedException
      */
-    public function send_request(\FRFreeVendor\WPDesk\DeactivationModal\Model\RequestData $request_data) : bool
+    public function send_request(RequestData $request_data): bool
     {
         try {
             $request_body = $this->generate_request_data($request_data);
             $response = $this->tracker_sender->send_payload($request_body);
-            return \is_array($response);
+            return is_array($response);
         } catch (\Exception $e) {
-            throw new \FRFreeVendor\WPDesk\DeactivationModal\Exception\SenderRequestFailedException($e->getMessage());
+            throw new SenderRequestFailedException($e->getMessage());
         }
     }
 }

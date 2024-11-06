@@ -8,7 +8,7 @@ use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
 /**
  * @package WPDesk\Persistence\WooCommerce
  */
-final class WooCommerceSessionContainer implements \FRFreeVendor\WPDesk\Persistence\PersistentContainer
+final class WooCommerceSessionContainer implements PersistentContainer
 {
     use FallbackFromGetTrait;
     /** @var \WC_Settings_API */
@@ -20,11 +20,11 @@ final class WooCommerceSessionContainer implements \FRFreeVendor\WPDesk\Persiste
     public function get($id)
     {
         if (!$this->has($id)) {
-            throw new \FRFreeVendor\WPDesk\Persistence\ElementNotExistsException(\sprintf('Element %s not exists!', $id));
+            throw new ElementNotExistsException(sprintf('Element %s not exists!', $id));
         }
         return $this->session->get($id);
     }
-    public function has($id) : bool
+    public function has($id): bool
     {
         $value = $this->session->get($id);
         return $value !== null;

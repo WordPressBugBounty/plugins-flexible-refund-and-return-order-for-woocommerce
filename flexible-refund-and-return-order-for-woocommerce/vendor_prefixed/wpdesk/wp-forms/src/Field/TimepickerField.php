@@ -4,21 +4,21 @@ namespace FRFreeVendor\WPDesk\Forms\Field;
 
 use FRFreeVendor\WPDesk\Forms\Serializer;
 use FRFreeVendor\WPDesk\Forms\Serializer\JsonSerializer;
-class TimepickerField extends \FRFreeVendor\WPDesk\Forms\Field\BasicField
+class TimepickerField extends BasicField
 {
-    public function get_type() : string
+    public function get_type(): string
     {
         return 'time';
     }
-    public function has_serializer() : bool
+    public function has_serializer(): bool
     {
         return \true;
     }
-    public function get_serializer() : \FRFreeVendor\WPDesk\Forms\Serializer
+    public function get_serializer(): Serializer
     {
-        return new \FRFreeVendor\WPDesk\Forms\Serializer\JsonSerializer();
+        return new JsonSerializer();
     }
-    public function get_template_name() : string
+    public function get_template_name(): string
     {
         return 'timepicker';
     }

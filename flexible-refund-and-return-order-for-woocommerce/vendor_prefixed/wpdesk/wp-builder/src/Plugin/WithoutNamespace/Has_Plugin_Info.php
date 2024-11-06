@@ -2,7 +2,7 @@
 
 namespace FRFreeVendor;
 
-if (!\interface_exists('FRFreeVendor\\WPDesk_Translatable')) {
+if (!\interface_exists('FRFreeVendor\WPDesk_Translatable')) {
     require_once __DIR__ . '/Translatable.php';
 }
 /**
@@ -10,7 +10,7 @@ if (!\interface_exists('FRFreeVendor\\WPDesk_Translatable')) {
  *
  * have to be compatible with PHP 5.2.x
  */
-interface WPDesk_Has_Plugin_Info extends \FRFreeVendor\WPDesk_Translatable
+interface WPDesk_Has_Plugin_Info extends WPDesk_Translatable
 {
     /**
      * @return string

@@ -8,16 +8,16 @@ use FRFreeVendor\WPDesk\Forms\Field\InputTextField;
  *
  * @package WPDesk\Library\FlexibleRefundsCore\FormRenderer
  */
-class HTMLField extends \FRFreeVendor\WPDesk\Forms\Field\InputTextField
+class HTMLField extends InputTextField
 {
-    public function get_type() : string
+    public function get_type(): string
     {
         return 'html';
     }
     /**
      * @return string
      */
-    public function get_template_name() : string
+    public function get_template_name(): string
     {
         return 'html-input';
     }

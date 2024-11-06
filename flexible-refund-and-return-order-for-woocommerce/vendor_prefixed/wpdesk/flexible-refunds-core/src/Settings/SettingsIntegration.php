@@ -5,7 +5,7 @@ namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings;
 use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 use WC_Settings_Page;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs;
-class SettingsIntegration extends \WC_Settings_Page
+class SettingsIntegration extends WC_Settings_Page
 {
     const PLUGIN_PREFIX = 'flexible_refunds';
     /**
@@ -20,18 +20,18 @@ class SettingsIntegration extends \WC_Settings_Page
      * @var Tabs\SupportTab
      */
     private $support_tab;
-    public function __construct(\FRFreeVendor\WPDesk\View\Renderer\Renderer $renderer)
+    public function __construct(Renderer $renderer)
     {
         $this->id = self::PLUGIN_PREFIX;
-        $this->label = \esc_html__('Flexible Refund', 'flexible-refund-and-return-order-for-woocommerce');
+        $this->label = esc_html__('Flexible Refund', 'flexible-refund-and-return-order-for-woocommerce');
         /**
          * Must be initialized in the construct.
          */
-        $this->refund_tab = new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\RefundOrderTab($renderer);
-        $this->form_tab = new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\FormBuilderTab($renderer);
-        $this->support_tab = new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\SupportTab($renderer);
-        \add_action('woocommerce_settings_' . $this->id, [$this, 'output']);
-        \add_action('woocommerce_settings_save_' . $this->id, [$this, 'save']);
+        $this->refund_tab = new Tabs\RefundOrderTab($renderer);
+        $this->form_tab = new Tabs\FormBuilderTab($renderer);
+        $this->support_tab = new Tabs\SupportTab($renderer);
+        add_action('woocommerce_settings_' . $this->id, [$this, 'output']);
+        add_action('woocommerce_settings_save_' . $this->id, [$this, 'save']);
         parent::__construct();
     }
     /**
@@ -39,9 +39,9 @@ class SettingsIntegration extends \WC_Settings_Page
      *
      * @return array
      */
-    protected function get_own_sections() : array
+    protected function get_own_sections(): array
     {
-        return ['' => \esc_html__('Order Refund', 'flexible-refund-and-return-order-for-woocommerce'), 'form' => \esc_html__('Refund Form', 'flexible-refund-and-return-order-for-woocommerce'), 'support' => \esc_html__('Start Here', 'flexible-refund-and-return-order-for-woocommerce')];
+        return ['' => esc_html__('Order Refund', 'flexible-refund-and-return-order-for-woocommerce'), 'form' => esc_html__('Refund Form', 'flexible-refund-and-return-order-for-woocommerce'), 'support' => esc_html__('Start Here', 'flexible-refund-and-return-order-for-woocommerce')];
     }
     /**
      * Refund order settings.
@@ -49,9 +49,9 @@ class SettingsIntegration extends \WC_Settings_Page
      *
      * @return array
      */
-    protected function get_settings_for_default_section() : array
+    protected function get_settings_for_default_section(): array
     {
-        return \apply_filters('wpdesk/fr/settings/tab/refund', $this->refund_tab->get_fields());
+        return apply_filters('wpdesk/fr/settings/tab/refund', $this->refund_tab->get_fields());
     }
     /**
      * Form settings.
@@ -59,9 +59,9 @@ class SettingsIntegration extends \WC_Settings_Page
      *
      * @return array
      */
-    protected function get_settings_for_form_section() : array
+    protected function get_settings_for_form_section(): array
     {
-        return \apply_filters('wpdesk/fr/settings/tab/form', $this->form_tab->get_fields());
+        return apply_filters('wpdesk/fr/settings/tab/form', $this->form_tab->get_fields());
     }
     /**
      * Form settings.
@@ -69,8 +69,8 @@ class SettingsIntegration extends \WC_Settings_Page
      *
      * @return array
      */
-    protected function get_settings_for_support_section() : array
+    protected function get_settings_for_support_section(): array
     {
-        return \apply_filters('wpdesk/fr/settings/tab/support', $this->support_tab->get_fields());
+        return apply_filters('wpdesk/fr/settings/tab/support', $this->support_tab->get_fields());
     }
 }

@@ -27,7 +27,7 @@ trait FormattableHandlerTrait
     /**
      * {@inheritDoc}
      */
-    public function setFormatter(\FRFreeVendor\Monolog\Formatter\FormatterInterface $formatter) : \FRFreeVendor\Monolog\Handler\HandlerInterface
+    public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
         $this->formatter = $formatter;
         return $this;
@@ -35,7 +35,7 @@ trait FormattableHandlerTrait
     /**
      * {@inheritDoc}
      */
-    public function getFormatter() : \FRFreeVendor\Monolog\Formatter\FormatterInterface
+    public function getFormatter(): FormatterInterface
     {
         if (!$this->formatter) {
             $this->formatter = $this->getDefaultFormatter();
@@ -47,8 +47,8 @@ trait FormattableHandlerTrait
      *
      * Overwrite this if the LineFormatter is not a good default for your handler.
      */
-    protected function getDefaultFormatter() : \FRFreeVendor\Monolog\Formatter\FormatterInterface
+    protected function getDefaultFormatter(): FormatterInterface
     {
-        return new \FRFreeVendor\Monolog\Formatter\LineFormatter();
+        return new LineFormatter();
     }
 }

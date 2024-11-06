@@ -21,7 +21,7 @@ $request_note = $order->get_meta('fr_refund_request_note');
 if (\in_array($request_status, ['approved', 'rejected'])) {
     ?>
 	<h2><?php 
-    \printf(\esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::get_status_label($request_status));
+    \printf(\esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), Statuses::get_status_label($request_status));
     ?></h2>
 	<?php 
     if (!empty($request_note)) {

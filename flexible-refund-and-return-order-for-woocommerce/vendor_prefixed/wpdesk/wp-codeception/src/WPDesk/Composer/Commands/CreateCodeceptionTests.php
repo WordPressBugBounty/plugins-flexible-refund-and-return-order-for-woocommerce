@@ -10,7 +10,7 @@ use FRFreeVendor\Symfony\Component\Console\Output\OutputInterface;
  *
  * @package WPDesk\Composer\Codeception\Commands
  */
-class CreateCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception\Commands\BaseCommand
+class CreateCodeceptionTests extends BaseCommand
 {
     use SedTrait;
     /**
@@ -31,8 +31,8 @@ class CreateCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception\C
      */
     private function copy($source, $dest, $exceptionMessage)
     {
-        if (!\copy($source, $dest)) {
-            throw new \FRFreeVendor\Composer\Downloader\FilesystemException($exceptionMessage);
+        if (!copy($source, $dest)) {
+            throw new FilesystemException($exceptionMessage);
         }
     }
     /**
@@ -49,29 +49,29 @@ class CreateCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception\C
      */
     private function copyConfigurationFiles($codeceptionDir, $testsDir, $codeceptionYml, $envConfig, $acceptanceYml, $bootstrapScript)
     {
-        if (!\file_exists('./' . $codeceptionYml)) {
+        if (!file_exists('./' . $codeceptionYml)) {
             $this->copy('./vendor/wpdesk/wp-codeception/configuration/' . $codeceptionYml, './' . $codeceptionYml, 'Error copying codeception configuration file!');
         }
-        if (!\file_exists('./' . $envConfig)) {
+        if (!file_exists('./' . $envConfig)) {
             $this->copy('./vendor/wpdesk/wp-codeception/configuration/' . $envConfig, './' . $envConfig, 'Error copying codeception env configuration file!');
         }
-        if (\file_exists($testsDir . '/' . $acceptanceYml)) {
-            \unlink($testsDir . '/' . $acceptanceYml);
+        if (file_exists($testsDir . '/' . $acceptanceYml)) {
+            unlink($testsDir . '/' . $acceptanceYml);
         }
         $this->copy('./vendor/wpdesk/wp-codeception/configuration/' . $acceptanceYml, $testsDir . '/' . $acceptanceYml, 'Error copying codeception acceptance configuration file!');
-        if (!\file_exists($codeceptionDir . '/' . $bootstrapScript)) {
+        if (!file_exists($codeceptionDir . '/' . $bootstrapScript)) {
             $this->copy('./vendor/wpdesk/wp-codeception/scripts/' . $bootstrapScript, $codeceptionDir . '/' . $bootstrapScript, 'Error copying codeception bootstrap script file!');
         }
-        if (!@\file_exists($testsDir . '/_output')) {
-            \mkdir($testsDir . '/_output', 0777, \true);
+        if (!@file_exists($testsDir . '/_output')) {
+            mkdir($testsDir . '/_output', 0777, \true);
         }
-        if (!\file_exists($testsDir . '/_output/.gitignore')) {
+        if (!file_exists($testsDir . '/_output/.gitignore')) {
             $this->copy('./vendor/wpdesk/wp-codeception/configuration/_output.gitignore', $testsDir . '/_output/.gitignore', 'Error copying codeception acceptance output .gitignore file!');
         }
-        if (!@\file_exists($testsDir . '/_support/_generated')) {
-            \mkdir($testsDir . '/_support/_generated', 0777, \true);
+        if (!@file_exists($testsDir . '/_support/_generated')) {
+            mkdir($testsDir . '/_support/_generated', 0777, \true);
         }
-        if (!\file_exists($testsDir . '/_support/_generated/.gitignore')) {
+        if (!file_exists($testsDir . '/_support/_generated/.gitignore')) {
             $this->copy('./vendor/wpdesk/wp-codeception/configuration/_generated.gitignore', $testsDir . '/_support/_generated/.gitignore', 'Error copying codeception acceptance output .gitignore file!');
         }
     }
@@ -96,7 +96,7 @@ class CreateCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception\C
      * @return int
      * @throws FilesystemException
      */
-    protected function execute(\FRFreeVendor\Symfony\Component\Console\Input\InputInterface $input, \FRFreeVendor\Symfony\Component\Console\Output\OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $codeceptionDir = './tests/codeception';
         $testsDir = $codeceptionDir . '/tests';
@@ -104,8 +104,8 @@ class CreateCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception\C
         $envConfig = '.env.testing';
         $acceptanceYml = 'acceptance.suite.yml';
         $bootstrapScript = 'bootstrap.sh';
-        if (!@\file_exists($testsDir)) {
-            \mkdir($testsDir, 0777, \true);
+        if (!@file_exists($testsDir)) {
+            mkdir($testsDir, 0777, \true);
         }
         $this->copyConfigurationFiles($codeceptionDir, $testsDir, $codeceptionYml, $envConfig, $acceptanceYml, $bootstrapScript);
         $this->execAndOutput('./vendor/bin/codecept bootstrap ' . $codeceptionDir, $output);

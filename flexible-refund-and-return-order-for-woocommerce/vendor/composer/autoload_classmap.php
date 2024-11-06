@@ -320,6 +320,7 @@ return array(
     'FRFreeVendor\\WPDesk\\Logger\\BasicLoggerFactory' => $baseDir . '/vendor_prefixed/wpdesk/wp-logs/src/BasicLoggerFactory.php',
     'FRFreeVendor\\WPDesk\\Logger\\LoggerFacade' => $baseDir . '/vendor_prefixed/wpdesk/wp-logs/src/LoggerFacade.php',
     'FRFreeVendor\\WPDesk\\Logger\\LoggerFactory' => $baseDir . '/vendor_prefixed/wpdesk/wp-logs/src/LoggerFactory.php',
+    'FRFreeVendor\\WPDesk\\Logger\\Processor\\SensitiveDataProcessor' => $baseDir . '/vendor_prefixed/wpdesk/wp-logs/src/Processor/SensitiveDataProcessor.php',
     'FRFreeVendor\\WPDesk\\Logger\\Settings' => $baseDir . '/vendor_prefixed/wpdesk/wp-logs/src/Settings.php',
     'FRFreeVendor\\WPDesk\\Logger\\SimpleLoggerFactory' => $baseDir . '/vendor_prefixed/wpdesk/wp-logs/src/SimpleLoggerFactory.php',
     'FRFreeVendor\\WPDesk\\Logger\\WC\\Exception\\WCLoggerAlreadyCaptured' => $baseDir . '/vendor_prefixed/wpdesk/wp-logs/src/WC/Exception/WCLoggerAlreadyCaptured.php',

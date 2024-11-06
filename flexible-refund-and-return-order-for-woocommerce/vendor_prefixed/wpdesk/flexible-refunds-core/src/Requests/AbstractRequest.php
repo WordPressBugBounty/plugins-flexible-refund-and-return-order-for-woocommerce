@@ -9,13 +9,13 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\OrderNote;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Emails\AbstractRefundEmail;
 use function WC;
-abstract class AbstractRequest implements \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Requests\Request
+abstract class AbstractRequest implements Request
 {
     /**
      * @var PersistentContainer
      */
     protected $settings;
-    public function __construct(\FRFreeVendor\WPDesk\Persistence\PersistentContainer $settings)
+    public function __construct(PersistentContainer $settings)
     {
         $this->settings = $settings;
     }
@@ -26,17 +26,17 @@ abstract class AbstractRequest implements \FRFreeVendor\WPDesk\Library\FlexibleR
      * @return void
      * @throws Exception
      */
-    public function do_action(\WC_Order $order, array $post_data) : bool
+    public function do_action(WC_Order $order, array $post_data): bool
     {
-        $note = \trim($post_data['note']);
-        $status = \trim($post_data['status']);
+        $note = trim($post_data['note']);
+        $status = trim($post_data['status']);
         $order->update_meta_data('fr_refund_request_status', $status);
         $order->update_meta_data('fr_refund_request_note', $note);
         $order->save();
         if (!empty($note)) {
-            $order_note = new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\OrderNote();
+            $order_note = new OrderNote();
             $order_note->add_refund_note($order, $note);
-            $order_note->add_refund_note($order, \sprintf(\esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::get_status_label($status)));
+            $order_note->add_refund_note($order, sprintf(esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), Statuses::get_status_label($status)));
         }
         $this->send_email($order, $post_data['status']);
         return \true;
@@ -44,19 +44,19 @@ abstract class AbstractRequest implements \FRFreeVendor\WPDesk\Library\FlexibleR
     /**
      * @throws Exception
      */
-    public function send_email(\WC_Order $order, string $status)
+    public function send_email(WC_Order $order, string $status)
     {
-        $mailer = \WC()->mailer();
+        $mailer = WC()->mailer();
         $emails = $mailer->get_emails();
         $email_class = 'fr_email_refund_' . $status;
         $class = $emails[$email_class];
-        if ($class instanceof \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Emails\AbstractRefundEmail) {
+        if ($class instanceof AbstractRefundEmail) {
             $class->trigger($order);
         }
         /**
          * Send to admin
          */
-        if ($status === \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::REQUESTED_STATUS) {
+        if ($status === Statuses::REQUESTED_STATUS) {
             $emails['fr_email_refund_admin_requested']->trigger($order);
         }
     }

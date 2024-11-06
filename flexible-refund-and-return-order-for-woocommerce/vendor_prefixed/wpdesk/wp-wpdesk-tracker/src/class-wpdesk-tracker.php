@@ -14,7 +14,7 @@ namespace FRFreeVendor;
 if (!\defined('ABSPATH')) {
     exit;
 }
-if (!\class_exists('FRFreeVendor\\WPDesk_Tracker')) {
+if (!\class_exists('FRFreeVendor\WPDesk_Tracker')) {
     class WPDesk_Tracker implements \WPDesk_Tracker_Interface
     {
         const WPDESK_TRACKER_NOTICE = 'wpdesk-tracker-notice';
@@ -418,7 +418,7 @@ if (!\class_exists('FRFreeVendor\\WPDesk_Tracker')) {
             try {
                 $this->sender->send_payload($payload);
                 return \true;
-            } catch (\FRFreeVendor\WPDesk_Tracker_Sender_Exception_WpError $e) {
+            } catch (WPDesk_Tracker_Sender_Exception_WpError $e) {
                 return \false;
             }
         }
@@ -454,14 +454,14 @@ if (!\class_exists('FRFreeVendor\\WPDesk_Tracker')) {
             $data = $this->get_data_from_providers();
             return \apply_filters('wpdesk_tracker_data', $data);
         }
-        private function read_context_from_request() : array
+        private function read_context_from_request(): array
         {
             if (isset($_REQUEST['ctx'], $_REQUEST['plugin'])) {
                 return ['source' => ['plugin' => \sanitize_key($_REQUEST['plugin']), 'ctx' => \sanitize_key($_REQUEST['ctx'])]];
             }
             return [];
         }
-        private function can_display_notice() : bool
+        private function can_display_notice(): bool
         {
             if (\has_filter('wpdesk_tracker_notice_screens') === \true) {
                 $screen = \get_current_screen();

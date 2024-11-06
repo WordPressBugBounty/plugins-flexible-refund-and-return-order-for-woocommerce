@@ -11,7 +11,7 @@ use FRFreeVendor\WPDesk\DeactivationModal\Sender\Sender;
 /**
  * Sends the report about the plugin deactivation.
  */
-class RequestSenderService implements \FRFreeVendor\WPDesk\DeactivationModal\Hookable
+class RequestSenderService implements Hookable
 {
     const FORM_FIELD_REASON = '_deactivation_reason';
     const FORM_FIELD_MESSAGE = '_deactivation_message_%s';
@@ -33,7 +33,7 @@ class RequestSenderService implements \FRFreeVendor\WPDesk\DeactivationModal\Hoo
      * @var Sender
      */
     private $request_sender;
-    public function __construct(string $plugin_slug, \FRFreeVendor\WPDesk\DeactivationModal\Model\FormOptions $form_options, \FRFreeVendor\WPDesk\DeactivationModal\Model\FormValues $form_values, \FRFreeVendor\WPDesk\DeactivationModal\Sender\Sender $request_sender)
+    public function __construct(string $plugin_slug, FormOptions $form_options, FormValues $form_values, Sender $request_sender)
     {
         $this->plugin_slug = $plugin_slug;
         $this->form_options = $form_options;
@@ -45,12 +45,12 @@ class RequestSenderService implements \FRFreeVendor\WPDesk\DeactivationModal\Hoo
      */
     public function hooks()
     {
-        \add_action('wp_ajax_' . self::ADMIN_AJAX_ACTION . $this->plugin_slug, [$this, 'handle_ajax_request']);
-        \add_action('wp_ajax_nopriv_' . self::ADMIN_AJAX_ACTION . $this->plugin_slug, [$this, 'handle_ajax_request']);
+        add_action('wp_ajax_' . self::ADMIN_AJAX_ACTION . $this->plugin_slug, [$this, 'handle_ajax_request']);
+        add_action('wp_ajax_nopriv_' . self::ADMIN_AJAX_ACTION . $this->plugin_slug, [$this, 'handle_ajax_request']);
     }
-    public static function generate_ajax_url(string $plugin_slug) : string
+    public static function generate_ajax_url(string $plugin_slug): string
     {
-        return \sprintf('admin-ajax.php?action=%1$s&nonce=%2$s', self::ADMIN_AJAX_ACTION . $plugin_slug, \wp_create_nonce(self::ADMIN_AJAX_NONCE));
+        return sprintf('admin-ajax.php?action=%1$s&nonce=%2$s', self::ADMIN_AJAX_ACTION . $plugin_slug, wp_create_nonce(self::ADMIN_AJAX_NONCE));
     }
     /**
      * @param mixed|null $request_params .
@@ -60,14 +60,14 @@ class RequestSenderService implements \FRFreeVendor\WPDesk\DeactivationModal\Hoo
      */
     public function handle_ajax_request($request_params = null)
     {
-        $params = $request_params && \is_array($request_params) ? $request_params : \wp_unslash($_REQUEST);
-        if (\wp_verify_nonce($params['nonce'] ?? '', self::ADMIN_AJAX_NONCE) !== \false) {
+        $params = $request_params && is_array($request_params) ? $request_params : wp_unslash($_REQUEST);
+        if (wp_verify_nonce($params['nonce'] ?? '', self::ADMIN_AJAX_NONCE) !== \false) {
             $this->send_request($params);
-            \wp_send_json_success();
+            wp_send_json_success();
         } else {
-            \wp_send_json_error();
+            wp_send_json_error();
         }
-        \wp_die();
+        wp_die();
     }
     /**
      * @param array $request_params .
@@ -81,15 +81,15 @@ class RequestSenderService implements \FRFreeVendor\WPDesk\DeactivationModal\Hoo
         $request_data = $this->get_request_data($request_params);
         $this->request_sender->send_request($request_data);
     }
-    private function get_request_data(array $request_params) : \FRFreeVendor\WPDesk\DeactivationModal\Model\RequestData
+    private function get_request_data(array $request_params): RequestData
     {
-        $request_data = (new \FRFreeVendor\WPDesk\DeactivationModal\Model\RequestData($this->plugin_slug))->set_reason_key($this->get_deactivation_reason($request_params));
+        $request_data = (new RequestData($this->plugin_slug))->set_reason_key($this->get_deactivation_reason($request_params));
         if ($request_data->get_reason_key() !== null) {
-            $value_key = \sprintf(self::FORM_FIELD_MESSAGE, $request_data->get_reason_key());
-            $request_data->set_additional_info(isset($request_params[$value_key]) ? \sanitize_textarea_field($request_params[$value_key]) : null);
+            $value_key = sprintf(self::FORM_FIELD_MESSAGE, $request_data->get_reason_key());
+            $request_data->set_additional_info(isset($request_params[$value_key]) ? sanitize_textarea_field($request_params[$value_key]) : null);
         }
         foreach ($this->form_values->get_values() as $value) {
-            $request_data->set_additional_data_item($value->get_key(), \call_user_func($value->get_value_callback()));
+            $request_data->set_additional_data_item($value->get_key(), call_user_func($value->get_value_callback()));
         }
         return $request_data;
     }

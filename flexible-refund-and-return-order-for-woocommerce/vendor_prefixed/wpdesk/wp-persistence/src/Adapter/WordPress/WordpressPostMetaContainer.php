@@ -11,7 +11,7 @@ use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
  *
  * @package WPDesk\Persistence\Wordpress
  */
-final class WordpressPostMetaContainer implements \FRFreeVendor\WPDesk\Persistence\PersistentContainer
+final class WordpressPostMetaContainer implements PersistentContainer
 {
     use FallbackFromGetTrait;
     /** @var int */
@@ -26,16 +26,16 @@ final class WordpressPostMetaContainer implements \FRFreeVendor\WPDesk\Persisten
     public function set(string $key, $value)
     {
         if ($value !== null) {
-            \update_post_meta($this->post_id, $key, $value);
+            update_post_meta($this->post_id, $key, $value);
         } else {
             $this->delete($key);
         }
     }
     public function get($key)
     {
-        $meta = \get_post_meta($this->post_id, $key);
-        if (\count($meta) === 0) {
-            throw new \FRFreeVendor\WPDesk\Persistence\ElementNotExistsException(\sprintf('Element %s not exists!', $key));
+        $meta = get_post_meta($this->post_id, $key);
+        if (count($meta) === 0) {
+            throw new ElementNotExistsException(sprintf('Element %s not exists!', $key));
         }
         return $meta[0];
     }
@@ -44,12 +44,12 @@ final class WordpressPostMetaContainer implements \FRFreeVendor\WPDesk\Persisten
      *
      * @return bool
      */
-    public function has($id) : bool
+    public function has($id): bool
     {
-        return \metadata_exists('post', $this->post_id, $id);
+        return metadata_exists('post', $this->post_id, $id);
     }
     public function delete(string $key)
     {
-        \delete_post_meta($this->post_id, $key);
+        delete_post_meta($this->post_id, $key);
     }
 }

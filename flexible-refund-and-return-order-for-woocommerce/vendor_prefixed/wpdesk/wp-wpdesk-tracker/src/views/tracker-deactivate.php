@@ -155,7 +155,7 @@ echo \esc_url_raw(\admin_url("admin-ajax.php"));
 					data: {
 						action: 'wpdesk_tracker_deactivation_handler',
 						security: '<?php 
-echo \esc_attr(\wp_create_nonce(\FRFreeVendor\WPDesk_Tracker::WPDESK_TRACKER_DEACTIVATION));
+echo \esc_attr(\wp_create_nonce(WPDesk_Tracker::WPDESK_TRACKER_DEACTIVATION));
 ?>',
 						reason: reason,
 						plugin: plugin,

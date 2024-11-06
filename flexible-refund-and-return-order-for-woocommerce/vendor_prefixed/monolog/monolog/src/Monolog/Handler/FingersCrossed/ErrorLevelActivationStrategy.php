@@ -21,7 +21,7 @@ use FRFreeVendor\Psr\Log\LogLevel;
  * @phpstan-import-type Level from \Monolog\Logger
  * @phpstan-import-type LevelName from \Monolog\Logger
  */
-class ErrorLevelActivationStrategy implements \FRFreeVendor\Monolog\Handler\FingersCrossed\ActivationStrategyInterface
+class ErrorLevelActivationStrategy implements ActivationStrategyInterface
 {
     /**
      * @var Level
@@ -34,9 +34,9 @@ class ErrorLevelActivationStrategy implements \FRFreeVendor\Monolog\Handler\Fing
      */
     public function __construct($actionLevel)
     {
-        $this->actionLevel = \FRFreeVendor\Monolog\Logger::toMonologLevel($actionLevel);
+        $this->actionLevel = Logger::toMonologLevel($actionLevel);
     }
-    public function isHandlerActivated(array $record) : bool
+    public function isHandlerActivated(array $record): bool
     {
         return $record['level'] >= $this->actionLevel;
     }

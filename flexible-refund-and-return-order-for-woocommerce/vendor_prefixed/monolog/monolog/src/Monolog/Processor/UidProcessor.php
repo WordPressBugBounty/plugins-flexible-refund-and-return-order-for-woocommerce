@@ -17,7 +17,7 @@ use FRFreeVendor\Monolog\ResettableInterface;
  *
  * @author Simon Mönch <sm@webfactory.de>
  */
-class UidProcessor implements \FRFreeVendor\Monolog\Processor\ProcessorInterface, \FRFreeVendor\Monolog\ResettableInterface
+class UidProcessor implements ProcessorInterface, ResettableInterface
 {
     /** @var string */
     private $uid;
@@ -31,21 +31,21 @@ class UidProcessor implements \FRFreeVendor\Monolog\Processor\ProcessorInterface
     /**
      * {@inheritDoc}
      */
-    public function __invoke(array $record) : array
+    public function __invoke(array $record): array
     {
         $record['extra']['uid'] = $this->uid;
         return $record;
     }
-    public function getUid() : string
+    public function getUid(): string
     {
         return $this->uid;
     }
     public function reset()
     {
-        $this->uid = $this->generateUid(\strlen($this->uid));
+        $this->uid = $this->generateUid(strlen($this->uid));
     }
-    private function generateUid(int $length) : string
+    private function generateUid(int $length): string
     {
-        return \substr(\bin2hex(\random_bytes((int) \ceil($length / 2))), 0, $length);
+        return substr(bin2hex(random_bytes((int) ceil($length / 2))), 0, $length);
     }
 }

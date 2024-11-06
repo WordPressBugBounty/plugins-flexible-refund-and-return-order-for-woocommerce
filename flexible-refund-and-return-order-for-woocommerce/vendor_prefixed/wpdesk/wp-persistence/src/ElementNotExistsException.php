@@ -6,6 +6,6 @@ use FRFreeVendor\Psr\Container\NotFoundExceptionInterface;
 /**
  * @package WPDesk\Persistence
  */
-class ElementNotExistsException extends \RuntimeException implements \FRFreeVendor\Psr\Container\NotFoundExceptionInterface
+class ElementNotExistsException extends \RuntimeException implements NotFoundExceptionInterface
 {
 }

@@ -24,7 +24,7 @@ require_once __DIR__ . '/refund-table.php';
 \esc_html_e('Below you will find the content from the return form fields', 'flexible-refund-and-return-order-for-woocommerce');
 ?></p>
 				<?php 
-$form_values = (new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FormValuesRenderer())->output($order);
+$form_values = (new FormValuesRenderer())->output($order);
 if (!empty($form_values)) {
     echo $form_values;
 } else {

@@ -10,34 +10,34 @@ use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
  *
  * @package WPDesk\Persistence\Decorator
  */
-class SerializedPersistentContainer implements \FRFreeVendor\WPDesk\Persistence\PersistentContainer
+class SerializedPersistentContainer implements PersistentContainer
 {
     use FallbackFromGetTrait;
     private $container;
-    public function __construct(\FRFreeVendor\WPDesk\Persistence\PersistentContainer $container)
+    public function __construct(PersistentContainer $container)
     {
         $this->container = $container;
     }
     public function get($id)
     {
         if ($this->container->has($id)) {
-            return \unserialize($this->container->get($id));
+            return unserialize($this->container->get($id));
         }
-        throw new \FRFreeVendor\WPDesk\Persistence\ElementNotExistsException(\sprintf('Element %s not exists!', $id));
+        throw new ElementNotExistsException(sprintf('Element %s not exists!', $id));
     }
     public function set(string $id, $value)
     {
         if ($value === null) {
             $this->delete($id);
         } else {
-            $this->container->set($id, \serialize($value));
+            $this->container->set($id, serialize($value));
         }
     }
     public function delete(string $id)
     {
         $this->container->delete($id);
     }
-    public function has($id) : bool
+    public function has($id): bool
     {
         return $this->container->has($id);
     }

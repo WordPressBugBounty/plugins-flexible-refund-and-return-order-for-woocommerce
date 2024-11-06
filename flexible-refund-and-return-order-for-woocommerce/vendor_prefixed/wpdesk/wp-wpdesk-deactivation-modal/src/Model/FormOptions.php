@@ -21,14 +21,14 @@ class FormOptions
      * @throws DuplicatedFormOptionKeyException
      * @throws ReservedFormOptionKeyException
      */
-    public function set_option(\FRFreeVendor\WPDesk\DeactivationModal\Model\FormOption $new_option) : self
+    public function set_option(FormOption $new_option): self
     {
-        if ($new_option->get_key() === \FRFreeVendor\WPDesk\DeactivationModal\Sender\DataWpdeskSender::NO_REASON_CHOSEN_KEY) {
-            throw new \FRFreeVendor\WPDesk\DeactivationModal\Exception\ReservedFormOptionKeyException(\FRFreeVendor\WPDesk\DeactivationModal\Sender\DataWpdeskSender::NO_REASON_CHOSEN_KEY);
+        if ($new_option->get_key() === DataWpdeskSender::NO_REASON_CHOSEN_KEY) {
+            throw new ReservedFormOptionKeyException(DataWpdeskSender::NO_REASON_CHOSEN_KEY);
         }
         foreach ($this->options as $option) {
             if ($option->get_key() === $new_option->get_key()) {
-                throw new \FRFreeVendor\WPDesk\DeactivationModal\Exception\DuplicatedFormOptionKeyException($new_option->get_key());
+                throw new DuplicatedFormOptionKeyException($new_option->get_key());
             }
         }
         $this->options[] = $new_option;
@@ -39,7 +39,7 @@ class FormOptions
      *
      * @throws UnknownFormOptionKeyException
      */
-    public function delete_option(string $option_key) : self
+    public function delete_option(string $option_key): self
     {
         foreach ($this->options as $option_index => $option) {
             if ($option->get_key() === $option_key) {
@@ -47,7 +47,7 @@ class FormOptions
                 return $this;
             }
         }
-        throw new \FRFreeVendor\WPDesk\DeactivationModal\Exception\UnknownFormOptionKeyException($option_key);
+        throw new UnknownFormOptionKeyException($option_key);
     }
     /**
      * @param string   $option_key      .
@@ -55,23 +55,23 @@ class FormOptions
      *
      * @throws UnknownFormOptionKeyException
      */
-    public function update_option(string $option_key, callable $update_callback) : self
+    public function update_option(string $option_key, callable $update_callback): self
     {
         foreach ($this->options as $option) {
             if ($option->get_key() === $option_key) {
-                \call_user_func($update_callback, $option);
+                call_user_func($update_callback, $option);
                 return $this;
             }
         }
-        throw new \FRFreeVendor\WPDesk\DeactivationModal\Exception\UnknownFormOptionKeyException($option_key);
+        throw new UnknownFormOptionKeyException($option_key);
     }
     /**
      * @return FormOption[]
      */
-    public function get_options() : array
+    public function get_options(): array
     {
         $options = $this->options;
-        \usort($options, function (\FRFreeVendor\WPDesk\DeactivationModal\Model\FormOption $option_a, \FRFreeVendor\WPDesk\DeactivationModal\Model\FormOption $option_b) {
+        usort($options, function (FormOption $option_a, FormOption $option_b) {
             return $option_a->get_priority() <=> $option_b->get_priority();
         });
         return $options;

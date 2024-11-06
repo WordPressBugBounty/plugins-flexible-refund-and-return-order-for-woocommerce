@@ -8,37 +8,37 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 /**
  * Refund order settings tab.
  */
-final class RefundOrderTab extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\AbstractSettingsTab
+final class RefundOrderTab extends AbstractSettingsTab
 {
     const SETTING_PREFIX = 'fr_refund_';
-    public function __construct(\FRFreeVendor\WPDesk\View\Renderer\Renderer $renderer)
+    public function __construct(Renderer $renderer)
     {
         parent::__construct($renderer);
-        \add_action('woocommerce_admin_field_conditions_setting', [$this, 'refund_conditions_setting']);
-        \add_action('woocommerce_admin_field_auto_hide_setting', [$this, 'refund_auto_hide_setting']);
-        \add_action('woocommerce_admin_field_select_with_disable', [$this, 'refund_select_with_disable']);
+        add_action('woocommerce_admin_field_conditions_setting', [$this, 'refund_conditions_setting']);
+        add_action('woocommerce_admin_field_auto_hide_setting', [$this, 'refund_auto_hide_setting']);
+        add_action('woocommerce_admin_field_select_with_disable', [$this, 'refund_select_with_disable']);
     }
     /**
      * @return array
      */
-    public function get_fields() : array
+    public function get_fields(): array
     {
-        $coupon_value = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super() ? 'coupon' : 'should_disable';
-        $coupon_label = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super() ? \esc_html__('On coupon', 'flexible-refund-and-return-order-for-woocommerce') : \esc_html__('On coupon (PRO)', 'flexible-refund-and-return-order-for-woocommerce');
-        $custom_attributes = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super() ? [] : ['disabled' => 'disabled'];
-        $docs_link = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::get_url_to_docs();
-        $pro_link = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::get_url_to_pro();
-        return [['title' => \esc_html__('Order Refund', 'flexible-refund-and-return-order-for-woocommerce'), 'type' => 'title', 'desc' => \sprintf(\esc_html__('Define the settings for the refund button and the approval process. Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . \esc_url($docs_link) . '?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-docs&utm_content=main-settings" target="_blank" style="color: #D27334;">', '</a>'), 'id' => self::SETTING_PREFIX . 'refund_header'], ['title' => \esc_html__('Refund order button', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . 'refund_button', 'desc' => \esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => \esc_html__('Check this option to enable refund process button.', 'flexible-refund-and-return-order-for-woocommerce'), 'default' => 'no', 'type' => 'checkbox'], ['id' => self::SETTING_PREFIX . 'refund_conditions_setting', 'type' => 'conditions_setting'], [
-            'title' => \esc_html__('Refund type', 'flexible-refund-and-return-order-for-woocommerce'),
+        $coupon_value = Integration::is_super() ? 'coupon' : 'should_disable';
+        $coupon_label = Integration::is_super() ? esc_html__('On coupon', 'flexible-refund-and-return-order-for-woocommerce') : esc_html__('On coupon (PRO)', 'flexible-refund-and-return-order-for-woocommerce');
+        $custom_attributes = Integration::is_super() ? [] : ['disabled' => 'disabled'];
+        $docs_link = Plugin::get_url_to_docs();
+        $pro_link = Plugin::get_url_to_pro();
+        return [['title' => esc_html__('Order Refund', 'flexible-refund-and-return-order-for-woocommerce'), 'type' => 'title', 'desc' => sprintf(esc_html__('Define the settings for the refund button and the approval process. Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . esc_url($docs_link) . '?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-docs&utm_content=main-settings" target="_blank" style="color: #D27334;">', '</a>'), 'id' => self::SETTING_PREFIX . 'refund_header'], ['title' => esc_html__('Refund order button', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . 'refund_button', 'desc' => esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => esc_html__('Check this option to enable refund process button.', 'flexible-refund-and-return-order-for-woocommerce'), 'default' => 'no', 'type' => 'checkbox'], ['id' => self::SETTING_PREFIX . 'refund_conditions_setting', 'type' => 'conditions_setting'], [
+            'title' => esc_html__('Refund type', 'flexible-refund-and-return-order-for-woocommerce'),
             /* translators: %s: URL to settings. */
             'desc' => '',
             'id' => self::SETTING_PREFIX . 'refund_type',
             'type' => 'select_with_disable',
-            'options' => ['bank' => \esc_html__('On bank account / On cash', 'flexible-refund-and-return-order-for-woocommerce'), $coupon_value => $coupon_label],
+            'options' => ['bank' => esc_html__('On bank account / On cash', 'flexible-refund-and-return-order-for-woocommerce'), $coupon_value => $coupon_label],
             'default' => 'bank',
             'class' => 'wc-enhanced-select',
             'css' => 'min-width:300px;',
-        ], ['title' => \esc_html__('Auto refund', 'flexible-refund-and-return-order-for-woocommerce'), 'desc' => \esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super() ? \esc_html__('Check this option to automatically accept order refund requests.', 'flexible-refund-and-return-order-for-woocommerce') : \sprintf(\__('Check this option to automatically accept order refund requests.<br>%1$sUpgrade to PRO &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . \esc_url($pro_link) . '?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-pro&utm_content=main-settings-button-visibility" target="_blank" style="color:#FF9743;font-weight:600;margin-top:10px;display:inline-block;text-decoration:none;">', '</a>'), 'id' => self::SETTING_PREFIX . 'refund_auto_accept', 'default' => 'no', 'type' => 'checkbox', 'custom_attributes' => $custom_attributes], ['title' => \esc_html__('Auto hide refund button', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super() ? \esc_html__('Check this option to hide the refund button after a specified time.', 'flexible-refund-and-return-order-for-woocommerce') : \sprintf(\__('Check this option to hide the refund button after a specified time.<br>%1$sUpgrade to PRO &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . \esc_url($pro_link) . '?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-pro&utm_content=main-settings-auto-hide" target="_blank" style="color:#FF9743;font-weight:600;margin-top:10px;display:inline-block;text-decoration:none;">', '</a>'), 'desc' => \esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . 'refund_auto_hide', 'default' => 'no', 'type' => 'checkbox', 'class' => 'auto-hide-checkbox', 'custom_attributes' => $custom_attributes], ['id' => self::SETTING_PREFIX . 'refund_auto_hide_settings', 'type' => 'auto_hide_setting', 'should_disable' => !\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration::is_super()], ['title' => \esc_html__('Allow to shipment refund', 'flexible-refund-and-return-order-for-woocommerce'), 'desc' => \esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . 'refund_enable_shipment', 'default' => 'no', 'type' => 'checkbox'], ['type' => 'sectionend', 'id' => 'refund']];
+        ], ['title' => esc_html__('Auto refund', 'flexible-refund-and-return-order-for-woocommerce'), 'desc' => esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => Integration::is_super() ? esc_html__('Check this option to automatically accept order refund requests.', 'flexible-refund-and-return-order-for-woocommerce') : sprintf(__('Check this option to automatically accept order refund requests.<br>%1$sUpgrade to PRO &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . esc_url($pro_link) . '?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-pro&utm_content=main-settings-button-visibility" target="_blank" style="color:#FF9743;font-weight:600;margin-top:10px;display:inline-block;text-decoration:none;">', '</a>'), 'id' => self::SETTING_PREFIX . 'refund_auto_accept', 'default' => 'no', 'type' => 'checkbox', 'custom_attributes' => $custom_attributes], ['title' => esc_html__('Auto hide refund button', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => Integration::is_super() ? esc_html__('Check this option to hide the refund button after a specified time.', 'flexible-refund-and-return-order-for-woocommerce') : sprintf(__('Check this option to hide the refund button after a specified time.<br>%1$sUpgrade to PRO &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . esc_url($pro_link) . '?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-pro&utm_content=main-settings-auto-hide" target="_blank" style="color:#FF9743;font-weight:600;margin-top:10px;display:inline-block;text-decoration:none;">', '</a>'), 'desc' => esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . 'refund_auto_hide', 'default' => 'no', 'type' => 'checkbox', 'class' => 'auto-hide-checkbox', 'custom_attributes' => $custom_attributes], ['id' => self::SETTING_PREFIX . 'refund_auto_hide_settings', 'type' => 'auto_hide_setting', 'should_disable' => !Integration::is_super()], ['title' => esc_html__('Allow to shipment refund', 'flexible-refund-and-return-order-for-woocommerce'), 'desc' => esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . 'refund_enable_shipment', 'default' => 'no', 'type' => 'checkbox'], ['type' => 'sectionend', 'id' => 'refund']];
     }
     /**
      * Name of hook must be unique.
@@ -76,15 +76,15 @@ final class RefundOrderTab extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsC
     /**
      * @return string
      */
-    public static function get_tab_slug() : string
+    public static function get_tab_slug(): string
     {
         return 'refund';
     }
     /**
      * @return string
      */
-    public static function get_tab_name() : string
+    public static function get_tab_name(): string
     {
-        return \esc_html__('Refund', 'flexible-refund-and-return-order-for-woocommerce');
+        return esc_html__('Refund', 'flexible-refund-and-return-order-for-woocommerce');
     }
 }

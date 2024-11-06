@@ -11,7 +11,7 @@ use FRFreeVendor\Composer\Plugin\PluginInterface;
  *
  * @package WPDesk\Composer\Codeception
  */
-class Plugin implements \FRFreeVendor\Composer\Plugin\PluginInterface, \FRFreeVendor\Composer\Plugin\Capable
+class Plugin implements PluginInterface, Capable
 {
     /**
      * @var Composer
@@ -21,7 +21,7 @@ class Plugin implements \FRFreeVendor\Composer\Plugin\PluginInterface, \FRFreeVe
      * @var IOInterface
      */
     private $io;
-    public function activate(\FRFreeVendor\Composer\Composer $composer, \FRFreeVendor\Composer\IO\IOInterface $io)
+    public function activate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io = $io;
@@ -29,7 +29,7 @@ class Plugin implements \FRFreeVendor\Composer\Plugin\PluginInterface, \FRFreeVe
     /**
      * @inheritDoc
      */
-    public function deactivate(\FRFreeVendor\Composer\Composer $composer, \FRFreeVendor\Composer\IO\IOInterface $io)
+    public function deactivate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io = $io;
@@ -37,13 +37,13 @@ class Plugin implements \FRFreeVendor\Composer\Plugin\PluginInterface, \FRFreeVe
     /**
      * @inheritDoc
      */
-    public function uninstall(\FRFreeVendor\Composer\Composer $composer, \FRFreeVendor\Composer\IO\IOInterface $io)
+    public function uninstall(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io = $io;
     }
     public function getCapabilities()
     {
-        return [\FRFreeVendor\Composer\Plugin\Capability\CommandProvider::class => \FRFreeVendor\WPDesk\Composer\Codeception\CommandProvider::class];
+        return [\FRFreeVendor\Composer\Plugin\Capability\CommandProvider::class => CommandProvider::class];
     }
 }

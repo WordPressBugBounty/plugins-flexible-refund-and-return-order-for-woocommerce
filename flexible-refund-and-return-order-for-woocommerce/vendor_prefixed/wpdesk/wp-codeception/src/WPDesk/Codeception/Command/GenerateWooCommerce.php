@@ -11,7 +11,7 @@ use FRFreeVendor\Symfony\Component\Console\Output\OutputInterface;
  *
  * @package WPDesk\Codeception\Command
  */
-class GenerateWooCommerce extends \FRFreeVendor\Codeception\Command\GenerateTest implements \FRFreeVendor\Codeception\CustomCommandInterface
+class GenerateWooCommerce extends GenerateTest implements CustomCommandInterface
 {
     /**
      * Get codeception command description.
@@ -40,7 +40,7 @@ class GenerateWooCommerce extends \FRFreeVendor\Codeception\Command\GenerateTest
      */
     protected function getGenerator($config, $class)
     {
-        return new \FRFreeVendor\WPDesk\Codeception\Command\WooCommerceTestGenerator($config, $class);
+        return new WooCommerceTestGenerator($config, $class);
     }
     /**
      * Execute command.
@@ -50,7 +50,7 @@ class GenerateWooCommerce extends \FRFreeVendor\Codeception\Command\GenerateTest
      *
      * @return void
      */
-    public function execute(\FRFreeVendor\Symfony\Component\Console\Input\InputInterface $input, \FRFreeVendor\Symfony\Component\Console\Output\OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         $suite = $input->getArgument('suite');
         $class = $input->getArgument('class');

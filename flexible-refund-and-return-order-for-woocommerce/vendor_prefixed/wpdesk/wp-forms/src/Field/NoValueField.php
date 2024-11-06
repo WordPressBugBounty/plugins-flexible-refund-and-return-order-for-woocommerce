@@ -7,7 +7,7 @@ namespace FRFreeVendor\WPDesk\Forms\Field;
  *
  * @package WPDesk\Forms
  */
-abstract class NoValueField extends \FRFreeVendor\WPDesk\Forms\Field\BasicField
+abstract class NoValueField extends BasicField
 {
     public function __construct()
     {

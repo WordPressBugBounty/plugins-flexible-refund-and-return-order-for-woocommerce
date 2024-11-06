@@ -16,11 +16,11 @@ interface ContainerForm
      *
      * @return void
      */
-    public function set_data(\FRFreeVendor\Psr\Container\ContainerInterface $data);
+    public function set_data(ContainerInterface $data);
     /**
      * Put data from form into a container.
      *
      * @return void
      */
-    public function put_data(\FRFreeVendor\WPDesk\Persistence\PersistentContainer $container);
+    public function put_data(PersistentContainer $container);
 }

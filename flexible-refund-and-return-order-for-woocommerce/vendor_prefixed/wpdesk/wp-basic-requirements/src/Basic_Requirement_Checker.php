@@ -2,15 +2,15 @@
 
 namespace FRFreeVendor;
 
-if (!\interface_exists('FRFreeVendor\\WPDesk_Requirement_Checker')) {
+if (!\interface_exists('FRFreeVendor\WPDesk_Requirement_Checker')) {
     require_once __DIR__ . '/Requirement_Checker.php';
 }
-if (!\class_exists('FRFreeVendor\\WPDesk_Basic_Requirement_Checker')) {
+if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
     /**
      * Checks requirements for plugin
      * have to be compatible with PHP 5.3.x
      */
-    class WPDesk_Basic_Requirement_Checker implements \FRFreeVendor\WPDesk_Requirement_Checker
+    class WPDesk_Basic_Requirement_Checker implements WPDesk_Requirement_Checker
     {
         const EXTENSION_NAME_OPENSSL = 'openssl';
         const HOOK_ADMIN_NOTICES_ACTION = 'admin_notices';
@@ -311,7 +311,7 @@ if (!\class_exists('FRFreeVendor\\WPDesk_Basic_Requirement_Checker')) {
                         return \array_unique($headers);
                     });
                 }
-                if (!\function_exists('get_plugins')) {
+                if (!\function_exists('get_plugins') && !\function_exists('FRFreeVendor\get_plugins')) {
                     require_once \ABSPATH . '/wp-admin/includes/plugin.php';
                 }
                 $plugins = \function_exists('get_plugins') ? \get_plugins() : array();
@@ -411,7 +411,7 @@ if (!\class_exists('FRFreeVendor\\WPDesk_Basic_Requirement_Checker')) {
             if (\function_exists('wp_nonce_url') && \function_exists('wp_create_nonce')) {
                 $install_url = \wp_nonce_url($install_url, 'install-plugin_' . $slug);
             }
-            \add_filter('plugins_api', function ($api, $action, $args) use($plugin_info, $slug) {
+            \add_filter('plugins_api', function ($api, $action, $args) use ($plugin_info, $slug) {
                 if ('plugin_information' !== $action || \false !== $api || !isset($args->slug) || $slug !== $args->slug) {
                     return $api;
                 }

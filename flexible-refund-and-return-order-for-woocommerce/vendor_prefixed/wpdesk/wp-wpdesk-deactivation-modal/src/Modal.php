@@ -44,15 +44,15 @@ class Modal
      * @param FormValues   $form_values    Values sent in the request that reports the plugin deactivation.
      * @param Sender       $request_sender Sends a request with a plugin deactivation report.
      */
-    public function __construct(string $plugin_slug, \FRFreeVendor\WPDesk\DeactivationModal\Model\FormTemplate $form_template, \FRFreeVendor\WPDesk\DeactivationModal\Model\FormOptions $form_options, \FRFreeVendor\WPDesk\DeactivationModal\Model\FormValues $form_values, \FRFreeVendor\WPDesk\DeactivationModal\Sender\Sender $request_sender)
+    public function __construct(string $plugin_slug, FormTemplate $form_template, FormOptions $form_options, FormValues $form_values, Sender $request_sender)
     {
         $this->plugin_slug = $plugin_slug;
         $this->form_template = $form_template;
         $this->form_options = $form_options;
         $this->form_values = $form_values;
         $this->request_sender = $request_sender;
-        (new \FRFreeVendor\WPDesk\DeactivationModal\Service\AssetsPrinterService($this->plugin_slug))->hooks();
-        (new \FRFreeVendor\WPDesk\DeactivationModal\Service\TemplateGeneratorService($this->plugin_slug, $this->form_template, $this->form_options, $this->form_values))->hooks();
-        (new \FRFreeVendor\WPDesk\DeactivationModal\Service\RequestSenderService($this->plugin_slug, $this->form_options, $this->form_values, $this->request_sender))->hooks();
+        (new AssetsPrinterService($this->plugin_slug))->hooks();
+        (new TemplateGeneratorService($this->plugin_slug, $this->form_template, $this->form_options, $this->form_values))->hooks();
+        (new RequestSenderService($this->plugin_slug, $this->form_options, $this->form_values, $this->request_sender))->hooks();
     }
 }

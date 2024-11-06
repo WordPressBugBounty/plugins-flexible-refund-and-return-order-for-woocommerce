@@ -8,4 +8,4 @@ use FRFreeVendor\WPDesk\Forms\Field;
  * @var string $name_prefix
  * @var string $value
  */
-echo \wp_kses_post($field->get_description());
+echo wp_kses_post($field->get_description());

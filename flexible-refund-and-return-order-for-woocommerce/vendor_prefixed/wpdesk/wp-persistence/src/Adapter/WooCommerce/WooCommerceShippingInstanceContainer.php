@@ -11,7 +11,7 @@ use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
  *
  * @package WPDesk\Persistence\WooCommerce
  */
-final class WooCommerceShippingInstanceContainer implements \FRFreeVendor\WPDesk\Persistence\PersistentContainer
+final class WooCommerceShippingInstanceContainer implements PersistentContainer
 {
     use FallbackFromGetTrait;
     /** @var \WC_Shipping_Method */
@@ -23,11 +23,11 @@ final class WooCommerceShippingInstanceContainer implements \FRFreeVendor\WPDesk
     public function get($id)
     {
         if (!$this->has($id)) {
-            throw new \FRFreeVendor\WPDesk\Persistence\ElementNotExistsException(\sprintf('Element %s not exists!', $id));
+            throw new ElementNotExistsException(sprintf('Element %s not exists!', $id));
         }
         return $this->method->get_instance_option($id);
     }
-    public function has($id) : bool
+    public function has($id): bool
     {
         return isset($this->method->instance_settings[$id]);
     }
@@ -35,7 +35,7 @@ final class WooCommerceShippingInstanceContainer implements \FRFreeVendor\WPDesk
     {
         $this->method->instance_settings[$id] = $value;
         /** @see \WC_Shipping_Method::process_admin_options */
-        \update_option($this->method->get_instance_option_key(), \apply_filters('woocommerce_shipping_' . $this->method->id . '_instance_settings_values', $this->method->instance_settings, $this->method), 'yes');
+        update_option($this->method->get_instance_option_key(), apply_filters('woocommerce_shipping_' . $this->method->id . '_instance_settings_values', $this->method->instance_settings, $this->method), 'yes');
     }
     public function delete(string $id)
     {

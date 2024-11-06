@@ -13,7 +13,7 @@ use FRFreeVendor\WPDesk\Library\Marketing\Boxes\MarketingBoxes;
  */
 class Client
 {
-    const URL = 'https://marketing.wpdesk.org/json/' . \FRFreeVendor\WPDesk\Library\Marketing\Boxes\MarketingBoxes::VERSION . '/boxes/';
+    const URL = 'https://marketing.wpdesk.org/json/' . MarketingBoxes::VERSION . '/boxes/';
     /** @var string */
     private $plugin_slug;
     public function __construct(string $plugin_slug)
@@ -23,9 +23,9 @@ class Client
     /**
      * @param string $endpoint
      */
-    private function get_api_url($endpoint) : string
+    private function get_api_url($endpoint): string
     {
-        return self::URL . \trailingslashit($this->plugin_slug) . $endpoint . '.json';
+        return self::URL . trailingslashit($this->plugin_slug) . $endpoint . '.json';
     }
     /**'
      *
@@ -33,22 +33,22 @@ class Client
      *
      * @return array
      */
-    private function get_http_options(array $args) : array
+    private function get_http_options(array $args): array
     {
-        return \wp_parse_args($args, ['redirection' => 0, 'sslverify' => \false, 'headers' => ['Content-Type' => 'application/json']]);
+        return wp_parse_args($args, ['redirection' => 0, 'sslverify' => \false, 'headers' => ['Content-Type' => 'application/json']]);
     }
     /**
      * @return array
      */
-    public function send_request($endpoint, $args = []) : array
+    public function send_request($endpoint, $args = []): array
     {
         $options = $this->get_http_options($args);
-        $response = \wp_remote_get($this->get_api_url($endpoint), $options);
-        if (\is_wp_error($response) || !\is_array($response)) {
+        $response = wp_remote_get($this->get_api_url($endpoint), $options);
+        if (is_wp_error($response) || !is_array($response)) {
             return [];
         }
-        $json = \json_decode(\wp_remote_retrieve_body($response), \true);
-        if (!\is_array($json)) {
+        $json = json_decode(wp_remote_retrieve_body($response), \true);
+        if (!is_array($json)) {
             return [];
         }
         return $json;

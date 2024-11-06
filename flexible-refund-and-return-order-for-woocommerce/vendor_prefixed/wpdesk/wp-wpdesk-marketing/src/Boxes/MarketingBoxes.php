@@ -33,38 +33,38 @@ class MarketingBoxes
     /**
      * @return string
      */
-    protected function get_cache_name() : string
+    protected function get_cache_name(): string
     {
-        return \FRFreeVendor\WPDesk\Library\Marketing\Boxes\Helpers\Cache::create_slug($this->plugin_slug, $this->lang);
+        return Helpers\Cache::create_slug($this->plugin_slug, $this->lang);
     }
     /**
      * @return BoxRenderer
      * @throws \Exception
      */
-    public function get_boxes() : \FRFreeVendor\WPDesk\Library\Marketing\Boxes\BoxRenderer
+    public function get_boxes(): BoxRenderer
     {
         try {
-            $boxes = \get_transient($this->get_cache_name());
+            $boxes = get_transient($this->get_cache_name());
             if (!$boxes || empty($boxes)) {
                 $boxes_from_api = $this->get_box_data();
-                \set_transient($this->get_cache_name(), $boxes_from_api, $this->expiration_time);
+                set_transient($this->get_cache_name(), $boxes_from_api, $this->expiration_time);
                 $boxes = $boxes_from_api;
             }
         } catch (\Exception $e) {
             $boxes = [];
         }
-        if (!\is_array($boxes)) {
+        if (!is_array($boxes)) {
             $boxes = [];
         }
-        return new \FRFreeVendor\WPDesk\Library\Marketing\Boxes\BoxRenderer($boxes);
+        return new BoxRenderer($boxes);
     }
     /**
      * @return array
      */
-    protected function get_box_data() : array
+    protected function get_box_data(): array
     {
         $lang = $this->lang;
-        $client = new \FRFreeVendor\WPDesk\Library\Marketing\Boxes\Api\Client($this->plugin_slug);
+        $client = new Client($this->plugin_slug);
         $lang = $lang === 'en_US' ? 'en' : $lang;
         $boxes = $client->send_request($lang);
         if (!$boxes) {

@@ -2,15 +2,15 @@
 
 namespace FRFreeVendor;
 
-if (!\class_exists('FRFreeVendor\\WPDesk_Basic_Requirement_Checker')) {
+if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
     require_once __DIR__ . '/Basic_Requirement_Checker.php';
 }
-if (!\class_exists('FRFreeVendor\\WPDesk_Basic_Requirement_Checker_With_Update_Disable')) {
+if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker_With_Update_Disable')) {
     /**
      * Checks requirements for plugin. When required plugin is updated right now, then say that requirements are not met temporary.
      * have to be compatible with PHP 5.2.x
      */
-    class WPDesk_Basic_Requirement_Checker_With_Update_Disable extends \FRFreeVendor\WPDesk_Basic_Requirement_Checker
+    class WPDesk_Basic_Requirement_Checker_With_Update_Disable extends WPDesk_Basic_Requirement_Checker
     {
         /**
          * Returns true if are requirements are met.

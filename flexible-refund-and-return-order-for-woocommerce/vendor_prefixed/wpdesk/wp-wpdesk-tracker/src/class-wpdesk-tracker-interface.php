@@ -31,3 +31,4 @@ interface WPDesk_Tracker_Interface
      */
     public function add_data_provider(\WPDesk_Tracker_Data_Provider $provider);
 }
+\class_alias('FRFreeVendor\WPDesk_Tracker_Interface', 'WPDesk_Tracker_Interface', \false);

@@ -7,5 +7,5 @@ interface Condition
     /**
      * @return bool
      */
-    public function should_show() : bool;
+    public function should_show(): bool;
 }

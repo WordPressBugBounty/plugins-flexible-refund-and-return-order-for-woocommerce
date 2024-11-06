@@ -2,10 +2,10 @@
 
 namespace FRFreeVendor;
 
-if (!\class_exists('FRFreeVendor\\Basic_Requirement_Checker')) {
+if (!\class_exists('FRFreeVendor\Basic_Requirement_Checker')) {
     require_once __DIR__ . '/Basic_Requirement_Checker.php';
 }
-if (!\class_exists('FRFreeVendor\\WPDesk_Basic_Requirement_Checker_With_Update_Disable')) {
+if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker_With_Update_Disable')) {
     require_once __DIR__ . '/Basic_Requirement_Checker_With_Update_Disable.php';
 }
 /**
@@ -25,7 +25,7 @@ class WPDesk_Basic_Requirement_Checker_Factory
      */
     public function create_requirement_checker($plugin_file, $plugin_name, $text_domain = null)
     {
-        return new \FRFreeVendor\WPDesk_Basic_Requirement_Checker($plugin_file, $plugin_name, $text_domain, null, null);
+        return new WPDesk_Basic_Requirement_Checker($plugin_file, $plugin_name, $text_domain, null, null);
     }
     /**
      * Creates a requirement checker according to given requirements array info.
@@ -39,7 +39,7 @@ class WPDesk_Basic_Requirement_Checker_Factory
      */
     public function create_from_requirement_array($plugin_file, $plugin_name, $requirements, $text_domain = null)
     {
-        $requirements_checker = new \FRFreeVendor\WPDesk_Basic_Requirement_Checker_With_Update_Disable($plugin_file, $plugin_name, $text_domain, $requirements['php'], $requirements['wp'], (bool) \wp_using_ext_object_cache());
+        $requirements_checker = new WPDesk_Basic_Requirement_Checker_With_Update_Disable($plugin_file, $plugin_name, $text_domain, $requirements['php'], $requirements['wp'], (bool) \wp_using_ext_object_cache());
         if (isset($requirements['plugins'])) {
             foreach ($requirements['plugins'] as $requirement) {
                 $version = isset($requirement['version']) ? $requirement['version'] : null;

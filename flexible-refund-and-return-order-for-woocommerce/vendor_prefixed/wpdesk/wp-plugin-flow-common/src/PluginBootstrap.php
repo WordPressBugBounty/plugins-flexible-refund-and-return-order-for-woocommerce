@@ -52,7 +52,7 @@ final class PluginBootstrap
      * @param InitializationFactory $build_factory
      * @param array $plugin_shops
      */
-    public function __construct($plugin_version, $plugin_release_timestamp, $plugin_name, $plugin_class_name, $plugin_text_domain, $plugin_dir, $plugin_file, array $requirements, $product_id, \FRFreeVendor\WPDesk\Plugin\Flow\Initialization\InitializationFactory $build_factory, $plugin_shops)
+    public function __construct($plugin_version, $plugin_release_timestamp, $plugin_name, $plugin_class_name, $plugin_text_domain, $plugin_dir, $plugin_file, array $requirements, $product_id, InitializationFactory $build_factory, $plugin_shops)
     {
         $this->plugin_version = $plugin_version;
         $this->plugin_name = $plugin_name;
@@ -78,16 +78,16 @@ final class PluginBootstrap
             $strategy->run_before_init($plugin_info);
         }
         $this->add_activation_hook_for_save_activation_date();
-        \add_action('plugins_loaded', static function () use($strategy, $requirements_checker, $plugin_info) {
+        add_action('plugins_loaded', static function () use ($strategy, $requirements_checker, $plugin_info) {
             if ($requirements_checker->are_requirements_met()) {
                 $strategy->run_init($plugin_info);
             } else {
                 $requirements_checker->render_notices();
             }
         }, self::PRIORITY_BEFORE_FLOW_2_5);
-        \add_action('before_woocommerce_init', static function () use($plugin_info) {
+        add_action('before_woocommerce_init', static function () use ($plugin_info) {
             $features_util_class = '\\' . 'Automattic' . '\\' . 'WooCommerce' . '\\' . 'Utilities' . '\\' . 'FeaturesUtil';
-            if (\class_exists($features_util_class)) {
+            if (class_exists($features_util_class)) {
                 $features_util_class::declare_compatibility('custom_order_tables', $plugin_info->get_plugin_file_name(), \true);
             }
         });
@@ -99,13 +99,13 @@ final class PluginBootstrap
      */
     private function add_activation_hook_for_save_activation_date()
     {
-        \add_action('activated_plugin', static function ($plugin_file, $network_wide = \false) {
+        add_action('activated_plugin', static function ($plugin_file, $network_wide = \false) {
             if (!$network_wide) {
                 $option_name = 'plugin_activation_' . $plugin_file;
-                $activation_date = \get_option($option_name, '');
+                $activation_date = get_option($option_name, '');
                 if ('' === $activation_date) {
-                    $activation_date = \current_time('mysql');
-                    \update_option($option_name, $activation_date);
+                    $activation_date = current_time('mysql');
+                    update_option($option_name, $activation_date);
                 }
             }
         });
@@ -116,10 +116,10 @@ final class PluginBootstrap
     private function init_translations(\FRFreeVendor\WPDesk_Plugin_Info $plugin_info)
     {
         $lang_dir = 'lang';
-        if (\method_exists($plugin_info, 'get_language_dir')) {
+        if (method_exists($plugin_info, 'get_language_dir')) {
             $lang_dir = $plugin_info->get_language_dir();
         }
-        \load_plugin_textdomain($plugin_info->get_text_domain(), \false, \basename($plugin_info->get_plugin_dir()) . "/{$lang_dir}/");
+        \load_plugin_textdomain($plugin_info->get_text_domain(), \false, basename($plugin_info->get_plugin_dir()) . "/{$lang_dir}/");
     }
     /**
      * Factory method creates requirement checker to run the checks
@@ -142,14 +142,14 @@ final class PluginBootstrap
     private function get_plugin_info()
     {
         $plugin_info = new \FRFreeVendor\WPDesk_Plugin_Info();
-        $plugin_info->set_plugin_file_name(\plugin_basename($this->plugin_file));
+        $plugin_info->set_plugin_file_name(plugin_basename($this->plugin_file));
         $plugin_info->set_plugin_name($this->plugin_name);
         $plugin_info->set_plugin_dir($this->plugin_dir);
         $plugin_info->set_class_name($this->plugin_class_name);
         $plugin_info->set_version($this->plugin_version);
         $plugin_info->set_product_id($this->product_id);
         $plugin_info->set_text_domain($this->plugin_text_domain);
-        $plugin_info->set_plugin_url(\plugins_url(\dirname(\plugin_basename($this->plugin_file))));
+        $plugin_info->set_plugin_url(plugins_url(dirname(plugin_basename($this->plugin_file))));
         $plugin_info->set_plugin_shops($this->plugin_shops);
         return $plugin_info;
     }

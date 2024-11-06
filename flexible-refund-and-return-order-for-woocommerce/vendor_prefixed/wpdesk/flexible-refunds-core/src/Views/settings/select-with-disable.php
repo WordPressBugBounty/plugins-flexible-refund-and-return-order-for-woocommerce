@@ -6,7 +6,7 @@ namespace FRFreeVendor;
  * @var array $field
  */
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\FieldHelper;
-$field = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\FieldHelper::parse_args($field);
+$field = FieldHelper::parse_args($field);
 ?>
 <tr valign="top">
 	<th scope="row" class="titledesc">
@@ -15,7 +15,7 @@ echo \esc_attr($field['id']);
 ?>"><?php 
 echo \esc_html($field['title']);
 echo $field['tooltip_html'];
-// WPCS: XSS ok.
+// WPCS: XSS ok. 
 ?></label>
 	</th>
 	<td class="forminp forminp-<?php 
@@ -37,7 +37,7 @@ echo \esc_attr($field['class']);
 ?>"
 			<?php 
 echo \implode(' ', $field['custom_attributes']);
-// WPCS: XSS ok.
+// WPCS: XSS ok. 
 ?>
 			<?php 
 echo 'multiple' === $field['multiple'] ? 'multiple="multiple"' : '';
@@ -69,7 +69,7 @@ foreach ($field['options'] as $key => $val) {
 ?>
 		</select> <?php 
 echo $field['desc'];
-// WPCS: XSS ok.
+// WPCS: XSS ok. 
 ?>
 	</td>
 </tr>

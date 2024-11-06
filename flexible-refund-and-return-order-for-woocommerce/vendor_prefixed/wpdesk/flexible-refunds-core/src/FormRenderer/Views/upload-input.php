@@ -17,22 +17,22 @@ if ($field->get_type() === 'checkbox' && $field->has_sublabel()) {
 }
 ?>
 	<input name="<?php 
-echo \esc_attr($name_prefix) . '[upload_names][]';
+echo esc_attr($name_prefix) . '[upload_names][]';
 ?>" value="<?php 
-echo \esc_attr($field->get_name());
+echo esc_attr($field->get_name());
 ?>" type="hidden"/>
 	<input
 		type="<?php 
-echo \esc_attr($field->get_type());
+echo esc_attr($field->get_type());
 ?>"
 		name="<?php 
-echo \esc_attr($field->get_name());
+echo esc_attr($field->get_name());
 ?>"
 		<?php 
 if ($field->has_classes()) {
     ?>
 			class="<?php 
-    echo \esc_attr($field->get_classes());
+    echo esc_attr($field->get_classes());
     ?>"
 			<?php 
 }
@@ -40,17 +40,17 @@ if ($field->has_classes()) {
 
 		<?php 
 foreach ($field->get_attributes() as $key => $atr_val) {
-    echo \esc_attr($key) . '="' . \esc_attr($atr_val) . '"';
+    echo esc_attr($key) . '="' . esc_attr($atr_val) . '"';
     ?>
 			<?php 
 }
 ?>
 
 		<?php 
-if (\in_array($field->get_type(), ['number', 'text', 'hidden'], \true)) {
+if (in_array($field->get_type(), ['number', 'text', 'hidden'], \true)) {
     ?>
 			value="<?php 
-    echo \esc_html($value);
+    echo esc_html($value);
     ?>"
 			<?php 
 } else {
@@ -72,7 +72,7 @@ if (\in_array($field->get_type(), ['number', 'text', 'hidden'], \true)) {
 if ($field->get_type() === 'checkbox' && $field->has_sublabel()) {
     ?>
 	<?php 
-    echo \esc_html($field->get_sublabel());
+    echo esc_html($field->get_sublabel());
     ?></label>
 	<?php 
 }

@@ -16,19 +16,17 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.4 || ^8",
         "ext-curl": "*",
         "ext-json": "*",
         "wpdesk\/wp-persistence": "^2.0|^3.0",
         "wpdesk\/wp-view": "^2"
     },
     "require-dev": {
-        "phpunit\/phpunit": "<7",
-        "phpstan\/phpstan": "^0.12",
+        "phpunit\/phpunit": "^9",
+        "wpdesk\/phpstan-rules": "^1",
         "wpdesk\/wp-code-sniffer": "^1.2.3",
-        "10up\/wp_mock": "*",
-        "szepeviktor\/phpstan-wordpress": "^0.7.7",
-        "phpstan\/extension-installer": "^1.1"
+        "10up\/wp_mock": "*"
     },
     "autoload": {
         "psr-4": {

@@ -19,7 +19,7 @@ use FRFreeVendor\Monolog\Formatter\LineFormatter;
  *
  * @phpstan-import-type Level from \Monolog\Logger
  */
-abstract class AbstractSyslogHandler extends \FRFreeVendor\Monolog\Handler\AbstractProcessingHandler
+abstract class AbstractSyslogHandler extends AbstractProcessingHandler
 {
     /** @var int */
     protected $facility;
@@ -28,7 +28,7 @@ abstract class AbstractSyslogHandler extends \FRFreeVendor\Monolog\Handler\Abstr
      * @var array
      * @phpstan-var array<Level, int>
      */
-    protected $logLevels = [\FRFreeVendor\Monolog\Logger::DEBUG => \LOG_DEBUG, \FRFreeVendor\Monolog\Logger::INFO => \LOG_INFO, \FRFreeVendor\Monolog\Logger::NOTICE => \LOG_NOTICE, \FRFreeVendor\Monolog\Logger::WARNING => \LOG_WARNING, \FRFreeVendor\Monolog\Logger::ERROR => \LOG_ERR, \FRFreeVendor\Monolog\Logger::CRITICAL => \LOG_CRIT, \FRFreeVendor\Monolog\Logger::ALERT => \LOG_ALERT, \FRFreeVendor\Monolog\Logger::EMERGENCY => \LOG_EMERG];
+    protected $logLevels = [Logger::DEBUG => \LOG_DEBUG, Logger::INFO => \LOG_INFO, Logger::NOTICE => \LOG_NOTICE, Logger::WARNING => \LOG_WARNING, Logger::ERROR => \LOG_ERR, Logger::CRITICAL => \LOG_CRIT, Logger::ALERT => \LOG_ALERT, Logger::EMERGENCY => \LOG_EMERG];
     /**
      * List of valid log facility names.
      * @var array<string, int>
@@ -37,10 +37,10 @@ abstract class AbstractSyslogHandler extends \FRFreeVendor\Monolog\Handler\Abstr
     /**
      * @param string|int $facility Either one of the names of the keys in $this->facilities, or a LOG_* facility constant
      */
-    public function __construct($facility = \LOG_USER, $level = \FRFreeVendor\Monolog\Logger::DEBUG, bool $bubble = \true)
+    public function __construct($facility = \LOG_USER, $level = Logger::DEBUG, bool $bubble = \true)
     {
         parent::__construct($level, $bubble);
-        if (!\defined('PHP_WINDOWS_VERSION_BUILD')) {
+        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
             $this->facilities['local0'] = \LOG_LOCAL0;
             $this->facilities['local1'] = \LOG_LOCAL1;
             $this->facilities['local2'] = \LOG_LOCAL2;
@@ -68,9 +68,9 @@ abstract class AbstractSyslogHandler extends \FRFreeVendor\Monolog\Handler\Abstr
             // LOG_LOCAL7
         }
         // convert textual description of facility to syslog constant
-        if (\is_string($facility) && \array_key_exists(\strtolower($facility), $this->facilities)) {
-            $facility = $this->facilities[\strtolower($facility)];
-        } elseif (!\in_array($facility, \array_values($this->facilities), \true)) {
+        if (is_string($facility) && array_key_exists(strtolower($facility), $this->facilities)) {
+            $facility = $this->facilities[strtolower($facility)];
+        } elseif (!in_array($facility, array_values($this->facilities), \true)) {
             throw new \UnexpectedValueException('Unknown facility value "' . $facility . '" given');
         }
         $this->facility = $facility;
@@ -78,8 +78,8 @@ abstract class AbstractSyslogHandler extends \FRFreeVendor\Monolog\Handler\Abstr
     /**
      * {@inheritDoc}
      */
-    protected function getDefaultFormatter() : \FRFreeVendor\Monolog\Formatter\FormatterInterface
+    protected function getDefaultFormatter(): FormatterInterface
     {
-        return new \FRFreeVendor\Monolog\Formatter\LineFormatter('%channel%.%level_name%: %message% %context% %extra%');
+        return new LineFormatter('%channel%.%level_name%: %message% %context% %extra%');
     }
 }

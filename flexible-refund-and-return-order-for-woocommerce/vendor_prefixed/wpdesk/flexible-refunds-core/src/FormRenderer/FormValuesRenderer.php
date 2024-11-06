@@ -14,23 +14,23 @@ class FormValuesRenderer
      *
      * @return string
      */
-    public function output(\WC_Order $order) : string
+    public function output(WC_Order $order): string
     {
-        $settings = new \FRFreeVendor\WPDesk\Persistence\Adapter\WordPress\WordpressOptionsContainer(\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\RefundOrderTab::SETTING_PREFIX);
+        $settings = new WordpressOptionsContainer(RefundOrderTab::SETTING_PREFIX);
         $fields = $settings->get_fallback('form_builder', []);
         $form_data = $order->get_meta(self::FIELD_DATA_KEY);
         $output = '';
-        if (\is_array($fields) && !empty($fields)) {
+        if (is_array($fields) && !empty($fields)) {
             foreach ($fields as $name => $field) {
                 if ($field['type'] === 'upload') {
                     if (isset($form_data['attachments'][$name]['file'])) {
-                        $file_name = \basename($form_data['attachments'][$name]['file']);
+                        $file_name = basename($form_data['attachments'][$name]['file']);
                         $file_url = $form_data['attachments'][$name]['url'];
-                        $output .= '<p><strong>' . $field['label'] . '</strong>: <a href="' . \esc_attr($file_url) . '" target="_blank">' . \esc_html($file_name) . '</a><p>';
+                        $output .= '<p><strong>' . $field['label'] . '</strong>: <a href="' . esc_attr($file_url) . '" target="_blank">' . esc_html($file_name) . '</a><p>';
                     }
                 }
                 if (isset($form_data[$name])) {
-                    $output .= '<p><strong>' . $field['label'] . '</strong>: ' . (\is_array($form_data[$name]) ? \implode(', ', $form_data[$name]) : $form_data[$name]) . '<p>';
+                    $output .= '<p><strong>' . $field['label'] . '</strong>: ' . (is_array($form_data[$name]) ? implode(', ', $form_data[$name]) : $form_data[$name]) . '<p>';
                 }
             }
         }

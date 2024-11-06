@@ -7,7 +7,7 @@ use FRFreeVendor\WPDesk\DeactivationModal\Modal;
 /**
  * Prints the needed contents of CSS and JS files on the plugin list page.
  */
-class AssetsPrinterService implements \FRFreeVendor\WPDesk\DeactivationModal\Hookable
+class AssetsPrinterService implements Hookable
 {
     const PLUGIN_NAME_VARIABLE = '{__PLUGIN_SLUG__}';
     /**
@@ -23,18 +23,18 @@ class AssetsPrinterService implements \FRFreeVendor\WPDesk\DeactivationModal\Hoo
      */
     public function hooks()
     {
-        \add_action('admin_print_styles-plugins.php', [$this, 'load_styles']);
-        \add_action('admin_print_footer_scripts-plugins.php', [$this, 'load_scripts']);
+        add_action('admin_print_styles-plugins.php', [$this, 'load_styles']);
+        add_action('admin_print_footer_scripts-plugins.php', [$this, 'load_scripts']);
     }
     public function load_styles()
     {
         ?>
 		<style id="<?php 
-        echo \esc_attr($this->plugin_slug);
+        echo esc_attr($this->plugin_slug);
         ?>-deactivation-modal-css">
 			<?php 
         $plugin_slug = $this->plugin_slug;
-        include_once \FRFreeVendor\WPDesk\DeactivationModal\Modal::MODAL_ASSETS_PATH_CSS;
+        include_once Modal::MODAL_ASSETS_PATH_CSS;
         ?>
 		</style>
 		<?php 
@@ -43,11 +43,11 @@ class AssetsPrinterService implements \FRFreeVendor\WPDesk\DeactivationModal\Hoo
     {
         ?>
 		<script id="<?php 
-        echo \esc_attr($this->plugin_slug);
+        echo esc_attr($this->plugin_slug);
         ?>-deactivation-modal-js">
 			<?php 
         $plugin_slug = $this->plugin_slug;
-        include_once \FRFreeVendor\WPDesk\DeactivationModal\Modal::MODAL_ASSETS_PATH_JS;
+        include_once Modal::MODAL_ASSETS_PATH_JS;
         ?>
 		</script>
 		<?php 

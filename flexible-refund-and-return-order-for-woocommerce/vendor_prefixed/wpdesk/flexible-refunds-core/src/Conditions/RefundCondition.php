@@ -4,18 +4,18 @@ namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Conditions;
 
 use WC_Order_Item_Product;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\RegisterOrderStatus;
-class RefundCondition extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Conditions\AbstractCondition
+class RefundCondition extends AbstractCondition
 {
     const EXCLUDED_CONDITIONS = ['wc-cancelled', 'wc-refunded', 'wc-failed'];
     /**
      * @return bool
      */
-    public function should_show() : bool
+    public function should_show(): bool
     {
-        if (\in_array('wc-' . $this->get_order()->get_status(), self::EXCLUDED_CONDITIONS, \true)) {
+        if (in_array('wc-' . $this->get_order()->get_status(), self::EXCLUDED_CONDITIONS, \true)) {
             return \false;
         }
-        if ('wc-' . $this->get_order()->get_status() === \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\RegisterOrderStatus::REQUEST_REFUND_STATUS) {
+        if ('wc-' . $this->get_order()->get_status() === RegisterOrderStatus::REQUEST_REFUND_STATUS) {
             return \true;
         }
         $conditions = $this->get_conditions();
@@ -63,9 +63,9 @@ class RefundCondition extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\C
      *
      * @return bool
      */
-    private function order_statuses_condition(string $operator, array $values) : bool
+    private function order_statuses_condition(string $operator, array $values): bool
     {
-        $status = \in_array('wc-' . $this->get_order()->get_status(), $values, \true);
+        $status = in_array('wc-' . $this->get_order()->get_status(), $values, \true);
         if ($operator === 'is_not') {
             return !$status;
         }
@@ -77,12 +77,12 @@ class RefundCondition extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\C
      *
      * @return bool
      */
-    private function user_roles_condition(string $operator, array $values) : bool
+    private function user_roles_condition(string $operator, array $values): bool
     {
         global $current_user;
         $user_role = \false;
-        if (\is_user_logged_in() && !empty($current_user->roles[0])) {
-            $user_role = \in_array($current_user->roles[0], $values, \true);
+        if (is_user_logged_in() && !empty($current_user->roles[0])) {
+            $user_role = in_array($current_user->roles[0], $values, \true);
             if ($operator === 'is_not') {
                 return !$user_role;
             }
@@ -95,18 +95,18 @@ class RefundCondition extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\C
      *
      * @return bool
      */
-    private function product_cats_condition(string $operator, array $values) : bool
+    private function product_cats_condition(string $operator, array $values): bool
     {
         $items = $this->get_order()->get_items();
         $order_product_cats = [];
         foreach ($items as $item) {
-            if ($item instanceof \WC_Order_Item_Product) {
+            if ($item instanceof WC_Order_Item_Product) {
                 $product = $item->get_product();
                 $order_product_cats = $product->get_category_ids();
             }
         }
         foreach ($values as $value) {
-            $product_cats = \in_array((string) $value, $order_product_cats);
+            $product_cats = in_array((string) $value, $order_product_cats);
             if ($operator === 'is_not') {
                 return !$product_cats;
             }
@@ -120,17 +120,17 @@ class RefundCondition extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\C
      *
      * @return bool
      */
-    private function products_condition(string $operator, array $values) : bool
+    private function products_condition(string $operator, array $values): bool
     {
         $items = $this->get_order()->get_items();
         $order_products = [];
         foreach ($items as $item) {
-            if ($item instanceof \WC_Order_Item_Product) {
+            if ($item instanceof WC_Order_Item_Product) {
                 $order_products[] = (string) $item->get_product_id();
             }
         }
         foreach ($values as $value) {
-            $payment_method = \in_array((string) $value, $order_products);
+            $payment_method = in_array((string) $value, $order_products);
             if ($operator === 'is_not') {
                 return !$payment_method;
             }
@@ -144,9 +144,9 @@ class RefundCondition extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\C
      *
      * @return bool
      */
-    private function payment_methods_condition(string $operator, array $values) : bool
+    private function payment_methods_condition(string $operator, array $values): bool
     {
-        $payment_method = \in_array($this->get_order()->get_payment_method(), $values, \true);
+        $payment_method = in_array($this->get_order()->get_payment_method(), $values, \true);
         if ($operator === 'is_not') {
             return !$payment_method;
         }

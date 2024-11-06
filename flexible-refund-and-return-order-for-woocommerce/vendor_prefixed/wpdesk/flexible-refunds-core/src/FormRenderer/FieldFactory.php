@@ -14,7 +14,7 @@ class FieldFactory
      * @var Renderer
      */
     private $renderer;
-    public function __construct(\FRFreeVendor\WPDesk\View\Renderer\Renderer $renderer)
+    public function __construct(Renderer $renderer)
     {
         $this->renderer = $renderer;
     }
@@ -23,7 +23,7 @@ class FieldFactory
      *
      * @return array
      */
-    private function prepare_options(array $options) : array
+    private function prepare_options(array $options): array
     {
         $values = [];
         if (!empty($options)) {
@@ -39,9 +39,9 @@ class FieldFactory
      *
      * @return string
      */
-    public function get_field(string $type, array $data) : string
+    public function get_field(string $type, array $data): string
     {
-        $data = \wp_parse_args($data, ['name' => '', 'value' => '', 'options' => '', 'label' => '', 'enable' => 0, 'required' => 0]);
+        $data = wp_parse_args($data, ['name' => '', 'value' => '', 'options' => '', 'label' => '', 'enable' => 0, 'required' => 0]);
         switch ($type) {
             case 'textarea':
                 return $this->get_textarea_field($data);
@@ -67,7 +67,7 @@ class FieldFactory
      *
      * @return BasicField
      */
-    private function set_attributes(\FRFreeVendor\WPDesk\Forms\Field\BasicField $field, array $data) : \FRFreeVendor\WPDesk\Forms\Field\BasicField
+    private function set_attributes(BasicField $field, array $data): BasicField
     {
         if (isset($data['required']) && (int) $data['required'] === 1) {
             $field->set_attribute('data-required', 'required');
@@ -78,7 +78,7 @@ class FieldFactory
         if (!empty($data['css'])) {
             $field->add_class($data['css']);
         }
-        if (!\in_array($data['type'], ['select', 'checkbox', 'radio'])) {
+        if (!in_array($data['type'], ['select', 'checkbox', 'radio'])) {
             if (!empty($data['placeholder'])) {
                 $field->set_placeholder($data['placeholder']);
             }
@@ -96,9 +96,9 @@ class FieldFactory
      *
      * @return string
      */
-    private function get_text_field(array $data) : string
+    private function get_text_field(array $data): string
     {
-        $field = (new \FRFreeVendor\WPDesk\Forms\Field\InputTextField())->set_label($data['label'])->set_name($data['name']);
+        $field = (new InputTextField())->set_label($data['label'])->set_name($data['name']);
         $field = $this->set_attributes($field, $data);
         return $this->render_field($field, $data);
     }
@@ -107,9 +107,9 @@ class FieldFactory
      *
      * @return string
      */
-    private function get_textarea_field(array $data) : string
+    private function get_textarea_field(array $data): string
     {
-        $field = (new \FRFreeVendor\WPDesk\Forms\Field\TextAreaField())->set_label($data['label'])->set_name($data['name']);
+        $field = (new TextAreaField())->set_label($data['label'])->set_name($data['name']);
         $field = $this->set_attributes($field, $data);
         return $this->render_field($field, $data);
     }
@@ -118,9 +118,9 @@ class FieldFactory
      *
      * @return string
      */
-    private function get_checkbox_field(array $data) : string
+    private function get_checkbox_field(array $data): string
     {
-        $field = (new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\CheckboxField())->set_options($this->prepare_options($data['options']))->set_label($data['label'])->set_name($data['name']);
+        $field = (new CheckboxField())->set_options($this->prepare_options($data['options']))->set_label($data['label'])->set_name($data['name']);
         $field = $this->set_attributes($field, $data);
         return $this->render_field($field, $data);
     }
@@ -129,9 +129,9 @@ class FieldFactory
      *
      * @return string
      */
-    private function get_radio_field(array $data) : string
+    private function get_radio_field(array $data): string
     {
-        $field = (new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\RadioField())->set_options($this->prepare_options($data['options']))->set_label($data['label'])->set_name($data['name']);
+        $field = (new RadioField())->set_options($this->prepare_options($data['options']))->set_label($data['label'])->set_name($data['name']);
         $field = $this->set_attributes($field, $data);
         return $this->render_field($field, $data);
     }
@@ -140,9 +140,9 @@ class FieldFactory
      *
      * @return string
      */
-    private function get_select_field(array $data) : string
+    private function get_select_field(array $data): string
     {
-        $field = (new \FRFreeVendor\WPDesk\Forms\Field\SelectField())->set_label($data['label'])->set_options($this->prepare_options($data['options']))->set_name($data['name']);
+        $field = (new SelectField())->set_label($data['label'])->set_options($this->prepare_options($data['options']))->set_name($data['name'])->set_placeholder($data['placeholder']);
         $field = $this->set_attributes($field, $data);
         return $this->render_field($field, $data);
     }
@@ -151,9 +151,9 @@ class FieldFactory
      *
      * @return string
      */
-    private function get_multiselect_field(array $data) : string
+    private function get_multiselect_field(array $data): string
     {
-        $field = (new \FRFreeVendor\WPDesk\Forms\Field\SelectField())->set_label($data['label'])->set_options($this->prepare_options($data['options']))->set_name($data['name'])->add_class('multiselect');
+        $field = (new SelectField())->set_label($data['label'])->set_options($this->prepare_options($data['options']))->set_name($data['name'])->add_class('multiselect');
         $field = $this->set_attributes($field, $data);
         $field->set_multiple();
         return $this->render_field($field, $data);
@@ -163,9 +163,9 @@ class FieldFactory
      *
      * @return string
      */
-    private function get_upload_field(array $data) : string
+    private function get_upload_field(array $data): string
     {
-        $field = (new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\UploadField())->set_label($data['label'])->set_name($data['name']);
+        $field = (new UploadField())->set_label($data['label'])->set_name($data['name']);
         $field = $this->set_attributes($field, $data);
         return $this->render_field($field, $data);
     }
@@ -174,13 +174,13 @@ class FieldFactory
      *
      * @return string
      */
-    private function get_html_field(array $data) : string
+    private function get_html_field(array $data): string
     {
-        $field = (new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\HTMLField())->set_name('')->set_description($data['html']);
+        $field = (new HTMLField())->set_name('')->set_description($data['html']);
         return $this->render_field($field, $data);
     }
-    private function render_field(\FRFreeVendor\WPDesk\Forms\Field $field, array $data) : string
+    private function render_field(Field $field, array $data): string
     {
-        return $this->renderer->render($field->should_override_form_template() ? $field->get_template_name() : 'form-field', ['field' => $field, 'renderer' => $this->renderer, 'name_prefix' => \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer::FIELD_PREFIX, 'value' => $data['value'], 'template_name' => $field->get_template_name()]);
+        return $this->renderer->render($field->should_override_form_template() ? $field->get_template_name() : 'form-field', ['field' => $field, 'renderer' => $this->renderer, 'name_prefix' => FieldRenderer::FIELD_PREFIX, 'value' => $data['value'], 'template_name' => $field->get_template_name()]);
     }
 }

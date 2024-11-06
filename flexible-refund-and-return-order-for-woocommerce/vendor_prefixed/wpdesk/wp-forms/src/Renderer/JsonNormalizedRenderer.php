@@ -10,7 +10,7 @@ use FRFreeVendor\WPDesk\Forms\FieldRenderer;
  *
  * @package WPDesk\Forms\Renderer
  */
-class JsonNormalizedRenderer implements \FRFreeVendor\WPDesk\Forms\FieldRenderer
+class JsonNormalizedRenderer implements FieldRenderer
 {
     /**
      * @param FieldProvider $provider
@@ -19,11 +19,11 @@ class JsonNormalizedRenderer implements \FRFreeVendor\WPDesk\Forms\FieldRenderer
      *
      * @return array Normalized fields with data.
      */
-    public function render_fields(\FRFreeVendor\WPDesk\Forms\FieldProvider $provider, array $fields_data, string $name_prefix = '') : array
+    public function render_fields(FieldProvider $provider, array $fields_data, string $name_prefix = ''): array
     {
         $rendered_fields = [];
         $fields = $provider->get_fields();
-        \usort($fields, static function (\FRFreeVendor\WPDesk\Forms\Field $a, \FRFreeVendor\WPDesk\Forms\Field $b) {
+        usort($fields, static function (Field $a, Field $b) {
             return $a->get_priority() <=> $b->get_priority();
         });
         foreach ($fields as $field) {
@@ -55,7 +55,7 @@ class JsonNormalizedRenderer implements \FRFreeVendor\WPDesk\Forms\FieldRenderer
                     $rendered['data'][] = ['name' => $data_name, 'value' => $data_value];
                 }
             }
-            if (\json_encode($rendered) !== \false) {
+            if (json_encode($rendered) !== \false) {
                 $rendered_fields[] = $rendered;
             }
         }

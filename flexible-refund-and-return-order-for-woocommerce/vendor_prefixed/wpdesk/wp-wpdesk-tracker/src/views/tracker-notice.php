@@ -53,7 +53,7 @@ echo \esc_url_raw(\admin_url("admin-ajax.php"));
 				type: 'POST',
 				data: {
 					security: '<?php 
-echo \esc_attr(\wp_create_nonce(\FRFreeVendor\WPDesk_Tracker::WPDESK_TRACKER_NOTICE));
+echo \esc_attr(\wp_create_nonce(WPDesk_Tracker::WPDESK_TRACKER_NOTICE));
 ?>',
 					action: 'wpdesk_tracker_notice_handler',
 					type: 'dismiss',
@@ -74,7 +74,7 @@ echo \esc_url_raw(\admin_url("admin-ajax.php"));
 				type: 'POST',
 				data: {
 					security: '<?php 
-echo \esc_attr(\wp_create_nonce(\FRFreeVendor\WPDesk_Tracker::WPDESK_TRACKER_NOTICE));
+echo \esc_attr(\wp_create_nonce(WPDesk_Tracker::WPDESK_TRACKER_NOTICE));
 ?>',
 					action: 'wpdesk_tracker_notice_handler',
 					type: 'allow',

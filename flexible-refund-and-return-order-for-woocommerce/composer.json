@@ -12,7 +12,7 @@
 	"config": {
 		"sort-packages": true,
 		"platform": {
-			"php": "7.3.33"
+			"php": "7.4.33"
 		},
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true,
@@ -40,11 +40,11 @@
 	},
 	"require-dev": {
 		"10up/wp_mock": "*",
-		"phpunit/phpunit": "^8 | ^9",
+		"phpunit/phpunit": "^9",
 		"wpdesk/wp-logs": "^1.7",
 		"wpdesk/wp-codeception": "^2.7.2",
 		"wpdesk/wp-plugin-flow-free": "^1",
-		"wpdesk/wp-wpdesk-composer": "^2",
+		"wpdesk/wp-wpdesk-composer": "^3",
 		"wpdesk/flexible-refunds-core": "^1",
 		"wpdesk/ltv-dashboard-widget": "^1",
 		"wpdesk/wp-wpdesk-deactivation-modal": "^1.0"

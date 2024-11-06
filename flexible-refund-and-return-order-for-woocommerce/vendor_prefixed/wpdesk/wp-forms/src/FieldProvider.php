@@ -12,5 +12,5 @@ interface FieldProvider
      *
      * @return Field[]
      */
-    public function get_fields() : array;
+    public function get_fields(): array;
 }

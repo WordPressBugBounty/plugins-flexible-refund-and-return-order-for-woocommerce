@@ -2,13 +2,13 @@
 
 namespace FRFreeVendor\WPDesk\Forms\Field;
 
-class ButtonField extends \FRFreeVendor\WPDesk\Forms\Field\NoValueField
+class ButtonField extends NoValueField
 {
-    public function get_template_name() : string
+    public function get_template_name(): string
     {
         return 'button';
     }
-    public function get_type() : string
+    public function get_type(): string
     {
         return 'button';
     }

@@ -22,13 +22,13 @@ use FRFreeVendor\Psr\Log\LogLevel;
  * @phpstan-import-type Level from \Monolog\Logger
  * @phpstan-import-type LevelName from \Monolog\Logger
  */
-abstract class AbstractHandler extends \FRFreeVendor\Monolog\Handler\Handler implements \FRFreeVendor\Monolog\ResettableInterface
+abstract class AbstractHandler extends Handler implements ResettableInterface
 {
     /**
      * @var int
      * @phpstan-var Level
      */
-    protected $level = \FRFreeVendor\Monolog\Logger::DEBUG;
+    protected $level = Logger::DEBUG;
     /** @var bool */
     protected $bubble = \true;
     /**
@@ -37,7 +37,7 @@ abstract class AbstractHandler extends \FRFreeVendor\Monolog\Handler\Handler imp
      *
      * @phpstan-param Level|LevelName|LogLevel::* $level
      */
-    public function __construct($level = \FRFreeVendor\Monolog\Logger::DEBUG, bool $bubble = \true)
+    public function __construct($level = Logger::DEBUG, bool $bubble = \true)
     {
         $this->setLevel($level);
         $this->bubble = $bubble;
@@ -45,7 +45,7 @@ abstract class AbstractHandler extends \FRFreeVendor\Monolog\Handler\Handler imp
     /**
      * {@inheritDoc}
      */
-    public function isHandling(array $record) : bool
+    public function isHandling(array $record): bool
     {
         return $record['level'] >= $this->level;
     }
@@ -55,9 +55,9 @@ abstract class AbstractHandler extends \FRFreeVendor\Monolog\Handler\Handler imp
      * @param  Level|LevelName|LogLevel::* $level Level or level name
      * @return self
      */
-    public function setLevel($level) : self
+    public function setLevel($level): self
     {
-        $this->level = \FRFreeVendor\Monolog\Logger::toMonologLevel($level);
+        $this->level = Logger::toMonologLevel($level);
         return $this;
     }
     /**
@@ -67,7 +67,7 @@ abstract class AbstractHandler extends \FRFreeVendor\Monolog\Handler\Handler imp
      *
      * @phpstan-return Level
      */
-    public function getLevel() : int
+    public function getLevel(): int
     {
         return $this->level;
     }
@@ -78,7 +78,7 @@ abstract class AbstractHandler extends \FRFreeVendor\Monolog\Handler\Handler imp
      *                      false means that bubbling is not permitted.
      * @return self
      */
-    public function setBubble(bool $bubble) : self
+    public function setBubble(bool $bubble): self
     {
         $this->bubble = $bubble;
         return $this;
@@ -89,7 +89,7 @@ abstract class AbstractHandler extends \FRFreeVendor\Monolog\Handler\Handler imp
      * @return bool true means that this handler allows bubbling.
      *              false means that bubbling is not permitted.
      */
-    public function getBubble() : bool
+    public function getBubble(): bool
     {
         return $this->bubble;
     }

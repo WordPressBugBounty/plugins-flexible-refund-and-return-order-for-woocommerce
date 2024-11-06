@@ -3,7 +3,7 @@
 namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Conditions;
 
 use WC_Order;
-abstract class AbstractCondition implements \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Conditions\Condition
+abstract class AbstractCondition implements Condition
 {
     /**
      * @var array
@@ -17,7 +17,7 @@ abstract class AbstractCondition implements \FRFreeVendor\WPDesk\Library\Flexibl
      * @param array    $conditions
      * @param WC_Order $order
      */
-    public function __construct(array $conditions, \WC_Order $order)
+    public function __construct(array $conditions, WC_Order $order)
     {
         $this->conditions = $conditions;
         $this->order = $order;
@@ -25,19 +25,19 @@ abstract class AbstractCondition implements \FRFreeVendor\WPDesk\Library\Flexibl
     /**
      * @return array
      */
-    protected function get_conditions() : array
+    protected function get_conditions(): array
     {
         return $this->conditions;
     }
     /**
      * @return WC_Order
      */
-    protected function get_order() : \WC_Order
+    protected function get_order(): WC_Order
     {
         return $this->order;
     }
     /**
      * @return bool
      */
-    public abstract function should_show() : bool;
+    abstract public function should_show(): bool;
 }

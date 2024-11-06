@@ -2,7 +2,7 @@
 
 namespace FRFreeVendor;
 
-if (!\function_exists('FRFreeVendor\\WPDeskInitWpNoticeAjaxHandler')) {
+if (!\function_exists('FRFreeVendor\WPDeskInitWpNoticeAjaxHandler')) {
     /**
      * Init notices AJAX Handler.
      *
@@ -17,7 +17,7 @@ if (!\function_exists('FRFreeVendor\\WPDeskInitWpNoticeAjaxHandler')) {
         return $ajax_handler;
     }
 }
-if (!\function_exists('FRFreeVendor\\wpdesk_init_wp_notice_ajax_handler')) {
+if (!\function_exists('FRFreeVendor\wpdesk_init_wp_notice_ajax_handler')) {
     /**
      * Alias for {@see WPDeskInitNoticeAjaxHandler()} function.
      *
@@ -27,10 +27,10 @@ if (!\function_exists('FRFreeVendor\\wpdesk_init_wp_notice_ajax_handler')) {
      */
     function wpdesk_init_wp_notice_ajax_handler($assetsUrl = null)
     {
-        return \FRFreeVendor\WPDeskInitWpNoticeAjaxHandler($assetsUrl);
+        return WPDeskInitWpNoticeAjaxHandler($assetsUrl);
     }
 }
-if (!\function_exists('FRFreeVendor\\WPDeskWpNotice')) {
+if (!\function_exists('FRFreeVendor\WPDeskWpNotice')) {
     /**
      * Creates Notice.
      *
@@ -46,7 +46,7 @@ if (!\function_exists('FRFreeVendor\\WPDeskWpNotice')) {
         return \FRFreeVendor\WPDesk\Notice\Factory::notice($noticeContent, $noticeType, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice')) {
+if (!\function_exists('FRFreeVendor\wpdesk_wp_notice')) {
     /**
      * Creates Notice.
      *
@@ -61,10 +61,10 @@ if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice')) {
      */
     function wpdesk_wp_notice($noticeContent, $noticeType = 'info', $dismissible = \false, $priority = 10)
     {
-        return \FRFreeVendor\WPDeskWpNotice($noticeContent, $noticeType, $dismissible, $priority);
+        return WPDeskWpNotice($noticeContent, $noticeType, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\WPDeskWpNoticeInfo')) {
+if (!\function_exists('FRFreeVendor\WPDeskWpNoticeInfo')) {
     /**
      * Creates Notice Info.
      *
@@ -79,7 +79,7 @@ if (!\function_exists('FRFreeVendor\\WPDeskWpNoticeInfo')) {
         return \FRFreeVendor\WPDesk\Notice\Factory::notice($noticeContent, \FRFreeVendor\WPDesk\Notice\Notice::NOTICE_TYPE_INFO, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice_info')) {
+if (!\function_exists('FRFreeVendor\wpdesk_wp_notice_info')) {
     /**
      * Creates Notice Info.
      *
@@ -93,10 +93,10 @@ if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice_info')) {
      */
     function wpdesk_wp_notice_info($noticeContent, $dismissible = \false, $priority = 10)
     {
-        return \FRFreeVendor\WPDeskWpNoticeInfo($noticeContent, $dismissible, $priority);
+        return WPDeskWpNoticeInfo($noticeContent, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\WPDeskWpNoticeError')) {
+if (!\function_exists('FRFreeVendor\WPDeskWpNoticeError')) {
     /**
      * Creates Notice Error.
      *
@@ -111,7 +111,7 @@ if (!\function_exists('FRFreeVendor\\WPDeskWpNoticeError')) {
         return \FRFreeVendor\WPDesk\Notice\Factory::notice($noticeContent, \FRFreeVendor\WPDesk\Notice\Notice::NOTICE_TYPE_ERROR, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice_error')) {
+if (!\function_exists('FRFreeVendor\wpdesk_wp_notice_error')) {
     /**
      * Creates Notice Error.
      *
@@ -125,10 +125,10 @@ if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice_error')) {
      */
     function wpdesk_wp_notice_error($noticeContent, $dismissible = \false, $priority = 10)
     {
-        return \FRFreeVendor\WPDeskWpNoticeError($noticeContent, $dismissible, $priority);
+        return WPDeskWpNoticeError($noticeContent, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\WPDeskWpNoticeWarning')) {
+if (!\function_exists('FRFreeVendor\WPDeskWpNoticeWarning')) {
     /**
      * Creates Notice Warning.
      *
@@ -143,7 +143,7 @@ if (!\function_exists('FRFreeVendor\\WPDeskWpNoticeWarning')) {
         return \FRFreeVendor\WPDesk\Notice\Factory::notice($noticeContent, \FRFreeVendor\WPDesk\Notice\Notice::NOTICE_TYPE_WARNING, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice_warning')) {
+if (!\function_exists('FRFreeVendor\wpdesk_wp_notice_warning')) {
     /**
      * Creates Notice Warning.
      *
@@ -157,10 +157,10 @@ if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice_warning')) {
      */
     function wpdesk_wp_notice_warning($noticeContent, $dismissible = \false, $priority = 10)
     {
-        return \FRFreeVendor\WPDeskWpNoticeWarning($noticeContent, $dismissible, $priority);
+        return WPDeskWpNoticeWarning($noticeContent, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\WPDeskWpNoticeSuccess')) {
+if (!\function_exists('FRFreeVendor\WPDeskWpNoticeSuccess')) {
     /**
      * Creates Notice Success.
      *
@@ -175,7 +175,7 @@ if (!\function_exists('FRFreeVendor\\WPDeskWpNoticeSuccess')) {
         return \FRFreeVendor\WPDesk\Notice\Factory::notice($noticeContent, \FRFreeVendor\WPDesk\Notice\Notice::NOTICE_TYPE_SUCCESS, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice_success')) {
+if (!\function_exists('FRFreeVendor\wpdesk_wp_notice_success')) {
     /**
      * Creates Notice Success.
      *
@@ -189,10 +189,10 @@ if (!\function_exists('FRFreeVendor\\wpdesk_wp_notice_success')) {
      */
     function wpdesk_wp_notice_success($noticeContent, $dismissible = \false, $priority = 10)
     {
-        return \FRFreeVendor\WPDeskWpNoticeSuccess($noticeContent, $dismissible, $priority);
+        return WPDeskWpNoticeSuccess($noticeContent, $dismissible, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\WPDeskPermanentDismissibleWpNotice')) {
+if (!\function_exists('FRFreeVendor\WPDeskPermanentDismissibleWpNotice')) {
     /**
      * Creates Permanent Dismissible Notice.
      *
@@ -208,7 +208,7 @@ if (!\function_exists('FRFreeVendor\\WPDeskPermanentDismissibleWpNotice')) {
         return \FRFreeVendor\WPDesk\Notice\Factory::permanentDismissibleNotice($noticeContent, $noticeName, $noticeType, $priority);
     }
 }
-if (!\function_exists('FRFreeVendor\\wpdesk_permanent_dismissible_wp_notice')) {
+if (!\function_exists('FRFreeVendor\wpdesk_permanent_dismissible_wp_notice')) {
     /**
      * Creates Permanent Dismissible Notice.
      *
@@ -223,6 +223,6 @@ if (!\function_exists('FRFreeVendor\\wpdesk_permanent_dismissible_wp_notice')) {
      */
     function wpdesk_permanent_dismissible_wp_notice($noticeContent, $noticeName, $noticeType = 'info', $priority = 10)
     {
-        return \FRFreeVendor\WPDeskPermanentDismissibleWpNotice($noticeContent, $noticeName, $noticeType, $priority);
+        return WPDeskPermanentDismissibleWpNotice($noticeContent, $noticeName, $noticeType, $priority);
     }
 }

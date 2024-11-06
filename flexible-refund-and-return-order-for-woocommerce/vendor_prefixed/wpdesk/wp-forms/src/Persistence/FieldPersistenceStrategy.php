@@ -14,12 +14,12 @@ class FieldPersistenceStrategy
 {
     /** @var PersistentContainer */
     private $persistence;
-    public function __construct(\FRFreeVendor\WPDesk\Persistence\PersistentContainer $persistence)
+    public function __construct(PersistentContainer $persistence)
     {
         $this->persistence = $persistence;
     }
     /** @return void */
-    public function persist_fields(\FRFreeVendor\WPDesk\Forms\FieldProvider $fields_provider, array $data)
+    public function persist_fields(FieldProvider $fields_provider, array $data)
     {
         foreach ($fields_provider->get_fields() as $field) {
             $field_key = $field->get_name();
@@ -31,7 +31,7 @@ class FieldPersistenceStrategy
         }
     }
     /** @return void */
-    public function load_fields(\FRFreeVendor\WPDesk\Forms\FieldProvider $fields_provider) : array
+    public function load_fields(FieldProvider $fields_provider): array
     {
         $data = [];
         foreach ($fields_provider->get_fields() as $field) {
@@ -42,7 +42,7 @@ class FieldPersistenceStrategy
                 } else {
                     $data[$field_key] = $this->persistence->get($field_key);
                 }
-            } catch (\FRFreeVendor\Psr\Container\NotFoundExceptionInterface $not_found) {
+            } catch (NotFoundExceptionInterface $not_found) {
                 // TODO: Logger
                 // LoggerFactory::get_logger()->info( "FieldPersistenceStrategy:: Field {$field_key} not found" );
             }

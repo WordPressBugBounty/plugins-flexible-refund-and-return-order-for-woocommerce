@@ -15,8 +15,8 @@ class Cache
      * @param string $plugin_slug
      * @param string $lang
      */
-    public static function create_slug($plugin_slug, $lang) : string
+    public static function create_slug($plugin_slug, $lang): string
     {
-        return self::MARKETING_SLUG . \FRFreeVendor\WPDesk\Library\Marketing\Boxes\MarketingBoxes::VERSION . '_' . $plugin_slug . '_' . $lang;
+        return self::MARKETING_SLUG . MarketingBoxes::VERSION . '_' . $plugin_slug . '_' . $lang;
     }
 }

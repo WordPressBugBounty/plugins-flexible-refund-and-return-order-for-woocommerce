@@ -11,7 +11,7 @@ class RequestsFactory
      * @var PersistentContainer
      */
     private $settings;
-    public function __construct(\FRFreeVendor\WPDesk\Persistence\PersistentContainer $settings)
+    public function __construct(PersistentContainer $settings)
     {
         $this->settings = $settings;
     }
@@ -21,18 +21,18 @@ class RequestsFactory
     public function get_request(string $status)
     {
         switch ($status) {
-            case \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::REQUESTED_STATUS:
-                return new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Requests\Requested($this->settings);
-            case \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::APPROVED_STATUS:
-                return new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Requests\Approved($this->settings);
-            case \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::VERIFYING_STATUS:
-                return new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Requests\Verifying($this->settings);
-            case \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::SHIPMENT_STATUS:
-                return new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Requests\Shipment($this->settings);
-            case \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses::REFUSED_STATUS:
-                return new \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Requests\Refused($this->settings);
+            case Statuses::REQUESTED_STATUS:
+                return new Requested($this->settings);
+            case Statuses::APPROVED_STATUS:
+                return new Approved($this->settings);
+            case Statuses::VERIFYING_STATUS:
+                return new Verifying($this->settings);
+            case Statuses::SHIPMENT_STATUS:
+                return new Shipment($this->settings);
+            case Statuses::REFUSED_STATUS:
+                return new Refused($this->settings);
             default:
-                throw new \Exception(\sprintf(\esc_html__('Unknown request status: %s', 'flexible-refund-and-return-order-for-woocommerce'), $status));
+                throw new Exception(sprintf(esc_html__('Unknown request status: %s', 'flexible-refund-and-return-order-for-woocommerce'), $status));
         }
     }
 }

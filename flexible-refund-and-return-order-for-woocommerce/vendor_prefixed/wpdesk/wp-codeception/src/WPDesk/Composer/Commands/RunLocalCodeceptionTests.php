@@ -12,7 +12,7 @@ use FRFreeVendor\Symfony\Component\Yaml\Yaml;
  *
  * @package WPDesk\Composer\Codeception\Commands
  */
-class RunLocalCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception\Commands\RunCodeceptionTests
+class RunLocalCodeceptionTests extends RunCodeceptionTests
 {
     use LocalCodeceptionTrait;
     /**
@@ -21,7 +21,7 @@ class RunLocalCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception
     protected function configure()
     {
         parent::configure();
-        $this->setName('run-local-codeception-tests')->setDescription('Run local codeception tests.')->setDefinition(array(new \FRFreeVendor\Symfony\Component\Console\Input\InputArgument(self::SINGLE, \FRFreeVendor\Symfony\Component\Console\Input\InputArgument::OPTIONAL, 'Name of Single test to run.', ' ')));
+        $this->setName('run-local-codeception-tests')->setDescription('Run local codeception tests.')->setDefinition(array(new InputArgument(self::SINGLE, InputArgument::OPTIONAL, 'Name of Single test to run.', ' ')));
     }
     /**
      * Execute command.
@@ -31,7 +31,7 @@ class RunLocalCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception
      *
      * @return int 0 if everything went fine, or an error code
      */
-    protected function execute(\FRFreeVendor\Symfony\Component\Console\Input\InputInterface $input, \FRFreeVendor\Symfony\Component\Console\Output\OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $configuration = $this->getWpDeskConfiguration();
         $this->prepareWpConfig($output, $configuration);

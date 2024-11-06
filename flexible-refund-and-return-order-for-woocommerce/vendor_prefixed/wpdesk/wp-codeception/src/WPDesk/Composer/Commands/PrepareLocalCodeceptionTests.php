@@ -13,7 +13,7 @@ use FRFreeVendor\Symfony\Component\Yaml\Yaml;
  *
  * @package WPDesk\Composer\Codeception\Commands
  */
-class PrepareLocalCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codeception\Commands\RunCodeceptionTests
+class PrepareLocalCodeceptionTests extends RunCodeceptionTests
 {
     use LocalCodeceptionTrait;
     /**
@@ -32,7 +32,7 @@ class PrepareLocalCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codecep
      *
      * @return int 0 if everything went fine, or an error code
      */
-    protected function execute(\FRFreeVendor\Symfony\Component\Console\Input\InputInterface $input, \FRFreeVendor\Symfony\Component\Console\Output\OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->prepareLocalCodeceptionTests($input, $output, \false);
         return 0;
@@ -46,8 +46,8 @@ class PrepareLocalCodeceptionTests extends \FRFreeVendor\WPDesk\Composer\Codecep
     private function copyThemeFiles(array $theme_files, $theme_folder)
     {
         foreach ($theme_files as $theme_file) {
-            if (!\copy($theme_file, $this->trailingslashit($theme_folder) . \basename($theme_file))) {
-                throw new \FRFreeVendor\Composer\Downloader\FilesystemException('Error copying theme file: ' . $theme_file);
+            if (!copy($theme_file, $this->trailingslashit($theme_folder) . basename($theme_file))) {
+                throw new FilesystemException('Error copying theme file: ' . $theme_file);
             }
         }
     }

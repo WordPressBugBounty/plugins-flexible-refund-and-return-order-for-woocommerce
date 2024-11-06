@@ -20,10 +20,10 @@ trait HtmlAttributes
      *
      * @return array<string[]|string|bool>
      */
-    public final function get_attributes(array $except = ['name', 'class']) : array
+    final public function get_attributes(array $except = ['name', 'class']): array
     {
-        return \array_filter($this->attributes, static function ($key) use($except) {
-            return !\in_array($key, $except, \true);
+        return array_filter($this->attributes, static function ($key) use ($except) {
+            return !in_array($key, $except, \true);
         }, \ARRAY_FILTER_USE_KEY);
     }
     /**
@@ -32,7 +32,7 @@ trait HtmlAttributes
      *
      * @return Field|Form
      */
-    public final function set_attribute(string $name, $value)
+    final public function set_attribute(string $name, $value)
     {
         $this->attributes[$name] = $value;
         return $this;
@@ -40,20 +40,20 @@ trait HtmlAttributes
     /**
      * @return HtmlAttributes
      */
-    public final function unset_attribute(string $name)
+    final public function unset_attribute(string $name)
     {
         unset($this->attributes[$name]);
         return $this;
     }
-    public final function is_attribute_set(string $name) : bool
+    final public function is_attribute_set(string $name): bool
     {
         return !empty($this->attributes[$name]);
     }
-    public final function get_attribute(string $name, string $default = null) : string
+    final public function get_attribute(string $name, string $default = null): string
     {
-        if (\is_array($this->attributes[$name])) {
+        if (is_array($this->attributes[$name])) {
             // Be aware of coercing - if implode returns string(0) '', then return $default value.
-            return \implode(' ', $this->attributes[$name]) ?: $default ?? '';
+            return implode(' ', $this->attributes[$name]) ?: $default ?? '';
         }
         return (string) ($this->attributes[$name] ?? $default ?? '');
     }

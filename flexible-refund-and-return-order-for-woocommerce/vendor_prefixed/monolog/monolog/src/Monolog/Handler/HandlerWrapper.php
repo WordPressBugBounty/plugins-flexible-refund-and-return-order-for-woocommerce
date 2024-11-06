@@ -30,89 +30,89 @@ use FRFreeVendor\Monolog\Formatter\FormatterInterface;
  *
  * @author Alexey Karapetov <alexey@karapetov.com>
  */
-class HandlerWrapper implements \FRFreeVendor\Monolog\Handler\HandlerInterface, \FRFreeVendor\Monolog\Handler\ProcessableHandlerInterface, \FRFreeVendor\Monolog\Handler\FormattableHandlerInterface, \FRFreeVendor\Monolog\ResettableInterface
+class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, FormattableHandlerInterface, ResettableInterface
 {
     /**
      * @var HandlerInterface
      */
     protected $handler;
-    public function __construct(\FRFreeVendor\Monolog\Handler\HandlerInterface $handler)
+    public function __construct(HandlerInterface $handler)
     {
         $this->handler = $handler;
     }
     /**
      * {@inheritDoc}
      */
-    public function isHandling(array $record) : bool
+    public function isHandling(array $record): bool
     {
         return $this->handler->isHandling($record);
     }
     /**
      * {@inheritDoc}
      */
-    public function handle(array $record) : bool
+    public function handle(array $record): bool
     {
         return $this->handler->handle($record);
     }
     /**
      * {@inheritDoc}
      */
-    public function handleBatch(array $records) : void
+    public function handleBatch(array $records): void
     {
         $this->handler->handleBatch($records);
     }
     /**
      * {@inheritDoc}
      */
-    public function close() : void
+    public function close(): void
     {
         $this->handler->close();
     }
     /**
      * {@inheritDoc}
      */
-    public function pushProcessor(callable $callback) : \FRFreeVendor\Monolog\Handler\HandlerInterface
+    public function pushProcessor(callable $callback): HandlerInterface
     {
-        if ($this->handler instanceof \FRFreeVendor\Monolog\Handler\ProcessableHandlerInterface) {
+        if ($this->handler instanceof ProcessableHandlerInterface) {
             $this->handler->pushProcessor($callback);
             return $this;
         }
-        throw new \LogicException('The wrapped handler does not implement ' . \FRFreeVendor\Monolog\Handler\ProcessableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement ' . ProcessableHandlerInterface::class);
     }
     /**
      * {@inheritDoc}
      */
-    public function popProcessor() : callable
+    public function popProcessor(): callable
     {
-        if ($this->handler instanceof \FRFreeVendor\Monolog\Handler\ProcessableHandlerInterface) {
+        if ($this->handler instanceof ProcessableHandlerInterface) {
             return $this->handler->popProcessor();
         }
-        throw new \LogicException('The wrapped handler does not implement ' . \FRFreeVendor\Monolog\Handler\ProcessableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement ' . ProcessableHandlerInterface::class);
     }
     /**
      * {@inheritDoc}
      */
-    public function setFormatter(\FRFreeVendor\Monolog\Formatter\FormatterInterface $formatter) : \FRFreeVendor\Monolog\Handler\HandlerInterface
+    public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
-        if ($this->handler instanceof \FRFreeVendor\Monolog\Handler\FormattableHandlerInterface) {
+        if ($this->handler instanceof FormattableHandlerInterface) {
             $this->handler->setFormatter($formatter);
             return $this;
         }
-        throw new \LogicException('The wrapped handler does not implement ' . \FRFreeVendor\Monolog\Handler\FormattableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement ' . FormattableHandlerInterface::class);
     }
     /**
      * {@inheritDoc}
      */
-    public function getFormatter() : \FRFreeVendor\Monolog\Formatter\FormatterInterface
+    public function getFormatter(): FormatterInterface
     {
-        if ($this->handler instanceof \FRFreeVendor\Monolog\Handler\FormattableHandlerInterface) {
+        if ($this->handler instanceof FormattableHandlerInterface) {
             return $this->handler->getFormatter();
         }
-        throw new \LogicException('The wrapped handler does not implement ' . \FRFreeVendor\Monolog\Handler\FormattableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement ' . FormattableHandlerInterface::class);
     }
     public function reset()
     {
-        if ($this->handler instanceof \FRFreeVendor\Monolog\ResettableInterface) {
+        if ($this->handler instanceof ResettableInterface) {
             $this->handler->reset();
         }
     }

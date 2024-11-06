@@ -10,7 +10,7 @@ use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
  *
  * @package WPDesk\Persistence\Wordpress
  */
-final class WordpressSerializedOptionsContainer implements \FRFreeVendor\WPDesk\Persistence\PersistentContainer
+final class WordpressSerializedOptionsContainer implements PersistentContainer
 {
     use FallbackFromGetTrait;
     /** @var string */
@@ -29,21 +29,21 @@ final class WordpressSerializedOptionsContainer implements \FRFreeVendor\WPDesk\
      */
     private function refresh_value()
     {
-        $this->option_value = \get_option($this->option_name, []);
+        $this->option_value = get_option($this->option_name, []);
     }
     public function set(string $id, $value)
     {
         $this->refresh_value();
         $this->option_value[$id] = $value;
-        \update_option($this->option_name, $this->option_value);
+        update_option($this->option_name, $this->option_value);
     }
     public function delete(string $id)
     {
         $this->refresh_value();
         unset($this->option_value[$id]);
-        \update_option($this->option_name, $this->option_value);
+        update_option($this->option_name, $this->option_value);
     }
-    public function has($key) : bool
+    public function has($key): bool
     {
         $this->refresh_value();
         return isset($this->option_value[$key]);
@@ -52,7 +52,7 @@ final class WordpressSerializedOptionsContainer implements \FRFreeVendor\WPDesk\
     {
         $this->refresh_value();
         if (!isset($this->option_value[$id])) {
-            throw new \FRFreeVendor\WPDesk\Persistence\ElementNotExistsException(\sprintf('Element %s not exists!', $id));
+            throw new ElementNotExistsException(sprintf('Element %s not exists!', $id));
         }
         return $this->option_value[$id];
     }

@@ -2,6 +2,6 @@
 
 namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Requests;
 
-class Verifying extends \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Requests\AbstractRequest
+class Verifying extends AbstractRequest
 {
 }

@@ -29,7 +29,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\FormBuilderTab
 ?></span></label>
 							<ul class="form-builder-field-items">
 								<?php 
-foreach (\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\FormBuilder::buttons_field() as $button_key => $button) {
+foreach (FormBuilder::buttons_field() as $button_key => $button) {
     ?>
 									<?php 
     $is_need = !$button['free'] ? 'yes' : 'no';
@@ -65,7 +65,7 @@ foreach (\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\FormBuilder::b
 \esc_html_e('This field is available in the PRO version.', 'flexible-refund-and-return-order-for-woocommerce');
 ?><br>
 							<a href="<?php 
-echo \esc_url(\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::get_url_to_pro());
+echo \esc_url(Plugin::get_url_to_pro());
 ?>?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-pro&utm_content=form-fields" target="_blank">
 								<?php 
 \esc_html_e('Upgrade to PRO &rarr;', 'flexible-refund-and-return-order-for-woocommerce');
@@ -113,7 +113,7 @@ echo \esc_url(\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::g
 				<section>
 					<div class="form-builder-selected-fields-wrapper">
 						<input type="hidden" value="" name="<?php 
-echo \esc_attr(\FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\FormBuilderTab::SETTING_PREFIX . 'form_builder');
+echo \esc_attr(FormBuilderTab::SETTING_PREFIX . 'form_builder');
 ?>"/>
 						<?php 
 $fields = $field['value'] ?? [];
@@ -130,7 +130,7 @@ if (!empty($fields)) {
         $description = $field['description'] ?? '';
         $maxlength = $field['maxlength'] ?? '';
         $minlength = $field['minlength'] ?? '';
-        $field_name = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\FormBuilderTab::SETTING_PREFIX . 'form_builder[' . $name . ']';
+        $field_name = FormBuilderTab::SETTING_PREFIX . 'form_builder[' . $name . ']';
         require __DIR__ . '/form-builder-field.php';
     }
 }

@@ -6,7 +6,7 @@ Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, woocomm
 Requires at least: 6.1
 Tested up to: 6.6
 Requires PHP: 7.3
-Stable tag: 1.0.22
+Stable tag: 1.0.25
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -295,6 +295,15 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.0.25 - 2024-11-06 =
+* Fixed placeholder for select field
+
+= 1.0.24 - 2024-10-07 =
+* Added support for WooCommerce 9.4
+
+= 1.0.23 - 2024-09-07 =
+* Added support for WooCommerce 9.3
 
 = 1.0.22 - 2024-08-07 =
 * Added support for WooCommerce 9.2

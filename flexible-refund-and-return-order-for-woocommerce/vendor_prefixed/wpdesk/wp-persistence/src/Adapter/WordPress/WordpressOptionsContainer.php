@@ -12,7 +12,7 @@ use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
  *
  * @package WPDesk\Persistence\Wordpress
  */
-final class WordpressOptionsContainer implements \FRFreeVendor\WPDesk\Persistence\PersistentContainer
+final class WordpressOptionsContainer implements PersistentContainer
 {
     use FallbackFromGetTrait;
     /** @var string */
@@ -29,12 +29,12 @@ final class WordpressOptionsContainer implements \FRFreeVendor\WPDesk\Persistenc
         if ($value === null) {
             $this->delete($id);
         } else {
-            \update_option($this->prepare_key_name($id), $value);
+            update_option($this->prepare_key_name($id), $value);
         }
     }
     public function delete(string $id)
     {
-        \delete_option($this->prepare_key_name($id));
+        delete_option($this->prepare_key_name($id));
     }
     /**
      * Prepare name for key.
@@ -43,19 +43,19 @@ final class WordpressOptionsContainer implements \FRFreeVendor\WPDesk\Persistenc
      *
      * @return string
      */
-    private function prepare_key_name(string $key) : string
+    private function prepare_key_name(string $key): string
     {
-        return \sanitize_key($this->namespace . $key);
+        return sanitize_key($this->namespace . $key);
     }
-    public function has($id) : bool
+    public function has($id): bool
     {
-        return \get_option($this->prepare_key_name($id)) !== \false;
+        return get_option($this->prepare_key_name($id)) !== \false;
     }
     public function get($id)
     {
-        $value = \get_option($this->prepare_key_name($id));
+        $value = get_option($this->prepare_key_name($id));
         if (\false === $value) {
-            throw new \FRFreeVendor\WPDesk\Persistence\ElementNotExistsException(\sprintf('Element %s not exists!', $id));
+            throw new ElementNotExistsException(sprintf('Element %s not exists!', $id));
         }
         return $value;
     }
