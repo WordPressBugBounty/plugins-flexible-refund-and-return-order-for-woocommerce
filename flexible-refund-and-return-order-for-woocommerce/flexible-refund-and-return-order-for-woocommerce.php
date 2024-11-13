@@ -3,16 +3,16 @@
  * Plugin Name: Flexible Refund and Return Order for WooCommerce
  * Plugin URI: https://wpde.sk/flexible-refunds
  * Description: The plugin to handle the refund form on My Account and automates the refund process for the WooCommerce store support.
- * Version: 1.0.25
+ * Version: 1.0.26
  * Author: WP Desk
  * Author URI: https://www.wpdesk.net/
  * Text Domain: flexible-refund-and-return-order-for-woocommerce
  * Domain Path: /lang/
- * Requires at least: 5.8
- * Tested up to: 6.6
- * WC requires at least: 9.0
+ * Requires at least: 6.4
+ * Tested up to: 6.7
+ * WC requires at least: 9.1
  * WC tested up to: 9.4
- * Requires PHP: 7.3
+ * Requires PHP: 7.4
  * Copyright 2020 WP Desk Ltd.
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 /* THESE TWO VARIABLES CAN BE CHANGED AUTOMATICALLY */
-$plugin_version = '1.0.25';
+$plugin_version = '1.0.26';
 
 $plugin_name        = 'Flexible Refund and Return Order for WooCommerce';
 $dummy_title        = __( 'Flexible Refund and Return Order for WooCommerce', 'flexible-refund-and-return-order-for-woocommerce' );
