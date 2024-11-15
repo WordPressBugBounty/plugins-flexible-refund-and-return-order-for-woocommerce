@@ -119,9 +119,7 @@ final class PluginBootstrap
         if (method_exists($plugin_info, 'get_language_dir')) {
             $lang_dir = $plugin_info->get_language_dir();
         }
-        add_action('init', function () use ($plugin_info, $lang_dir) {
-            \load_plugin_textdomain($plugin_info->get_text_domain(), '', basename($plugin_info->get_plugin_dir()) . "/{$lang_dir}/");
-        });
+        \load_plugin_textdomain($plugin_info->get_text_domain(), \false, basename($plugin_info->get_plugin_dir()) . "/{$lang_dir}/");
     }
     /**
      * Factory method creates requirement checker to run the checks
