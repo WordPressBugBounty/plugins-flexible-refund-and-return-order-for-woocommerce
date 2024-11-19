@@ -147,17 +147,7 @@ abstract class AbstractPlugin extends SlimPlugin
     {
         add_action('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts']);
         add_action('wp_enqueue_scripts', [$this, 'wp_enqueue_scripts']);
-        add_action('plugins_loaded', [$this, 'load_plugin_text_domain']);
         add_filter('plugin_action_links_' . plugin_basename($this->get_plugin_file_path()), [$this, 'links_filter']);
-    }
-    /**
-     * Initialize plugin test domain. This is a hook function. Do not execute directly.
-     *
-     * @return void
-     */
-    public function load_plugin_text_domain()
-    {
-        load_plugin_textdomain($this->get_text_domain(), '', $this->get_namespace() . '/lang/');
     }
     /**
      * Append JS scripts in the WordPress admin panel. This is a hook function. Do not execute directly.

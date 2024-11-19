@@ -8,7 +8,7 @@
         "admin",
         "phpcs"
     ],
-    "homepage": "https:\/\/gitlab.com\/wpdesk\/wp-code-sniffer",
+    "homepage": "https:\/\/gitlab.wpdesk.dev\/wpdesk\/wp-code-sniffer",
     "type": "phpcodesniffer-standard",
     "prefer-stable": true,
     "authors": [

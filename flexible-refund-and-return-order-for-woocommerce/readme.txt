@@ -4,9 +4,9 @@ Contributors: wpdesk,piotrpo,marcinkolanko
 Donate link: https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/
 Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, woocommerce order management, woocommerce refunds
 Requires at least: 6.1
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 7.3
-Stable tag: 1.0.28
+Stable tag: 1.0.29
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -295,6 +295,9 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.0.29 - 2024-11-19 =
+* Fixed translations, updated libraries
 
 = 1.0.28 - 2024-11-15 =
 * Fix translations missing on non-english websites
