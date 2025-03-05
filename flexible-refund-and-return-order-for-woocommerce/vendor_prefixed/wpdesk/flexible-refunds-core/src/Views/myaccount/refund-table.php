@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 \defined('ABSPATH') || exit;
 /**
@@ -101,7 +102,7 @@ foreach ($shipping_items as $shipping_item) {
         ?>
 				<tr class="td">
 					<td class="td"><?php 
-        echo \sprintf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
+        \printf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
         ?></td>
 					<td class="td"><?php 
         echo \wc_price((float) $shipping_item->get_total() + (float) $shipping_item->get_total_tax(), ['currency' => $order->get_currency()]);

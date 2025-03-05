@@ -123,6 +123,7 @@ if (!empty($fields)) {
         $html = $field['html'] ?? '';
         $enable = $field['enable'] ?? 0;
         $required = $field['required'] ?? 0;
+        //phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
         $type = $field['type'] ?? 'text';
         $options = $field['options'] ?? [];
         $placeholder = $field['placeholder'] ?? '';
@@ -130,6 +131,7 @@ if (!empty($fields)) {
         $description = $field['description'] ?? '';
         $maxlength = $field['maxlength'] ?? '';
         $minlength = $field['minlength'] ?? '';
+        $files_limit = $field['files_limit'] ?? '';
         $field_name = FormBuilderTab::SETTING_PREFIX . 'form_builder[' . $name . ']';
         require __DIR__ . '/form-builder-field.php';
     }

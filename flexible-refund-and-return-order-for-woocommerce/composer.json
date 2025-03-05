@@ -42,10 +42,10 @@
 		"10up/wp_mock": "*",
 		"phpunit/phpunit": "^9",
 		"wpdesk/wp-logs": "^1.7",
-		"wpdesk/wp-codeception": "^2.7.2",
+		"wpdesk/wp-codeception": "^2.12.1",
 		"wpdesk/wp-plugin-flow-free": "^1",
 		"wpdesk/wp-wpdesk-composer": "^3",
-		"wpdesk/flexible-refunds-core": "^1",
+		"wpdesk/flexible-refunds-core": "^1.2.0",
 		"wpdesk/ltv-dashboard-widget": "^1",
 		"wpdesk/wp-wpdesk-deactivation-modal": "^1.0"
 	},

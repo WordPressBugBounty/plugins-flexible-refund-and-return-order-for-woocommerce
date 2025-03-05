@@ -90,7 +90,7 @@ class Integration implements Hookable
     {
         $renderer = $this->get_renderer();
         $settings = $this->get_settings();
-        $this->add_hookable(new Integration\Assets($this->get_library_url()));
+        $this->add_hookable(new Integration\Assets(self::get_library_url()));
         $this->add_hookable(new SettingsForm());
         $ajax = new Integration\Ajax($settings, $renderer);
         $my_account = new Integration\MyAccount($renderer, $settings, $ajax);

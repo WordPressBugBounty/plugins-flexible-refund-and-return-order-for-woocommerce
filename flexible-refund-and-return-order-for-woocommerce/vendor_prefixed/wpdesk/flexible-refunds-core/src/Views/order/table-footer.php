@@ -27,7 +27,7 @@ $refund_status = $order->get_meta('fr_refund_request_status');
 	</p>
 	<p class="current-status">
 		<strong><?php 
-\printf(\esc_html__('Current refund status: %s.', 'flexible-refund-and-return-order-for-woocommerce'), Statuses::get_status_label($refund_status));
+\printf(\esc_html__('Current refund status: %s.', 'flexible-refund-and-return-order-for-woocommerce'), \esc_html(Statuses::get_status_label($refund_status)));
 ?></strong>
 	</p>
 	<p>
@@ -37,9 +37,11 @@ $refund_status = $order->get_meta('fr_refund_request_status');
 	</p>
 	<p>
 		<select id="fr_refund_request_status" name="fr_refund_request[status]" class="regular-text">
-			<option value=""><?php 
+			<option value="">
+			<?php 
 \esc_html_e('--- select status ---', 'flexible-refund-and-return-order-for-woocommerce');
-?></option>
+?>
+			</option>
 			<?php 
 foreach (Statuses::get_statuses(['requested']) as $status_id => $status_name) {
     ?>

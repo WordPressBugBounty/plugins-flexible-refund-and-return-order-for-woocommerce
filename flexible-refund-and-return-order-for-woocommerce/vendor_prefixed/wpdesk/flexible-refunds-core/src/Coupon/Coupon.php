@@ -41,6 +41,7 @@ class Coupon
          * Set coupon data before save.
          *
          * @param WC_Coupon $coupon
+         * @param WC_Order  $order
          *
          * @since 1.0.0
          */

@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FormValuesRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
@@ -32,7 +33,7 @@ if (!empty($request_note)) {
     ?></p>
 <?php 
 }
-if (\in_array($request_status, ['requested', 'verifying'])) {
+if (\in_array($request_status, ['requested', 'verifying'], \true)) {
     ?>
 	<?php 
     $cancel_request_url = \wp_nonce_url(\add_query_arg(['delete_refund_request' => $order->get_id()]), MyAccount::CANCEL_NONCE_ACTION);
@@ -147,8 +148,8 @@ foreach ($order_items as $item_id => $item) {
     if ($qty < 1) {
         ?>
 				<?php 
-        echo "-";
-        ?>	
+        echo '-';
+        ?>
 			<?php 
     } else {
         ?>
@@ -164,8 +165,8 @@ foreach ($order_items as $item_id => $item) {
     if ($qty < 1) {
         ?>
 				<?php 
-        echo "-";
-        ?>	
+        echo '-';
+        ?>
 			<?php 
     } else {
         ?>
@@ -202,7 +203,7 @@ foreach ($shipping_items as $shipping_item_id => $shipping_item) {
         ?>
 			<tr class="shipping-item">
 				<td><?php 
-        echo \sprintf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
+        \printf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
         ?></td>
 				<td><?php 
         echo \wc_price((float) $shipping_item->get_total() + (float) $shipping_item->get_total_tax(), ['currency' => $order->get_currency()]);
@@ -255,8 +256,8 @@ foreach ($shipping_items as $shipping_item_id => $shipping_item) {
         if ($refunded) {
             ?>
 					<?php 
-            echo "-";
-            ?>	
+            echo '-';
+            ?>
 				<?php 
         } else {
             ?>
@@ -272,8 +273,8 @@ foreach ($shipping_items as $shipping_item_id => $shipping_item) {
         if ($refunded) {
             ?>
 					<?php 
-            echo "-";
-            ?>	
+            echo '-';
+            ?>
 				<?php 
         } else {
             ?>

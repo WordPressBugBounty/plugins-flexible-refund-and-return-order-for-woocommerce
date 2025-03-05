@@ -27,7 +27,7 @@ class FieldRenderer
     private function get_renderer(): Renderer
     {
         $chain = new ChainResolver();
-        $resolver_list = (array) apply_filters('fr/core/form_builder', [new DirResolver(trailingslashit(dirname(__FILE__)) . 'Views'), new DefaultFormFieldResolver()]);
+        $resolver_list = (array) apply_filters('fr/core/form_builder', [new DirResolver(trailingslashit(__DIR__) . 'Views'), new DefaultFormFieldResolver()]);
         foreach ($resolver_list as $resolver) {
             $chain->appendResolver($resolver);
         }
@@ -50,6 +50,7 @@ class FieldRenderer
                 }
             }
         }
+        //phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
         return (string) apply_filters('wpdesk/fr/form-builder/front/form-output', $output_fields, $fields, $field_factory);
     }
 }

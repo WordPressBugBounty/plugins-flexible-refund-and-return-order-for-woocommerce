@@ -77,6 +77,26 @@
 			$( '.woocommerce-table-refund-details .item-qty input' ).trigger( 'change' );
 		},
 
+		validateUploadInput: function () {
+			$( '.refund-front-form' ).find( 'input[type="file"]' ).each( function ( i, v ) {
+				let field = $( v );
+				const limit = field.attr( 'data-files-limit' );
+
+				$( this ).on( 'change', () => {
+					const fileLimit = parseInt( limit );
+					const fileCount = this.files ? this.files.length : 0;
+					let notice_wrapper = field.closest( '.field-row' ).find( '.fr-required-field-notice' );
+
+					if ( fileCount > fileLimit ) {
+						notice_wrapper.html( `<span class="label-error-required">${fr_front_i18n.files_limit} (limit: ${fileLimit})</span>` );
+						this.value = '';
+					} else {
+						notice_wrapper.html( '' );
+					}
+				} )
+			} );
+		},
+
 		validateRefundForm: function () {
 			$( '.refund-front-form' ).submit( function () {
 				let is_valid = true;
@@ -239,6 +259,6 @@
 	FormBuilder.checkAll();
 	FormBuilder.refundCancelButtons();
 	FormBuilder.initSelect2();
-
+	FormBuilder.validateUploadInput();
 
 } )( jQuery );

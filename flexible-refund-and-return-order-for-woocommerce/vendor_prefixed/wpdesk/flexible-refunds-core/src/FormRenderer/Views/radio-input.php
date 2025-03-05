@@ -1,5 +1,6 @@
 <?php
 
+//phpcs:disable
 namespace FRFreeVendor\RRWProVendor;
 
 use FRFreeVendor\WPDesk\Forms\Field;

@@ -10,6 +10,3 @@ namespace FRFreeVendor;
  * @var string                                      $template_name Real field template.
  */
 $renderer->output_render($template_name, ['field' => $field, 'renderer' => $renderer, 'name_prefix' => $name_prefix, 'value' => $value]);
-?>
-
-<?php 

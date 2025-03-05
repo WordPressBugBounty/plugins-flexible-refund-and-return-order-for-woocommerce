@@ -23,7 +23,8 @@
             "cweagans\/composer-patches": true,
             "kylekatarnls\/update-helper": true,
             "dealerdirect\/phpcodesniffer-composer-installer": true,
-            "phpstan\/extension-installer": true
+            "phpstan\/extension-installer": true,
+            "wpdesk\/wp-wpdesk-composer": true
         }
     },
     "require": {
@@ -42,7 +43,7 @@
         "phpunit\/phpunit": "^9",
         "wp-cli\/wp-cli": "^2",
         "wp-cli\/wp-cli-bundle": "^2",
-        "wpdesk\/phpstan-rules": "^1.1",
+        "wpdesk\/phpstan-rules": "1.1.4",
         "wpdesk\/wp-code-sniffer": "^1.2.3"
     },
     "autoload": {
@@ -65,10 +66,12 @@
     },
     "scripts": {
         "phpcs": "phpcs",
+        "phpcbf": "phpcbf src",
+        "phpstan": "php -d memory_limit=1G vendor\/bin\/phpstan",
         "phpunit-unit": "phpunit --configuration phpunit-unit.xml --coverage-text --colors=never",
         "phpunit-unit-fast": "phpunit --configuration phpunit-unit.xml --no-coverage",
         "phpunit-integration": "phpunit --configuration phpunit-integration.xml --coverage-text --colors=never",
         "phpunit-integration-fast": "phpunit --configuration phpunit-integration.xml --no-coverage",
-        "generate-pot": "wp i18n make-pot . lang\/flexible-quantity-core.pot"
+        "generate-pot": "wp i18n make-pot . lang\/flexible-refunds-core.pot"
     }
 }

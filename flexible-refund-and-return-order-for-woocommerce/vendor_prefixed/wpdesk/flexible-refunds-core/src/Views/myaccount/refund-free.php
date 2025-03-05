@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
 \defined('ABSPATH') || exit;
@@ -82,7 +83,7 @@ foreach ($order_items as $item_id => $item) {
 					<tr class="product_item">
 						<td class="item-name">
 							<?php 
-    echo \esc_html($item->get_name());
+    echo \wp_kses_post($item->get_name());
     ?>
 						</td>
 						<td class="item-cost">

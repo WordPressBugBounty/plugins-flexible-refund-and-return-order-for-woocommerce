@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 /**
  * @template conditions.php
  */

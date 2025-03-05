@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 /**
  * @template form-builder-fields.php
  */
@@ -17,6 +18,7 @@ $minlength = $minlength ?? '';
 $maxlength = $maxlength ?? '';
 $placeholder = $placeholder ?? '';
 $css = $css ?? '';
+$files_limit = $files_limit ?? 1;
 ?>
 <div class="fr-fb-field fb-field-wrapper">
 	<div class="fr-fb-header">
@@ -196,32 +198,55 @@ if ($type === 'html') {
     ?></textarea>
 					</label>
 				</p>
+				<?php 
+    if ($type === 'text' || $type === 'textarea') {
+        ?>
 				<p>
 					<label>
 						<span><?php 
-    \esc_html_e('Min length', 'flexible-refund-and-return-order-for-woocommerce');
-    ?></span>
+        \esc_html_e('Min length', 'flexible-refund-and-return-order-for-woocommerce');
+        ?></span>
 						<input type="number" min="0" class="fr-fb-field-minlength regular-text" value="<?php 
-    echo \sanitize_text_field($minlength);
-    ?>" name="<?php 
-    echo \esc_attr($field_name);
-    ?>[minlength]"/>
+        echo \sanitize_text_field($minlength);
+        ?>" name="<?php 
+        echo \esc_attr($field_name);
+        ?>[minlength]"/>
 					</label>
 				</p>
 				<p>
 					<label>
 						<span><?php 
-    \esc_html_e('Max length', 'flexible-refund-and-return-order-for-woocommerce');
-    ?></span>
+        \esc_html_e('Max length', 'flexible-refund-and-return-order-for-woocommerce');
+        ?></span>
 						<input type="number" min="0" class="fr-fb-field-maxlength regular-text" value="<?php 
-    echo \sanitize_text_field($maxlength);
-    ?>" name="<?php 
-    echo \esc_attr($field_name);
-    ?>[maxlength]"/>
+        echo \sanitize_text_field($maxlength);
+        ?>" name="<?php 
+        echo \esc_attr($field_name);
+        ?>[maxlength]"/>
 					</label>
 				</p>
-
-			</div><!-- end appearance-tab -->
+				<?php 
+    }
+    ?>
+				<?php 
+    if ($type === 'upload') {
+        ?>
+					<p>
+						<label>
+							<span><?php 
+        \esc_html_e('Files Limit', 'flexible-refund-and-return-order-for-woocommerce');
+        ?></span>
+							<input min="1" max="99" value="<?php 
+        echo \esc_attr($files_limit);
+        ?>" type="number" class="regular-text" name="<?php 
+        echo \esc_attr($field_name);
+        ?>[files_limit]" />
+						</label>
+					</p>
+				<?php 
+    }
+    ?>
+			</div><!-- end advanced-tab -->
 			<div class="fr-fb-body-tab appearance-tab">
 				<p>
 					<label>

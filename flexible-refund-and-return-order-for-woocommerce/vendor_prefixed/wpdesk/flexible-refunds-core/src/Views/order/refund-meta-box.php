@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 /**
  * @template refund-meta-box.php
  * @var WC_Order $order ;

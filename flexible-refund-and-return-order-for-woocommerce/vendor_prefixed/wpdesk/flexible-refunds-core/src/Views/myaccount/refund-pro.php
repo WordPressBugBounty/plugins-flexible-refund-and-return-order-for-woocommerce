@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
 \defined('ABSPATH') || exit;
@@ -81,9 +82,13 @@ foreach ($order_items as $item_id => $item) {
     ?>
 					<tr class="product_item">
 						<td class="item-name">
-							<?php 
-    echo \esc_html($item->get_name());
+							<a href="<?php 
+    echo \esc_url($product->get_permalink());
+    ?>">
+								<?php 
+    echo \wp_kses_post($item->get_name());
     ?>
+							</a>
 						</td>
 						<td class="item-cost">
 							<?php 
@@ -134,7 +139,7 @@ foreach ($order_items as $item_id => $item) {
 									/>
 								</label>
 								<span class="product-quantity"><?php 
-        echo \sprintf('&times;&nbsp;%s', $qty);
+        \printf('&times;&nbsp;%s', $qty);
         ?></span>
 							<?php 
     }
@@ -179,7 +184,7 @@ if ($show_shipping === 'yes') {
         ?>
 						<tr class="shipping-item">
 							<td><?php 
-        echo \sprintf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
+        \printf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
         ?></td>
 							<td><?php 
         echo \wc_price($shipping_total, ['currency' => $order->get_currency()]);
@@ -231,10 +236,10 @@ if ($show_shipping === 'yes') {
         if ($refunded) {
             echo '-';
         } else {
-            echo "0";
+            echo '0';
         }
-        ?>	
-							</span></td>
+        ?>
+														</span></td>
 						</tr>
 						<?php 
     }

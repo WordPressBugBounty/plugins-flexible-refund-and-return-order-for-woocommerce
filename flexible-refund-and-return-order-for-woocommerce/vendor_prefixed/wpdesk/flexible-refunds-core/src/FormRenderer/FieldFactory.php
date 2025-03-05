@@ -78,7 +78,10 @@ class FieldFactory
         if (!empty($data['css'])) {
             $field->add_class($data['css']);
         }
-        if (!in_array($data['type'], ['select', 'checkbox', 'radio'])) {
+        if ($data['type'] === 'upload' && !empty($data['files_limit'])) {
+            $field->set_attribute('data-files-limit', $data['files_limit']);
+        }
+        if (!in_array($data['type'], ['select', 'checkbox', 'radio'], \true)) {
             if (!empty($data['placeholder'])) {
                 $field->set_placeholder($data['placeholder']);
             }

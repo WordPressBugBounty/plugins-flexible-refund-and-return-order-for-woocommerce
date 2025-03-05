@@ -168,6 +168,7 @@ return array(
     'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\BaseCommand' => $baseDir . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/BaseCommand.php',
     'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\Configuration' => $baseDir . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/Configuration.php',
     'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\CreateCodeceptionTests' => $baseDir . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/CreateCodeceptionTests.php',
+    'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\Language' => $baseDir . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/Language.php',
     'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\LocalCodeceptionTrait' => $baseDir . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/LocalCodeceptionTrait.php',
     'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareCodeceptionDb' => $baseDir . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareCodeceptionDb.php',
     'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareLocalCodeceptionTests' => $baseDir . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareLocalCodeceptionTests.php',

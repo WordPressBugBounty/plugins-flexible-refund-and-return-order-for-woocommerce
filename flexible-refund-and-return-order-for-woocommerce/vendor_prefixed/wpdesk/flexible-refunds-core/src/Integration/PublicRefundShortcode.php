@@ -27,7 +27,7 @@ class PublicRefundShortcode implements Hookable
     }
     public function hooks()
     {
-        add_shortcode('flexible_refund_public', [$this, 'shortcode'], 100, 1);
+        add_shortcode('flexible_refund_public', [$this, 'shortcode']);
         add_filter('wp', [$this, 'cancel_refund_request_by_order_id'], 999);
     }
     public function shortcode($atts)
@@ -36,8 +36,10 @@ class PublicRefundShortcode implements Hookable
             if (!$this->is_nonce_valid()) {
                 return $this->render_form_with_notice(__('Form has expired. Please try again.', 'flexible-refund-and-return-order-for-woocommerce'));
             }
+            //phpcs:disable
             $email = $_GET[self::EMAIL_REQUEST_KEY];
             $order_id = $_GET[self::ORDER_ID_REQUEST_KEY];
+            //phpcs:enable
             $order = wc_get_order($order_id);
             if ($order && $order->get_billing_email() === $email) {
                 $this->my_account->refund_public_request($order_id);
@@ -65,8 +67,10 @@ class PublicRefundShortcode implements Hookable
     }
     public function cancel_refund_request_by_order_id(): void
     {
+        //phpcs:disable
         $nonce_value = $_REQUEST['_wpnonce'] ?? '';
         $order_ID = $_REQUEST['delete_refund_request'] ?? 0;
+        //phpcs:enable
         $nonce = wp_verify_nonce($nonce_value, self::CANCEL_NONCE_ACTION);
         if ($order_ID && $nonce) {
             $order = wc_get_order($order_ID);

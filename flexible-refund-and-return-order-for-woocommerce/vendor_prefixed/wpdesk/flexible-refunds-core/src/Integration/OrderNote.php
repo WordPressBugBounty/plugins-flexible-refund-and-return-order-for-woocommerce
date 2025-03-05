@@ -53,7 +53,9 @@ class OrderNote implements Hookable
             $comment_author = $user->display_name;
             $comment_author_email = $user->user_email;
         } else {
+            //phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
             $comment_author = esc_html__('WooCommerce', 'woocommerce');
+            //phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
             $comment_author_email = strtolower(esc_html__('WooCommerce', 'woocommerce')) . '@';
             $comment_author_email .= isset($_SERVER['HTTP_HOST']) ? str_replace('www.', '', sanitize_text_field(wp_unslash($_SERVER['HTTP_HOST']))) : 'noreply.com';
             // WPCS: input var ok.

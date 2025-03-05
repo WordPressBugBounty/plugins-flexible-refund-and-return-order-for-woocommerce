@@ -19,7 +19,7 @@ class RegisterOrderStatus implements Hookable
      */
     public function register_status(): void
     {
-        register_post_status(self::REQUEST_REFUND_STATUS, ['label' => esc_html__('Refund Request', 'flexible-refund-and-return-order-for-woocommerce'), 'public' => \true, 'exclude_from_search' => \false, 'show_in_admin_all_list' => \true, 'show_in_admin_status_list' => \true, 'label_count' => _n_noop('Refund Request <span class="count">(%s)</span>', 'Refund Request <span class="count">(%s)</span>')]);
+        register_post_status(self::REQUEST_REFUND_STATUS, ['label' => esc_html__('Refund Request', 'flexible-refund-and-return-order-for-woocommerce'), 'public' => \true, 'exclude_from_search' => \false, 'show_in_admin_all_list' => \true, 'show_in_admin_status_list' => \true, 'label_count' => _n_noop('Refund Request <span class="count">(%s)</span>', 'Refund Request <span class="count">(%s)</span>', 'flexible-refund-and-return-order-for-woocommerce')]);
     }
     /**
      * @param array $statuses

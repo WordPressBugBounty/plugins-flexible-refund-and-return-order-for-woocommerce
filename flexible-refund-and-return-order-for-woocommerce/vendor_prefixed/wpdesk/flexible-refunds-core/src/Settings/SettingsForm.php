@@ -15,7 +15,7 @@ class SettingsForm implements Hookable
      */
     public function hooks()
     {
-        add_filter('woocommerce_get_settings_pages', [$this, 'add_settings_page'], 10, 2);
+        add_filter('woocommerce_get_settings_pages', [$this, 'add_settings_page']);
         add_filter('woocommerce_admin_settings_sanitize_option_fr_refund_form_builder', [$this, 'undo_sanitize_html_values'], 10, 3);
     }
     public function undo_sanitize_html_values($value, $option, $raw_value)

@@ -80,18 +80,18 @@ class Approved extends AbstractRequest
      */
     private function calc_refund_taxes(array $taxes, int $refund_qty, int $qty): array
     {
-        $refund_taxes = [];
+        $refund_taxes = ['total' => [], 'subtotal' => []];
         if (!empty($taxes['total'])) {
             foreach ($taxes['total'] as $total_tax_id => $total_value) {
                 if ($total_value && (float) $total_value > 0.0) {
-                    $refund_taxes['total'][$total_tax_id] = floatval($total_value / $qty) * $refund_qty;
+                    $refund_taxes['total'][$total_tax_id] = (float) ($total_value / $qty) * $refund_qty;
                 }
             }
         }
         if (!empty($taxes['subtotal'])) {
             foreach ($taxes['subtotal'] as $subtotal_tax_id => $subtotal_value) {
                 if ($subtotal_value && (float) $subtotal_value > 0.0) {
-                    $refund_taxes['subtotal'][$subtotal_tax_id] = floatval($subtotal_value / $qty) * $refund_qty;
+                    $refund_taxes['subtotal'][$subtotal_tax_id] = (float) ($subtotal_value / $qty) * $refund_qty;
                 }
             }
         }
@@ -114,7 +114,10 @@ class Approved extends AbstractRequest
             $item = $this->get_order_item($order, $refund_item_id);
             $taxes = $item->get_taxes();
             if ($item->get_type() === 'line_item') {
-                $item_amount = $order->get_item_total($item);
+                $item_amount = 0;
+                if ($item->get_quantity() > 0) {
+                    $item_amount = $item->get_total() / $item->get_quantity();
+                }
                 $refund_taxes = $this->calc_refund_taxes($taxes, (int) $refund_item['qty'], $item->get_quantity());
                 if (isset($refund_taxes['total'])) {
                     $total = (float) ($item_amount * $refund_item['qty']) + array_sum($refund_taxes['total']);
@@ -138,7 +141,7 @@ class Approved extends AbstractRequest
                 if ($item->get_quantity() === (int) $refund_item['qty']) {
                     $shipping_tax = array_map('wc_round_tax_total', $refund_taxes['total']);
                     $total = (float) $item->get_total() + array_sum($shipping_tax);
-                    $refund_items[$refund_item_id] = ['qty' => 1, 'refund_total' => $item->get_total(), 'refund_tax' => $shipping_tax ?? []];
+                    $refund_items[$refund_item_id] = ['qty' => 1, 'refund_total' => $item->get_total(), 'refund_tax' => $shipping_tax];
                 }
                 $total = round($total, 2);
                 $total_amount += $total;

@@ -93,6 +93,10 @@ class Configuration
      */
     private $theme_files;
     /**
+     * @var Language[]
+     */
+    private array $languages;
+    /**
      * Configuration constructor.
      *
      * @param $apache_document_root
@@ -113,8 +117,9 @@ class Configuration
      * @param $activate_plugins
      * @param $prepare_database
      * @param $theme_files
+     * @param $languages
      */
-    public function __construct($apache_document_root, $wptests_ip, $wptests_url, $dbhost, $dbname, $dbuser, $dbpassword, $dependent_plugins_dir, $plugin_slug, $plugin_dir, $plugin_file, $plugin_title, $plugin_product_id, $repository_plugins, $local_plugins, $activate_plugins, $prepare_database, $theme_files)
+    public function __construct($apache_document_root, $wptests_ip, $wptests_url, $dbhost, $dbname, $dbuser, $dbpassword, $dependent_plugins_dir, $plugin_slug, $plugin_dir, $plugin_file, $plugin_title, $plugin_product_id, $repository_plugins, $local_plugins, $activate_plugins, $prepare_database, $theme_files, $languages)
     {
         $this->apache_document_root = $apache_document_root;
         $this->wptests_ip = $wptests_ip;
@@ -134,6 +139,7 @@ class Configuration
         $this->activate_plugins = $activate_plugins;
         $this->prepare_database = $prepare_database;
         $this->theme_files = $theme_files;
+        $this->languages = $languages;
     }
     /**
      * @return string
@@ -262,6 +268,13 @@ class Configuration
         return $this->theme_files;
     }
     /**
+     * @return Language[]
+     */
+    public function getLanguages(): array
+    {
+        return $this->languages;
+    }
+    /**
      * Set env variables from configuration.
      */
     public function prepareEnvForConfiguration()
@@ -331,7 +344,12 @@ class Configuration
         $repository_plugins = self::getPluginsSettings($configuration, 'repository');
         $local_plugins = self::getPluginsSettings($configuration, 'local');
         $activate_plugins = self::getPluginsSettings($configuration, 'activate');
-        return new self($apache_document_root, $wptests_ip, $wptest_url, $dbhost, $dbname, $dbuser, $dbpassword, $dependent_plugins_dir, $plugin_slug, $plugin_dir, $plugin_file, $plugin_title, $plugin_product_id, $repository_plugins, $local_plugins, $activate_plugins, $prepare_database, $theme_files);
+        $languages = [];
+        $languages_config = $configuration['languages'] ?? [];
+        foreach ($languages_config as $language => $language_config) {
+            $languages[] = new Language($language, $language_config['plugin-slug'] ?? $plugin_slug, $language_config['plugin-title'] ?? '', $language_config['plugin-description'] ?? '');
+        }
+        return new self($apache_document_root, $wptests_ip, $wptest_url, $dbhost, $dbname, $dbuser, $dbpassword, $dependent_plugins_dir, $plugin_slug, $plugin_dir, $plugin_file, $plugin_title, $plugin_product_id, $repository_plugins, $local_plugins, $activate_plugins, $prepare_database, $theme_files, $languages);
     }
     /**
      * @param string $env_variable .

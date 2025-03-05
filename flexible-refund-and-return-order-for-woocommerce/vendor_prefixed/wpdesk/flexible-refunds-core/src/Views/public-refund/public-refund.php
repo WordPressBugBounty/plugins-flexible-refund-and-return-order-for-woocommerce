@@ -2,6 +2,10 @@
 
 namespace FRFreeVendor;
 
+/**
+ * @var array $params
+ */
+//phpcs:disable
 \defined('ABSPATH') || exit;
 ?>
 <form method="get">
@@ -19,13 +23,13 @@ namespace FRFreeVendor;
 ?>
 			</label>
 			<input class="fr-refund-shortcode-field" type="text"
-				   id="<?php 
+					id="<?php 
 \esc_attr_e($params['order_field_name']);
 ?>"
-				   name="<?php 
+					name="<?php 
 \esc_attr_e($params['order_field_name']);
 ?>" value=""
-				   placeholder="<?php 
+					placeholder="<?php 
 \esc_attr_e('Order number', 'flexible-refund-and-return-order-for-woocommerce');
 ?>"/>
 		</div>
@@ -39,23 +43,23 @@ namespace FRFreeVendor;
 ?>
 			</label>
 			<input class="fr-refund-shortcode-field" type="email"
-				   id="<?php 
+					id="<?php 
 \esc_attr_e($params['email_field_name']);
 ?>"
-				   name="<?php 
+					name="<?php 
 \esc_attr_e($params['email_field_name']);
 ?>" value=""
-				   placeholder="<?php 
+					placeholder="<?php 
 \esc_attr_e('Email', 'flexible-refund-and-return-order-for-woocommerce');
 ?>"/>
 		</div>
 
 		<div class="fr-refund-shortcode-field-wrapper">
 			<input class="fr-refund-shortcode-submit" type="submit"
-				   name="<?php 
+					name="<?php 
 \esc_attr_e($params['submit_field_name']);
 ?>"
-				   value="<?php 
+					value="<?php 
 \esc_attr_e('Send', 'flexible-refund-and-return-order-for-woocommerce');
 ?>"/>
 		</div>

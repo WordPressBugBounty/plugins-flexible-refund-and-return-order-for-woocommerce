@@ -10,9 +10,14 @@ class Plugin
      *
      * @return string
      */
-    public static function get_url_to_pro(): string
+    public static function get_url_to_pro(string $source = ''): string
     {
-        return get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/elastyczne-zwroty-i-reklamacje-woocommerce/' : 'https://wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/';
+        switch ($source) {
+            case 'email':
+                return get_locale() === 'pl_PL' ? 'https://wpde.sk/fr-admin-email-pl' : 'https://wpde.sk/fr-admin-email';
+            default:
+                return get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/elastyczne-zwroty-i-reklamacje-woocommerce/' : 'https://wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/';
+        }
     }
     /**
      * Get URL to the docs page.

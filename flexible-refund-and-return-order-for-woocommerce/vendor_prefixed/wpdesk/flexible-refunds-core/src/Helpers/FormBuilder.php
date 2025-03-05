@@ -15,7 +15,7 @@ class FormBuilder
      */
     public static function parse_field_args(array $field): array
     {
-        return wp_parse_args($field, ['type' => 'text', 'name' => '', 'label' => '', 'html' => '', 'enable' => 1, 'required' => 0, 'options' => [], 'placeholder' => '', 'css' => '', 'description' => '', 'maxlength' => '', 'minlength' => '']);
+        return wp_parse_args($field, ['type' => 'text', 'name' => '', 'label' => '', 'html' => '', 'enable' => 1, 'required' => 0, 'options' => [], 'placeholder' => '', 'css' => '', 'description' => '', 'maxlength' => '', 'minlength' => '', 'files_limit' => 1]);
     }
     public static function buttons_field(): array
     {

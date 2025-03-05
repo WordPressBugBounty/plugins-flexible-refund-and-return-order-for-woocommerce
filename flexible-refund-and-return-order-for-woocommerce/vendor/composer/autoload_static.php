@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit38dcf009d888d08e943b669f173e69f1
+class ComposerStaticInitb0cfec7893413c139bf8033c89f82ab5
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -196,6 +196,7 @@ class ComposerStaticInit38dcf009d888d08e943b669f173e69f1
         'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\BaseCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/BaseCommand.php',
         'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\Configuration' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/Configuration.php',
         'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\CreateCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/CreateCodeceptionTests.php',
+        'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\Language' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/Language.php',
         'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\LocalCodeceptionTrait' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/LocalCodeceptionTrait.php',
         'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareCodeceptionDb' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareCodeceptionDb.php',
         'FRFreeVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareLocalCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareLocalCodeceptionTests.php',
@@ -496,9 +497,9 @@ class ComposerStaticInit38dcf009d888d08e943b669f173e69f1
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit38dcf009d888d08e943b669f173e69f1::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit38dcf009d888d08e943b669f173e69f1::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit38dcf009d888d08e943b669f173e69f1::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb0cfec7893413c139bf8033c89f82ab5::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb0cfec7893413c139bf8033c89f82ab5::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb0cfec7893413c139bf8033c89f82ab5::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Conditions;
 
+use DateTimeZone;
 use Exception;
 class DateCondition extends AbstractCondition
 {
@@ -19,7 +20,8 @@ class DateCondition extends AbstractCondition
             $time_period = $conditions['time_period'] ?? 'year';
             $order_date = $this->get_order()->get_date_created();
             $order_date->modify($time_value . ' ' . $time_period);
-            return $order_date->getTimestamp() > current_time('timestamp');
+            $order_date->setTimezone(new DateTimeZone('UTC'));
+            return $order_date->getTimestamp() > time();
         } catch (Exception $e) {
             return \true;
         }

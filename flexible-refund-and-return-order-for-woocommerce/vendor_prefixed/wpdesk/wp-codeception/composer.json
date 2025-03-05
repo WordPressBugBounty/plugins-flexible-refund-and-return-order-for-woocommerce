@@ -23,7 +23,7 @@
         }
     },
     "require": {
-        "php": ">=7.2|^8",
+        "php": ">=7.4|^8",
         "ext-json": "*",
         "composer-plugin-api": "^1.1|^2",
         "albertofem\/rsync-lib": "^1.0",

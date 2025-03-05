@@ -4,6 +4,8 @@ namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Emails\EmailRefundRequested;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Emails\EmailRefundRequestedAdmin;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\RefundOrderTab;
+use FRFreeVendor\WPDesk\Persistence\Adapter\WordPress\WordpressOptionsContainer;
 use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
 use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use FRFreeVendor\WPDesk\View\Renderer\Renderer;
@@ -29,8 +31,13 @@ class MyAccount implements Hookable
      * @var Ajax
      */
     private $ajax;
+    /**
+     * @var WordpressOptionsContainer
+     */
+    private $form_settings;
     public function __construct(Renderer $renderer, PersistentContainer $settings, Ajax $ajax)
     {
+        $this->form_settings = new WordpressOptionsContainer(RefundOrderTab::SETTING_PREFIX);
         $this->renderer = $renderer;
         $this->settings = $settings;
         $this->ajax = $ajax;
@@ -126,7 +133,7 @@ class MyAccount implements Hookable
     {
         $is_total_refunded = (float) $order->get_total() - (float) $order->get_total_refunded() === 0.0;
         $request_status = $order->get_meta('fr_refund_request_status');
-        if ($is_total_refunded || $request_status && !in_array($order->get_meta('fr_refund_request_status'), ['approved', 'rejected'])) {
+        if ($is_total_refunded || !empty($request_status) && !in_array($order->get_meta('fr_refund_request_status'), ['approved', 'rejected'], \true)) {
             $this->renderer->output_render('myaccount/' . $this->get_template_name('refund-in-progress'), ['order' => $order, 'fields' => new FieldRenderer(), 'show_shipping' => $this->settings->get_fallback('refund_enable_shipment', 'no'), 'request_status' => $request_status]);
         } else {
             $this->renderer->output_render('myaccount/' . $this->get_template_name('refund'), ['show_shipping' => $this->settings->get_fallback('refund_enable_shipment', 'no'), 'order' => $order, 'fields' => new FieldRenderer(), 'request_status' => $request_status]);
@@ -135,18 +142,19 @@ class MyAccount implements Hookable
     /**
      * @param mixed $order_id Order ID is passed as string.
      *
-     * @return void
+     * @return string|null
      */
-    public function refund_account_endpoint($order_id): void
+    public function refund_account_endpoint($order_id): ?string
     {
         $order = wc_get_order($order_id);
         if ($order) {
             if (!$this->is_user_owner_of_the_order($order)) {
                 $this->renderer->output_render('myaccount/invalid-order-or-user-id');
-                return;
+                return null;
             }
             $this->handle_refund_request($order);
         }
+        return $order_id;
     }
     /**
      * @param mixed $order_id Order ID is passed as string.
@@ -184,19 +192,34 @@ class MyAccount implements Hookable
      *
      * @return array
      */
-    private function upload_file(string $name): array
+    private function upload_files(string $name): array
     {
-        $upload_field = $_FILES[$name] ?? '';
-        if (isset($upload_field['name']) && !empty($upload_field['name'])) {
-            if (!function_exists('wp_handle_upload')) {
-                require_once \ABSPATH . 'wp-admin/includes/file.php';
-            }
-            $file_data = wp_handle_upload($upload_field, ['test_form' => \false]);
-            if ($file_data) {
-                return $file_data;
-            }
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        if (!isset($_FILES[$name])) {
+            return [];
         }
-        return [];
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        $files = $_FILES[$name];
+        if (!function_exists('wp_handle_upload')) {
+            require_once \ABSPATH . 'wp-admin/includes/file.php';
+        }
+        if (!is_array($files['name'])) {
+            return wp_handle_upload($files, ['test_form' => \false]);
+        }
+        $files_data = [];
+        $files_limit = $this->get_upload_files_limit($name);
+        foreach ($files['name'] as $index => $filename) {
+            if (empty($filename) || $index >= $files_limit) {
+                continue;
+            }
+            $single_file = ['name' => $files['name'][$index], 'type' => $files['type'][$index], 'tmp_name' => $files['tmp_name'][$index], 'error' => $files['error'][$index], 'size' => $files['size'][$index]];
+            $file_data = wp_handle_upload($single_file, ['test_form' => \false]);
+            if (!empty($file_data['error'])) {
+                continue;
+            }
+            $files_data[] = $file_data;
+        }
+        return $files_data;
     }
     /**
      * @return void
@@ -204,9 +227,11 @@ class MyAccount implements Hookable
     public function save_refund_request(): void
     {
         global $wp;
+        //phpcs:disable
         $refund_order_id = $_GET['refund_order_id'] ?? 0;
         $order_id = $wp->query_vars[self::QUERY_VAR_KEY] ?? $refund_order_id;
         $post_data = $_POST[FieldRenderer::FIELD_PREFIX] ?? [];
+        //phpcs:enable
         if ($order_id && !empty($post_data['items'])) {
             $order = wc_get_order($order_id);
             $nonce = wp_verify_nonce($post_data['fr_refund_request'], 'fr_refund_request_send');
@@ -216,7 +241,7 @@ class MyAccount implements Hookable
                 $post_data['attachments'] = [];
                 if (isset($post_data['upload_names'])) {
                     foreach ($post_data['upload_names'] as $upload_name) {
-                        $file_data = $this->upload_file($upload_name);
+                        $file_data = $this->upload_files($upload_name);
                         if ($file_data) {
                             $post_data['attachments'][$upload_name] = $file_data;
                         }
@@ -252,8 +277,10 @@ class MyAccount implements Hookable
     public function cancel_refund_request_by_user(): void
     {
         global $current_user;
+        //phpcs:disable
         $nonce_value = $_REQUEST['_wpnonce'] ?? '';
         $order_ID = $_REQUEST['delete_refund_request'] ?? 0;
+        //phpcs:enable
         $nonce = wp_verify_nonce($nonce_value, self::CANCEL_NONCE_ACTION);
         if ($order_ID && $nonce) {
             $order = wc_get_order($order_ID);
@@ -282,5 +309,10 @@ class MyAccount implements Hookable
         if (isset($emails[EmailRefundRequestedAdmin::ID])) {
             $emails[EmailRefundRequestedAdmin::ID]->trigger($order);
         }
+    }
+    private function get_upload_files_limit(string $field_name): string
+    {
+        $fields = $this->form_settings->get_fallback('form_builder', []);
+        return isset($fields[$field_name]['files_limit']) ? (int) $fields[$field_name]['files_limit'] : 1;
     }
 }

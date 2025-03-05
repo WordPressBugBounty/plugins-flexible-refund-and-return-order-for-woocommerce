@@ -14,7 +14,9 @@ $support_url = \get_locale() === 'pl_PL' ? 'https://wpde.sk/flexible-refunds-get
 ?>
 <div class="wrap">
 	<div id="marketing-page-wrapper">
+
 		<?php 
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 echo $boxes->get_boxes()->get_all();
 ?>
 

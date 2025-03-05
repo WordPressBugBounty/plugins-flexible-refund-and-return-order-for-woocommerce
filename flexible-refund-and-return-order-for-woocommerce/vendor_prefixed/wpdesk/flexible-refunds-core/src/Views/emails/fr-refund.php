@@ -2,7 +2,13 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\EmailHelper;
+/**
+ * @var string $email_heading
+ * @var string $email
+ * @var string $additional_content
+ */
 if (!\defined('ABSPATH')) {
     exit;
 }

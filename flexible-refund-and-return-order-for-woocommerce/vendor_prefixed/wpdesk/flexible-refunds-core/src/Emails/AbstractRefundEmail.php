@@ -113,6 +113,7 @@ abstract class AbstractRefundEmail extends WC_Email
         $field_key = $this->get_field_key($key);
         $defaults = ['title' => '', 'disabled' => \false, 'class' => '', 'css' => '', 'placeholder' => '', 'type' => 'text', 'desc_tip' => \false, 'description' => '', 'custom_attributes' => []];
         $data = wp_parse_args($data, $defaults);
+        //phpcs:disable
         ob_start();
         ?>
 		<tr valign="top">
@@ -142,6 +143,7 @@ abstract class AbstractRefundEmail extends WC_Email
 			</td>
 		</tr>
 		<?php 
+        //phpcs:enable
         return ob_get_clean();
     }
 }

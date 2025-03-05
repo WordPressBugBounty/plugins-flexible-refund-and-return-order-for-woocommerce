@@ -10,7 +10,7 @@ if (!$name) {
     return '';
 }
 $disabled = $field['should_disable'] ?? \false;
-$periods = ['days' => \esc_html__('Day(s)', 'flexible-refund-and-return-order-for-woocommerce'), 'weeks' => \esc_html__('Week(s)', 'flexible-refund-and-return-order-for-woocommerce'), 'months' => \esc_html__('Month(s)', 'flexible-refund-and-return-order-for-woocommerce'), 'years' => \esc_html__('Year(s)', 'flexible-refund-and-return-order-for-woocommerce')];
+$periods = ['hours' => \esc_html__('Hour(s)', 'flexible-refund-and-return-order-for-woocommerce'), 'days' => \esc_html__('Day(s)', 'flexible-refund-and-return-order-for-woocommerce'), 'weeks' => \esc_html__('Week(s)', 'flexible-refund-and-return-order-for-woocommerce'), 'months' => \esc_html__('Month(s)', 'flexible-refund-and-return-order-for-woocommerce'), 'years' => \esc_html__('Year(s)', 'flexible-refund-and-return-order-for-woocommerce')];
 $time_value = $field['value']['time_value'] ?? 1;
 $time_period = $field['value']['time_period'] ?? 'days';
 ?>

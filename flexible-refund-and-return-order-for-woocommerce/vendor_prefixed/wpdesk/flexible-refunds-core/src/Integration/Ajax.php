@@ -55,9 +55,13 @@ class Ajax implements Hookable
     public function create_refund()
     {
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['error_details' => __('You are not allowed to create refund!', 'flexible-refund-core'), 'error_code' => 100]);
+            wp_send_json_error(['error_details' => __('You are not allowed to create refund!', 'flexible-refund-and-return-order-for-woocommerce'), 'error_code' => 100]);
         }
-        $post_data = wp_parse_args(wp_unslash($_POST), ['order_ID' => 0, 'note' => '', 'status' => '', 'form' => '', 'items' => []]);
+        $post_data = wp_parse_args(
+            //phpcs:ignore WordPress.Security.NonceVerification.Missing
+            wp_unslash($_POST),
+            ['order_ID' => 0, 'note' => '', 'status' => '', 'form' => '', 'items' => []]
+        );
         $status = $post_data['status'];
         $order_ID = $post_data['order_ID'];
         parse_str($post_data['form'], $form);
@@ -81,6 +85,7 @@ class Ajax implements Hookable
      */
     public function form_builder_insert_field(): void
     {
+        //phpcs:ignore WordPress.Security.NonceVerification.Missing
         $post_data = wp_unslash($_POST);
         $data = FormBuilder::parse_field_args($post_data);
         $data['field_name'] = FormBuilderTab::SETTING_PREFIX . 'form_builder[' . $data['name'] . ']';

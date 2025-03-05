@@ -21,4 +21,8 @@ class UploadField extends InputTextField
     {
         return 'upload-input';
     }
+    public function get_files_limit(): int
+    {
+        return $this->is_attribute_set('data-files-limit') ? (int) $this->get_attribute('data-files-limit') : 1;
+    }
 }

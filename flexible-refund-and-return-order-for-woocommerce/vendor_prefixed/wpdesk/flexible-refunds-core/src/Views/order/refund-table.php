@@ -2,12 +2,14 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 \defined('ABSPATH') || exit;
 /**
  * @var WC_Order      $order
  * @var FieldRenderer $fields
  * @var string        $show_shipping
+ * @var $settings
  */
 if (!$order) {
     return;
@@ -63,15 +65,20 @@ foreach ($order_items as $item_id => $item) {
     $item_price = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity();
     $item_price_refund = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity() * (int) $refunded_qty;
     $item_total = $item->get_total() + $item->get_total_tax();
+    $post_id = $product->is_type('variation') ? $product->get_parent_id() : $product->get_id();
     if ($qty > 0) {
         $total_refund_sum += $item_price_refund;
     }
     ?>
 		<tr class="product_item">
 			<td class="item-name">
-				<?php 
+				<a href="<?php 
+    echo \admin_url('post.php?post=' . $post_id . '&action=edit');
+    ?>">
+					<?php 
     echo \esc_html($item->get_name());
     ?>
+				</a>
 			</td>
 			<td class="item-cost">
 				<?php 
@@ -122,7 +129,7 @@ foreach ($order_items as $item_id => $item) {
 						/>
 					</label>
 					<span class="product-quantity"><?php 
-        echo \sprintf('&times;&nbsp;%s', $qty_display);
+        \printf('&times;&nbsp;%s', $qty_display);
         ?></span>
 				<?php 
     }
@@ -160,7 +167,7 @@ foreach ($shipping_items as $shipping_item) {
         ?>
 			<tr class="shipping-item">
 				<td><?php 
-        echo \sprintf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
+        \printf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
         ?></td>
 				<td><?php 
         echo \wc_price((float) $shipping_item->get_total() + (float) $shipping_item->get_total_tax(), ['currency' => $order->get_currency()]);
@@ -228,8 +235,6 @@ foreach ($shipping_items as $shipping_item) {
 	<tfoot>
 	<tr>
 		<td colspan="4"></td>
-		<?php 
-?>
 		<td class="total-refund-amount"><strong><span class="refund-total-calc">
 		<?php 
 if ($total_refund_sum <= 0) {

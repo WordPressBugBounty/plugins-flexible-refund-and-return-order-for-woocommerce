@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\EmailHelper;
 if (!\defined('ABSPATH')) {
     exit;

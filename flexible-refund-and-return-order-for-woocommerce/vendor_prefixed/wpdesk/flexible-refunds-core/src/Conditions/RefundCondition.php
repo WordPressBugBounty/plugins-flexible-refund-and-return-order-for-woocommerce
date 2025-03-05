@@ -106,7 +106,8 @@ class RefundCondition extends AbstractCondition
             }
         }
         foreach ($values as $value) {
-            $product_cats = in_array((string) $value, $order_product_cats);
+            // @phpstan-ignore function.strict ($order_product_cats int[]|string[])
+            $product_cats = in_array((string) $value, $order_product_cats, \false);
             if ($operator === 'is_not') {
                 return !$product_cats;
             }
@@ -130,7 +131,7 @@ class RefundCondition extends AbstractCondition
             }
         }
         foreach ($values as $value) {
-            $payment_method = in_array((string) $value, $order_products);
+            $payment_method = in_array((string) $value, $order_products, \true);
             if ($operator === 'is_not') {
                 return !$payment_method;
             }

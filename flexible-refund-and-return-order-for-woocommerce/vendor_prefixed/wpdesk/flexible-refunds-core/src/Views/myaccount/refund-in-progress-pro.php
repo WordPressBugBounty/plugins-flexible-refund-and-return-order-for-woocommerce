@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FormValuesRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
@@ -22,7 +23,7 @@ $request_note = $order->get_meta('fr_refund_request_note');
 ?>
 
 <h2><?php 
-\printf(\esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), Statuses::get_status_label($request_status));
+\printf(\esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), \esc_html(Statuses::get_status_label($request_status)));
 ?></h2>
 <?php 
 if (!empty($request_note)) {
@@ -110,7 +111,7 @@ foreach ($order_items as $item_id => $item) {
 			</td>
 			<td class="item-cost">
 				<?php 
-    echo \wc_price($order->get_item_total($item, \true), array('currency' => $order->get_currency()));
+    echo \wc_price($order->get_item_total($item, \true), ['currency' => $order->get_currency()]);
     ?>
 			</td>
 			<td class="item-total">
@@ -147,8 +148,8 @@ foreach ($order_items as $item_id => $item) {
     if ($qty < 1) {
         ?>
 				<?php 
-        echo "-";
-        ?>	
+        echo '-';
+        ?>
 			<?php 
     } else {
         ?>
@@ -164,8 +165,8 @@ foreach ($order_items as $item_id => $item) {
     if ($qty < 1) {
         ?>
 				<?php 
-        echo "-";
-        ?>	
+        echo '-';
+        ?>
 			<?php 
     } else {
         ?>
@@ -201,7 +202,7 @@ foreach ($shipping_items as $shipping_item_id => $shipping_item) {
         ?>
 			<tr class="shipping-item">
 				<td><?php 
-        echo \sprintf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
+        \printf(\esc_html__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $shipping_item->get_name());
         ?></td>
 				<td><?php 
         echo \wc_price((float) $shipping_item->get_total() + (float) $shipping_item->get_total_tax(), ['currency' => $order->get_currency()]);
@@ -254,8 +255,8 @@ foreach ($shipping_items as $shipping_item_id => $shipping_item) {
         if ($refunded) {
             ?>
 					<?php 
-            echo "-";
-            ?>	
+            echo '-';
+            ?>
 				<?php 
         } else {
             ?>
@@ -271,8 +272,8 @@ foreach ($shipping_items as $shipping_item_id => $shipping_item) {
         if ($refunded) {
             ?>
 					<?php 
-            echo "-";
-            ?>	
+            echo '-';
+            ?>
 				<?php 
         } else {
             ?>
@@ -300,3 +301,4 @@ echo \wc_price($total_refund_sum, ['currency' => $order->get_currency()]);
 </table>
 <?php 
 echo (new FormValuesRenderer())->output($order);
+//phpcs:enable

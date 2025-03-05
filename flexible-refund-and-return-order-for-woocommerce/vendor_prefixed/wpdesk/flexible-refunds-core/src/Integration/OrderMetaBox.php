@@ -44,6 +44,7 @@ class OrderMetaBox implements Hookable
         $screens = ['shop_subscription', 'woocommerce_page_wc-orders'];
         try {
             $hpos_controller = wc_get_container()->get(CustomOrdersTableController::class);
+            // @phpstan-ignore class.notFound
             if ($hpos_controller->custom_orders_table_usage_is_enabled()) {
                 return array_merge([wc_get_page_screen_id('shop-order')], $screens);
             } else {

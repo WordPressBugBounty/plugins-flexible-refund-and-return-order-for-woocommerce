@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\FormBuilderTab;
 class Assets implements Hookable
@@ -9,6 +10,7 @@ class Assets implements Hookable
     const SCRIPT_VERSION = 1;
     const SETTINGS_PAGE_ID = 'woocommerce_page_wc-settings';
     const SETTINGS_TAB_ID = 'flexible_refunds';
+    const SETTINGS_EMAIL_SECTION_ID = 'fr_email_refund_admin_requested';
     /**
      * @var string
      */
@@ -57,11 +59,18 @@ class Assets implements Hookable
             \FRFreeVendor\WPDesk\Library\Marketing\Boxes\Assets::enqueue_assets();
             \FRFreeVendor\WPDesk\Library\Marketing\Boxes\Assets::enqueue_owl_assets();
         }
+        if ($screen->id === self::SETTINGS_PAGE_ID && (isset($_GET['section']) && $_GET['section'] === self::SETTINGS_EMAIL_SECTION_ID)) {
+            wp_enqueue_script('frc-email-recipients', $this->get_assets_js_url() . 'email-recipients.js', ['jquery'], $this->scripts_version, \true);
+            $fr_email_recipients = ['is_super' => Integration::is_super() ? 'true' : 'false'];
+            wp_localize_script('frc-email-recipients', 'fr_email_recipients', $fr_email_recipients);
+        }
         $allowed_screens = ['shop_order', 'shop_subscription', 'woocommerce_page_wc-orders'];
-        if (in_array($screen->id, $allowed_screens)) {
+        if (in_array($screen->id, $allowed_screens, \true)) {
             wp_enqueue_style('frc-meta-box', $this->get_assets_css_url() . 'meta-box.css', [], $this->scripts_version);
             wp_enqueue_script('frc-meta-box', $this->get_assets_js_url() . 'meta-box.js', ['jquery'], $this->scripts_version, \true);
+            //phpcs:disable
             $fr_meta_box = ['redirect_url' => esc_url($_SERVER['REQUEST_URI']), 'decimal_point' => wc_get_price_decimal_separator(), 'thousand_point' => wc_get_price_thousand_separator()];
+            //phpcs:enable
             wp_localize_script('frc-meta-box', 'fr_meta_box', $fr_meta_box);
         }
     }
@@ -69,7 +78,7 @@ class Assets implements Hookable
     {
         wp_enqueue_style('frc-front', $this->get_assets_css_url() . 'front.css', [], $this->scripts_version);
         wp_enqueue_script('frc-front', $this->get_assets_js_url() . 'front.js', [], $this->scripts_version, \true);
-        $fr_front_i18n = ['qty_empty' => esc_html__('Select the amount of products to refund!', 'flexible-refund-and-return-order-for-woocommerce'), 'required_field' => esc_html__('This field is required!', 'flexible-refund-and-return-order-for-woocommerce'), 'decimal_point' => wc_get_price_decimal_separator(), 'thousand_point' => wc_get_price_thousand_separator()];
+        $fr_front_i18n = ['qty_empty' => esc_html__('Select the amount of products to refund!', 'flexible-refund-and-return-order-for-woocommerce'), 'required_field' => esc_html__('This field is required!', 'flexible-refund-and-return-order-for-woocommerce'), 'files_limit' => esc_html__('You have exceeded the file limit. Upload files again', 'flexible-refund-and-return-order-for-woocommerce'), 'decimal_point' => wc_get_price_decimal_separator(), 'thousand_point' => wc_get_price_thousand_separator()];
         wp_localize_script('frc-front', 'fr_front_i18n', $fr_front_i18n);
         wp_enqueue_style('frc-select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [], $this->scripts_version);
         wp_enqueue_script('frc-select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', [], $this->scripts_version, \true);

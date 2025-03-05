@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor;
 
+//phpcs:disable
 use FRFreeVendor\WPDesk\Library\Marketing\RatePlugin\RateBox;
 /**
  * @var RateBox $boxes

@@ -14,7 +14,7 @@ class FieldFactory
     private function get_renderer(): Renderer
     {
         $chain = new ChainResolver();
-        $chain->appendResolver(new DirResolver(trailingslashit(dirname(__FILE__)) . 'Views'));
+        $chain->appendResolver(new DirResolver(trailingslashit(__DIR__) . 'Views'));
         return new SimplePhpRenderer($chain);
     }
     /**
