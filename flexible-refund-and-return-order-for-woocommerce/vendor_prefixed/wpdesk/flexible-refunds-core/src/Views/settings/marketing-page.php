@@ -10,7 +10,7 @@ $boxes = $params['boxes'] ?? \false;
 if (!$boxes) {
     return;
 }
-$support_url = \get_locale() === 'pl_PL' ? 'https://wpde.sk/flexible-refunds-get-support' : 'https://wpde.sk/flexible-refunds-get-support-pro';
+$support_url = \get_locale() === 'pl_PL' ? 'https://wpdesk.link/flexible-refunds-get-support' : 'https://wpdesk.link/flexible-refunds-get-support-pro';
 ?>
 <div class="wrap">
 	<div id="marketing-page-wrapper">

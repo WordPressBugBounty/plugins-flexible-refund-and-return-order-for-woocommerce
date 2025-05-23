@@ -6,7 +6,7 @@ Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, woocomm
 Requires at least: 6.1
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.31
+Stable tag: 1.0.32
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -43,7 +43,7 @@ See the main features of the free version:
 * Adjust the order returns with the plugin,
 * **Compatible with WooCommerce Subscriptions.**
 
-**Visit** [**Flexible Refund Docs**](https://wpde.sk/docs-fr) to see all features of the plugin & how to set up a refund and return system for your WooCommerce orders.
+**Visit** [**Flexible Refund Docs**](https://wpdesk.link/docs-fr) to see all features of the plugin & how to set up a refund and return system for your WooCommerce orders.
 
 [youtube https://www.youtube.com/watch?v=mBhu-ULO3BU]
 
@@ -71,7 +71,7 @@ Do you need more automation for WooCommerce refunds? You may manage the refund s
 
 #### Try refunds and returns for WooCommerce - Live Demo
 
-Test Flexible Refund and Return Order for WooCommerce (free and PRO) in [**your free demo**](https://wpde.sk/demo-fr).
+Test Flexible Refund and Return Order for WooCommerce (free and PRO) in [**your free demo**](https://wpdesk.link/demo-fr).
 
 ### The Flexible Refund and Return Order for WooCommerce plugin checklist
 
@@ -100,7 +100,7 @@ You may help us [translate the plugin](https://translate.wordpress.org/projects/
 
 ### Docs
 
-[View Flexible Refund and Return Order for WooCommerce Documentation](https://wpde.sk/docs-fr)
+[View Flexible Refund and Return Order for WooCommerce Documentation](https://wpdesk.link/docs-fr)
 
 ### Support Policy
 
@@ -295,6 +295,9 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.0.32 - 2025-05-23 =
+* Changed promo url link
 
 = 1.0.31 - 2025-05-12 =
 * Added support for WordPress 6.8

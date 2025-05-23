@@ -14,7 +14,7 @@ class Plugin
     {
         switch ($source) {
             case 'email':
-                return get_locale() === 'pl_PL' ? 'https://wpde.sk/fr-admin-email-pl' : 'https://wpde.sk/fr-admin-email';
+                return get_locale() === 'pl_PL' ? 'https://wpdesk.link/fr-admin-email-pl' : 'https://wpdesk.link/fr-admin-email';
             default:
                 return get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/elastyczne-zwroty-i-reklamacje-woocommerce/' : 'https://wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/';
         }
