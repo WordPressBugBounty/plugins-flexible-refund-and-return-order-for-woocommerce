@@ -6,7 +6,7 @@ Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, woocomm
 Requires at least: 6.1
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.32
+Stable tag: 1.0.33
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -122,6 +122,10 @@ You can install the plugin like any other WordPress plugin.
 3. Activate the plugin through the Plugins menu in the WordPress Administration.
 
 You can also use WordPress uploader to upload the plugin zip file in WordPress menu Plugins -> Add New -> Upload Plugin. You can find and install the plugin through your Plugins menu with a search bar too.
+
+== Data use policy ==
+
+Learn about [Use of Data Policy by WP Desk Plugins](https://wpdesk.net/terms-conditions/privacy-policy-use-of-data-collected-by-wp-desk-plugins/?utm_source=wporg&utm_medium=link&utm_campaign=data-use-policy)
 
 == Frequently Asked Questions ==
 
@@ -295,6 +299,9 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.0.33 - 2025-06-16 =
+- Fixed missing orders with refund status
 
 = 1.0.32 - 2025-05-23 =
 * Changed promo url link

@@ -100,11 +100,11 @@ class Integration implements Hookable
         if ($settings->get_fallback('refund_button', 'no') === 'yes') {
             $this->add_hookable($my_account);
             $this->add_hookable(new Integration\AdminMenu());
-            $this->add_hookable(new Integration\RegisterOrderStatus());
             $this->add_hookable(new Integration\OrderMetaBox($renderer, $settings));
             $this->add_hookable(new Integration\OrderNote());
             $this->add_hookable(new Emails\RegisterEmails());
         }
+        $this->add_hookable(new Integration\RegisterOrderStatus());
         $this->add_hookable($ajax);
         $this->hooks_on_hookable_objects();
     }
