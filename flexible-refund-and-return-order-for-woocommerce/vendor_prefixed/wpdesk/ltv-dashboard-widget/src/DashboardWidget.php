@@ -215,7 +215,7 @@ final class DashboardWidget
     {
         $widget_data = $this->get_widget_data();
         if (!empty($widget_data)) {
-            echo '<div class="wpdesk_ltv_dashboard_widget">';
+            echo '<div class="wpdesk-ltv-dashboard-widget">';
             if ($this->show_widget_header && $widget_data['header']) {
                 echo wp_kses_post($widget_data['header']);
             }
@@ -231,31 +231,31 @@ final class DashboardWidget
             echo '</div>';
             ?>
             <style>
-                .wpdesk_ltv_dashboard_widget .ltv-rows {
+                .wpdesk-ltv-dashboard-widget .ltv-rows {
                     margin-left: -12px;
                     margin-right: -12px;
                 }
 
-                .wpdesk_ltv_dashboard_widget .ltv-row {
+                .wpdesk-ltv-dashboard-widget .ltv-row {
                     padding: 6px 12px 24px;
                 }
 
-                .wpdesk_ltv_dashboard_widget .ltv-row:nth-child(odd) {
+                .wpdesk-ltv-dashboard-widget .ltv-row:nth-child(odd) {
                     background-color: #f6f7f7;
                 }
 
-                .wpdesk_ltv_dashboard_widget .ltv-row-description p {
+                .wpdesk-ltv-dashboard-widget .ltv-row-description p {
                     margin-top: 6px;
                 }
 
-                .wpdesk_ltv_dashboard_widget img {
+                .wpdesk-ltv-dashboard-widget img {
                     display: block;
                     margin: 0 auto 10px;
                     width: 250px;
                     max-width: 100%;
                 }
 
-                .wpdesk_ltv_dashboard_widget .ltv-buttons {
+                .wpdesk-ltv-dashboard-widget .ltv-buttons {
                     display: flex;
                     justify-content: space-around;
                 }
@@ -265,12 +265,12 @@ final class DashboardWidget
                     text-align: center;
                 }
 
-                .wpdesk_ltv_dashboard_widget .ltv-footer {
+                .wpdesk-ltv-dashboard-widget .ltv-footer {
                     margin: 0 -12px;
                     padding: 0 12px;
                 }
 
-                .wpdesk_ltv_dashboard_widget .ltv-footer p {
+                .wpdesk-ltv-dashboard-widget .ltv-footer p {
                     margin: 0;
                 }
             </style>
@@ -294,7 +294,7 @@ final class DashboardWidget
                 $add_to_cart_url = $plugin_url;
             } else if ($plugin['add_to_cart_id'] === self::AUTOPAY_ID) {
                 $add_to_cart_button_label = esc_html__('Download', 'flexible-refund-and-return-order-for-woocommerce');
-                $add_to_cart_url = esc_url("https://wpde.sk/autopay-wpdeskpl");
+                $add_to_cart_url = esc_url("https://wpdesk.link/autopay-wpdeskpl");
             }
             echo '<li class="ltv-row">';
             if ($plugin['image']) {
