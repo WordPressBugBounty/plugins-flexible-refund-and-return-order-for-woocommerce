@@ -65,20 +65,34 @@ foreach ($order_items as $item_id => $item) {
     $item_price = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity();
     $item_price_refund = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity() * (int) $refunded_qty;
     $item_total = $item->get_total() + $item->get_total_tax();
-    $post_id = $product->is_type('variation') ? $product->get_parent_id() : $product->get_id();
+    if ($product && \is_a($product, 'WC_Product')) {
+        $post_id = $product->is_type('variation') ? $product->get_parent_id() : $product->get_id();
+    }
     if ($qty > 0) {
         $total_refund_sum += $item_price_refund;
     }
     ?>
 		<tr class="product_item">
 			<td class="item-name">
-				<a href="<?php 
-    echo \admin_url('post.php?post=' . $post_id . '&action=edit');
-    ?>">
+				<?php 
+    if (isset($post_id)) {
+        ?>
+					<a href="<?php 
+        echo \esc_url(\admin_url('post.php?post=' . $post_id . '&action=edit'));
+        ?>">
+						<?php 
+        echo \esc_html($item->get_name());
+        ?>
+					</a>
+				<?php 
+    } else {
+        ?>
 					<?php 
-    echo \esc_html($item->get_name());
+        echo \esc_html($item->get_name());
+        ?>
+				<?php 
+    }
     ?>
-				</a>
 			</td>
 			<td class="item-cost">
 				<?php 
