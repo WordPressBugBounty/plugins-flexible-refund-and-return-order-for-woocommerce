@@ -158,6 +158,9 @@ class Approved extends AbstractRequest
     private function increase_stock_quantity(int $product_id, int $qty): void
     {
         $product = wc_get_product($product_id);
+        if (!$product) {
+            return;
+        }
         $quantity = $product->get_stock_quantity();
         $product->set_stock_quantity($quantity + $qty);
         $product->save();
