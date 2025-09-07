@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'wpdesk/flexible-refund-and-return-order-for-woocommerce',
-        'pretty_version' => '1.0.37',
-        'version' => '1.0.37.0',
-        'reference' => 'aafb18d51307215bf67a7868277290bee0048e18',
+        'pretty_version' => '1.0.38',
+        'version' => '1.0.38.0',
+        'reference' => 'e0d10f5e927d8e4e43ba742ecd8abbe82d63c8de',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -29,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'wpdesk/flexible-refund-and-return-order-for-woocommerce' => array(
-            'pretty_version' => '1.0.37',
-            'version' => '1.0.37.0',
-            'reference' => 'aafb18d51307215bf67a7868277290bee0048e18',
+            'pretty_version' => '1.0.38',
+            'version' => '1.0.38.0',
+            'reference' => 'e0d10f5e927d8e4e43ba742ecd8abbe82d63c8de',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

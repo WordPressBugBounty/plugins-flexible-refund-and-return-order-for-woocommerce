@@ -61,7 +61,7 @@ class PluginActionLinks implements Hookable
         $tracker_consent = new \FRFreeVendor\WPDesk_Tracker_Persistence_Consent();
         $plugin_links = [];
         if (!$tracker_consent->is_active()) {
-            $opt_in_link = admin_url('admin.php?page=wpdesk_tracker_' . $this->plugin_slug);
+            $opt_in_link = wp_nonce_url(admin_url('admin.php?page=wpdesk_tracker_' . $this->plugin_slug), OptInPage::WPDESK_TRACKER_ACTION, OptInPage::WPDESK_TRACKER_NONCE);
             if (is_string($this->shop_url) && strlen($this->shop_url) > 0) {
                 $opt_in_link = add_query_arg('shop_url', $this->shop_url, $opt_in_link);
             }
@@ -82,7 +82,8 @@ class PluginActionLinks implements Hookable
     private function tracker_enabled()
     {
         $tracker_enabled = \true;
-        if (!empty($_SERVER['SERVER_ADDR']) && $this->is_localhost($_SERVER['SERVER_ADDR'])) {
+        $server = sanitize_text_field(wp_unslash($_SERVER['SERVER_NAME'] ?? ''));
+        if (!empty($server) && $this->is_localhost($server)) {
             $tracker_enabled = \false;
         }
         return (bool) apply_filters('wpdesk_tracker_enabled', $tracker_enabled);

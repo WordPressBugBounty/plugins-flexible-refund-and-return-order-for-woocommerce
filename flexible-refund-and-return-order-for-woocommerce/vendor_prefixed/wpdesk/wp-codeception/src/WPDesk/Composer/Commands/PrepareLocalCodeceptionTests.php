@@ -3,11 +3,8 @@
 namespace FRFreeVendor\WPDesk\Composer\Codeception\Commands;
 
 use FRFreeVendor\Composer\Downloader\FilesystemException;
-use FRFreeVendor\Symfony\Component\Console\Input\InputArgument;
 use FRFreeVendor\Symfony\Component\Console\Input\InputInterface;
 use FRFreeVendor\Symfony\Component\Console\Output\OutputInterface;
-use FRFreeVendor\Symfony\Component\Yaml\Exception\ParseException;
-use FRFreeVendor\Symfony\Component\Yaml\Yaml;
 /**
  * Codeception tests run command.
  *

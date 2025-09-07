@@ -26,7 +26,7 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker_With_Update_Di
             foreach ($this->plugin_require as $name => $plugin_info) {
                 if ($this->is_currently_updated($name)) {
                     $nice_name = $plugin_info[self::PLUGIN_INFO_KEY_NICE_NAME];
-                    $this->notices[] = $this->prepare_notice_message(\sprintf(\__('The &#8220;%s&#8221; plugin is temporarily disabled since the required %s plugin is being upgraded.', $this->get_text_domain()), $this->plugin_name, $nice_name, $nice_name));
+                    $this->notices[] = $this->prepare_notice_message(\sprintf(\__('The &#8220;%s&#8221; plugin is temporarily disabled since the required %s plugin is being upgraded.', 'flexible-refund-and-return-order-for-woocommerce'), $this->plugin_name, $nice_name, $nice_name));
                 }
             }
             return \count($this->notices) === 0;

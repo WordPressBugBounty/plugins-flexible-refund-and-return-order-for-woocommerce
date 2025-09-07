@@ -36,11 +36,11 @@
         "codeception\/module-webdriver": "^1.4.1",
         "codeception\/util-universalframework": "^1.0",
         "lucatume\/codeception-steppify": "^1.0.6",
-        "lucatume\/wp-browser": "<3.5",
-        "symfony\/yaml": "^5",
+        "lucatume\/wp-browser": "^3",
+        "symfony\/yaml": "^5 || ^6 || ^7",
         "vlucas\/phpdotenv": "^4",
-        "wp-cli\/admin-command": "^2.0.2",
-        "wp-cli\/wp-cli-bundle": "^2.7.1"
+        "wp-cli\/admin-command": "^2",
+        "wp-cli\/wp-cli-bundle": "^2"
     },
     "require-dev": {
         "10up\/wp_mock": "*"

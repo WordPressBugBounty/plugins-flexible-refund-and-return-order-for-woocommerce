@@ -19,6 +19,7 @@ class AjaxHandler implements HookablePluginDependant
     const POST_FIELD_SECURITY = 'security';
     const SCRIPTS_VERSION = '4';
     const SCRIPT_HANDLE = 'wpdesk_notice';
+    const SCRIPT_HANDLE_GUTENBERG = 'wpdesk_notice_gutenberg';
     /**
      * @var string
      */
@@ -30,19 +31,23 @@ class AjaxHandler implements HookablePluginDependant
      */
     public function __construct($assetsURL = null)
     {
-        $this->assetsURL = $assetsURL;
+        $this->assetsURL = $assetsURL ?? plugins_url('/assets/', dirname(__FILE__, 3));
     }
     /**
      * Hooks.
      */
     public function hooks()
     {
-        if ($this->assetsURL) {
-            add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
-        } else {
-            add_action('admin_head', [$this, 'addScriptToAdminHead']);
-        }
+        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
         add_action('wp_ajax_wpdesk_notice_dismiss', [$this, 'processAjaxNoticeDismiss']);
+    }
+    public function isBlockEditor(): bool
+    {
+        if (!function_exists('get_current_screen')) {
+            return \false;
+        }
+        $screen = \get_current_screen();
+        return is_object($screen) ? $screen->is_block_editor() : \false;
     }
     /**
      * Enqueue admin scripts.
@@ -51,13 +56,13 @@ class AjaxHandler implements HookablePluginDependant
     {
         wp_register_script(self::SCRIPT_HANDLE, trailingslashit($this->assetsURL) . 'js/notice.js', ['jquery'], self::SCRIPTS_VERSION);
         wp_enqueue_script(self::SCRIPT_HANDLE);
-    }
-    /**
-     * Add Java Script to admin header.
-     */
-    public function addScriptToAdminHead()
-    {
-        include __DIR__ . '/views/admin-head-js.php';
+        if ($this->isBlockEditor()) {
+            wp_register_script(self::SCRIPT_HANDLE_GUTENBERG, trailingslashit($this->assetsURL) . 'js/gutenberg.js', ['jquery'], self::SCRIPTS_VERSION);
+            wp_enqueue_script(self::SCRIPT_HANDLE_GUTENBERG);
+        } else {
+            wp_register_style(self::SCRIPT_HANDLE, trailingslashit($this->assetsURL) . 'css/admin.css', [], self::SCRIPTS_VERSION);
+            wp_enqueue_style(self::SCRIPT_HANDLE);
+        }
     }
     /**
      * Process AJAX notice dismiss.

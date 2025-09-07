@@ -43,6 +43,9 @@
         }
     },
     "scripts": {
+        "phpcs": "phpcs",
+        "phpstan": "php -d memory_limit=1G vendor\/bin\/phpstan",
+        "phpcbf": "phpcbf src",
         "phpunit-unit": "phpunit --configuration phpunit-unit.xml --coverage-text --colors=never",
         "phpunit-unit-fast": "phpunit --configuration phpunit-unit.xml --no-coverage",
         "phpunit-integration": "phpunit --configuration phpunit-integration.xml --coverage-text --colors=never",

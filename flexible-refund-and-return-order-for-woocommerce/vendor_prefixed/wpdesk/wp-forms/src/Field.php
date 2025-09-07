@@ -38,7 +38,7 @@ interface Field
      * @return string[] name->value
      */
     public function get_attributes(array $except = []): array;
-    public function get_attribute(string $name, string $default = null): string;
+    public function get_attribute(string $name, ?string $default = null): string;
     public function is_attribute_set(string $name): bool;
     /** @return mixed */
     public function get_meta_value(string $name);

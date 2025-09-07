@@ -33,8 +33,9 @@ class OptOut implements Hookable
     public function handle_opt_out()
     {
         $screen = get_current_screen();
-        if ('plugins' === $screen->id) {
-            if (isset($_GET['wpdesk_tracker_opt_out_' . $this->plugin_slug]) && isset($_GET['security']) && wp_verify_nonce($_GET['security'], $this->plugin_slug)) {
+        if ('plugins' === $screen->id && isset($_GET['wpdesk_tracker_opt_out_' . $this->plugin_slug])) {
+            $security = sanitize_text_field(wp_unslash($_GET['security'] ?? ''));
+            if (wp_verify_nonce($security, $this->plugin_slug)) {
                 $persistence = new \FRFreeVendor\WPDesk_Tracker_Persistence_Consent();
                 $persistence->set_active(\false);
                 delete_option('wpdesk_tracker_notice');

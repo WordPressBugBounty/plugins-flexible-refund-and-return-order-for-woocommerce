@@ -18,7 +18,7 @@ class DefaultFormFieldResolver implements Resolver
     {
         $this->dir_resolver = new DirResolver(__DIR__ . '/../../templates');
     }
-    public function resolve($name, Renderer $renderer = null): string
+    public function resolve($name, ?Renderer $renderer = null): string
     {
         return $this->dir_resolver->resolve($name, $renderer);
     }
