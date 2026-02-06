@@ -22,6 +22,6 @@ class EmailRefundRefused extends AbstractRefundEmail
     }
     public function get_default_additional_content()
     {
-        return wpautop(wp_kses(__("Hi {customer_name},\n\nUnfortunately, we could not agree to a refund. Below you will find information about the reason for the refund:\n\n{refund_note}\n\nIf you do not agree with our feedback, please email us at support@store.com and include the order ID you are writing about. And if you would like to learn more about the returns process, check out this {refund-info-page}\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
+        return wpautop(wp_kses(__("Hi {customer_name},\n\nUnfortunately, we could not agree to a refund. Below you will find information about the reason for the refund:\n\n{refund_note}\n\nIf you do not agree with our feedback, please email us at support@store.com and include the order ID you are writing about.{refund_info_page}\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
     }
 }

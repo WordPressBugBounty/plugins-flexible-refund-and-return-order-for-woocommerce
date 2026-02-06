@@ -22,6 +22,6 @@ class EmailRefundRequested extends AbstractRefundEmail
     }
     public function get_default_additional_content()
     {
-        return wpautop(wp_kses(__("Hi {customer_name},\n\nThank you for your return request! We will review it and let you know in the next email if a refund will be granted. <a href='{refund_url}' target='_blank'>Click here to cancel your refund</a>.\n\nBelow you will find a table with the products you requested to refund.\n\n{refund_order_table}\n\nIf you would like to learn more about the returns process, check out this {refund-page-info}\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
+        return wpautop(wp_kses(__("Hi {customer_name},\n\nThank you for your return request! We will review it and let you know in the next email if a refund will be granted. <a href='{refund_url}' target='_blank'>Click here to cancel your refund</a>.\n\nBelow you will find a table with the products you requested to refund.\n\n{refund_order_table}\n\n{refund_info_page}\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
     }
 }

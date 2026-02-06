@@ -3,11 +3,11 @@
 namespace FRFreeVendor;
 
 /**
- * @var \WPDesk\Forms\Field $field
+ * @var \WPDesk\Forms\Field            $field
  * @var \WPDesk\View\Renderer\Renderer $renderer
- * @var string $name_prefix
- * @var string $value
- * @var string $template_name Real field template.
+ * @var string                         $name_prefix
+ * @var string                         $value
+ * @var string                         $template_name Real field template.
  */
 if (empty($value) || \is_string($value)) {
     $input_values[] = '';
@@ -16,97 +16,115 @@ if (empty($value) || \is_string($value)) {
 }
 ?>
 <div class="clone-element-container">
-<?php 
+	<?php 
 foreach ($input_values as $text_value) {
     ?>
-	<?php 
+		<?php 
     if (!\in_array($field->get_type(), ['number', 'text', 'hidden'], \true)) {
         ?>
-	<input type="hidden" name="<?php 
+			<input type="hidden" name="<?php 
         echo \esc_attr($name_prefix) . '[' . \esc_attr($field->get_name()) . ']';
         ?>" value="no"/>
-<?php 
+		<?php 
     }
     ?>
 
-	<?php 
+		<?php 
     if ($field->get_type() === 'checkbox' && $field->has_sublabel()) {
         ?>
-		<label><?php 
+			<label>
+		<?php 
     }
     ?>
-	<div class="clone-wrapper">
-	<input
-		type="<?php 
+		<div class="clone-wrapper">
+			<input
+				type="<?php 
     echo \esc_attr($field->get_type());
     ?>"
-		name="<?php 
+				name="<?php 
     echo \esc_attr($name_prefix) . '[' . \esc_attr($field->get_name()) . '][]';
     ?>"
-		id="<?php 
+				id="<?php 
     echo \esc_attr($field->get_id());
     ?>"
 
-		<?php 
+				<?php 
     if ($field->has_classes()) {
         ?>
-			class="<?php 
+					class="<?php 
         echo \esc_attr($field->get_classes());
         ?>"
-		<?php 
+				<?php 
     }
     ?>
 
-		<?php 
+				<?php 
     if ($field->get_type() === 'text' && $field->has_placeholder()) {
         ?>
-			placeholder="<?php 
+					placeholder="<?php 
         echo \esc_html($field->get_placeholder());
         ?>"
-		<?php 
+					<?php 
     }
-    ?>
-
-		<?php 
     foreach ($field->get_attributes() as $key => $atr_val) {
         echo \esc_attr($key) . '="' . \esc_attr($atr_val) . '"';
-        ?>
-		<?php 
     }
-    ?>
-
-		<?php 
+    if ($field->is_required()) {
+        ?>
+					required="required"
+					<?php 
+    }
+    if ($field->is_disabled()) {
+        ?>
+					disabled="disabled"
+					<?php 
+    }
+    if ($field->is_readonly()) {
+        ?>
+					readonly="readonly"
+					<?php 
+    }
     if (\in_array($field->get_type(), ['number', 'text', 'hidden'], \true)) {
         ?>
-			value="<?php 
+					value="<?php 
         echo \esc_html($text_value);
         ?>"
-		<?php 
+				<?php 
     } else {
         ?>
-			value="yes"
-			<?php 
+					value="yes"
+					<?php 
         if ($value === 'yes') {
             ?>
-				checked="checked"
-			<?php 
+						checked="checked"
+						<?php 
         }
-        ?>
-		<?php 
     }
     ?>
-	/>
-		<span class="add-field"><span class="dashicons dashicons-plus-alt"></span></span>
-		<span class="remove-field hidden"><span class="dashicons dashicons-remove"></span></span>
-	</div>
+			/>
+			<span class="add-field <?php 
+    echo $field->is_disabled() ? 'disabled' : '';
+    ?>" style="<?php 
+    echo $field->is_disabled() ? 'cursor: not-allowed; opacity: 0.5;' : 'cursor: pointer;';
+    ?>">
+			<span class="dashicons dashicons-plus-alt"></span>
+		</span>
+			<span class="remove-field hidden <?php 
+    echo $field->is_disabled() ? 'disabled' : '';
+    ?>" style="<?php 
+    echo $field->is_disabled() ? 'cursor: not-allowed; opacity: 0.5;' : 'cursor: pointer;';
+    ?>">
+			<span class="dashicons dashicons-remove"></span>
+		</span>
+		</div>
 
-	<?php 
+		<?php 
     if ($field->get_type() === 'checkbox' && $field->has_sublabel()) {
         ?>
-		<?php 
-        echo \wp_kses_post($field->get_sublabel());
+			<?php 
+        echo \esc_html($field->get_sublabel());
         ?></label>
-<?php 
+			<?php 
     }
 }
 ?>
@@ -115,6 +133,7 @@ foreach ($input_values as $text_value) {
 	.clone-element-container .clone-wrapper .add-field {
 		display: none;
 	}
+
 	.clone-element-container .clone-wrapper:first-child .add-field {
 		display: inline-block;
 	}
@@ -122,35 +141,51 @@ foreach ($input_values as $text_value) {
 	.clone-element-container .clone-wrapper .remove-field {
 		display: inline-block;
 	}
+
 	.clone-element-container .clone-wrapper:first-child .remove-field {
 		display: none;
 	}
 </style>
+
 <script>
-	jQuery( function ( $ ) {
-		var add_field = jQuery( '.add-field' );
-		if ( add_field.length ) {
-			add_field.click( function ( e ) {
-				let html = jQuery( this ).closest( '.clone-wrapper' ).clone();
-				html.find( 'input' ).val( '' );
-				jQuery( this ).closest( '.clone-wrapper' ).after( html );
-			} )
+	if (typeof window.wpdesk_multiple_field_initialized === 'undefined') {
+		window.wpdesk_multiple_field_initialized = true;
 
-			jQuery( '.clone-element-container' ).on( "click", ".remove-field", function ( e ) {
-				let is_disabled = jQuery( this ).hasClass( 'field-disabled' );
-				if ( !is_disabled ) {
-					jQuery( this ).closest( '.clone-wrapper' ).remove();
-				}
-			} )
+		jQuery(function ($) {
+			$(document).on('click', '.clone-element-container .add-field', function (e) {
+				e.preventDefault();
+				let wrapper = $(this).closest('.clone-wrapper');
+				let input = wrapper.find('input');
 
-			jQuery( '.form-table' ).find( 'input,select' ).each( function ( i, v ) {
-				let disabled = jQuery( this ).attr( 'data-disabled' );
-				if ( disabled === 'yes' ) {
-					jQuery( this ).attr( 'disabled', 'disabled' )
-					jQuery( this ).parent().addClass( 'field-disabled' );
+				if (input.is(':disabled') || $(this).hasClass('disabled')) {
+					return;
 				}
-			} );
-		}
-	} );
+
+				let html = wrapper.clone();
+				html.find('input').val('');
+				wrapper.after(html);
+			});
+
+			$(document).on("click", ".clone-element-container .remove-field", function (e) {
+				e.preventDefault();
+				let wrapper = $(this).closest('.clone-wrapper');
+				let input = wrapper.find('input');
+
+				if (input.is(':disabled') || $(this).hasClass('disabled')) {
+					return;
+				}
+
+				let is_disabled = $(this).hasClass('field-disabled');
+				if (!is_disabled) {
+					wrapper.remove();
+				}
+			});
+
+			$('.form-table').find('input[data-disabled="yes"], select[data-disabled="yes"]').each(function (i, v) {
+				$(this).attr('disabled', 'disabled');
+				$(this).parent().addClass('field-disabled');
+			});
+		});
+	}
 </script>
 <?php 

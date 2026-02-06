@@ -14,7 +14,7 @@ if (!$rate_box) {
 ?>
 <script id="fi_rate_box" type="text/template">
 	<?php 
-$is_PL = \get_locale() === 'pl_PL' ? 'https://wpdesk.pl' : 'https://wpdesk.net';
+$is_PL = \FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin::get_homepage_url();
 $review_link = 'https://wpdesk.link/fi-footer-review-link';
 echo $rate_box->render($review_link, \sprintf(
     // translator: %1$s icon,  %2$s open url tag, %3$s close url tag.

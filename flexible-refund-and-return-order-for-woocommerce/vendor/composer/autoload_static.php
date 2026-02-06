@@ -7,11 +7,11 @@ namespace Composer\Autoload;
 class ComposerStaticInitb0cfec7893413c139bf8033c89f82ab5
 {
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WPDesk\\WPDeskFRFree\\' => 20,
         ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Container\\' => 14,
@@ -19,15 +19,15 @@ class ComposerStaticInitb0cfec7893413c139bf8033c89f82ab5
     );
 
     public static $prefixDirsPsr4 = array (
-        'WPDesk\\WPDeskFRFree\\' => 
+        'WPDesk\\WPDeskFRFree\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
-        'Psr\\Log\\' => 
+        'Psr\\Log\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
-        'Psr\\Container\\' => 
+        'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),

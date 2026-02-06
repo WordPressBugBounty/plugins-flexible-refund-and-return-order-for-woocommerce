@@ -19,6 +19,8 @@ class MyAccount implements Hookable
 {
     const QUERY_VAR_KEY = 'fr-refund';
     const CANCEL_NONCE_ACTION = 'cancel_refund';
+    const CANCEL_ORDER_ACTION = 'fr_cancel_order_action';
+    const CANCELABLE_STATUSEES = ['pending', 'on-hold'];
     /**
      * @var Renderer
      */
@@ -50,6 +52,7 @@ class MyAccount implements Hookable
         add_filter('woocommerce_get_query_vars', [$this, 'add_query_vars'], 10);
         add_filter('wp', [$this, 'save_refund_request'], 999);
         add_filter('wp', [$this, 'cancel_refund_request_by_user'], 999);
+        add_action('wp', [$this, 'process_cancel_unpaid_order'], 999);
     }
     /**
      * @param array    $actions
@@ -67,13 +70,49 @@ class MyAccount implements Hookable
         if ($condition->should_show() && !$this->should_auto_hide($order)) {
             $actions['refund'] = ['url' => Helpers\MyAccount::get_refund_url($order), 'name' => esc_html__('Refund', 'flexible-refund-and-return-order-for-woocommerce')];
         }
+        if (Integration::is_super()) {
+            $actions = $this->swap_cancel_order_action($actions, $order);
+        }
         return $actions;
     }
-    /**
-     * @param WC_Order $order
-     *
-     * @return bool
-     */
+    private function swap_cancel_order_action(array $actions, WC_Order $order): array
+    {
+        if (isset($actions['cancel'])) {
+            unset($actions['cancel']);
+        }
+        $cancel_button_enabled = filter_var($this->settings->get_fallback('refund_cancel_button', 'no'), \FILTER_VALIDATE_BOOLEAN);
+        if ($cancel_button_enabled && in_array($order->get_status(), self::CANCELABLE_STATUSEES, \true)) {
+            $cancel_url = wp_nonce_url(add_query_arg(['fr_action' => 'cancel_unpaid', 'order_id' => $order->get_id()]), self::CANCEL_ORDER_ACTION);
+            $actions['cancel'] = ['url' => $cancel_url, 'name' => esc_html__('Cancel', 'woocommerce')];
+        }
+        return $actions;
+    }
+    public function process_cancel_unpaid_order()
+    {
+        if (isset($_GET['fr_action'], $_GET['order_id']) && 'cancel_unpaid' === $_GET['fr_action']) {
+            $nonce = $_REQUEST['_wpnonce'] ?? '';
+            //phpcs:ignore
+            if (!wp_verify_nonce($nonce, self::CANCEL_ORDER_ACTION)) {
+                return;
+            }
+            $order_id = absint($_GET['order_id']);
+            $order = wc_get_order($order_id);
+            if (!$order) {
+                return;
+            }
+            if ($order->get_customer_id() !== get_current_user_id()) {
+                return;
+            }
+            if (!in_array($order->get_status(), self::CANCELABLE_STATUSEES, \true)) {
+                wc_add_notice(__('This order cannot be cancelled.', 'flexible-refund-and-return-order-for-woocommerce'), 'error');
+                return;
+            }
+            $order->update_status('cancelled', __('Order cancelled by customer via My Account.', 'flexible-refund-and-return-order-for-woocommerce'));
+            wc_add_notice(__('Order has been cancelled.', 'flexible-refund-and-return-order-for-woocommerce'), 'success');
+            wp_safe_redirect(wc_get_endpoint_url('orders', '', wc_get_page_permalink('myaccount')));
+            exit;
+        }
+    }
     private function should_auto_hide(WC_Order $order): bool
     {
         if ($this->settings->get_fallback('refund_auto_hide', 'no') === 'yes' && Integration::is_super()) {
@@ -232,42 +271,46 @@ class MyAccount implements Hookable
         $order_id = $wp->query_vars[self::QUERY_VAR_KEY] ?? $refund_order_id;
         $post_data = $_POST[FieldRenderer::FIELD_PREFIX] ?? [];
         //phpcs:enable
-        if ($order_id && !empty($post_data['items'])) {
-            $order = wc_get_order($order_id);
-            $nonce = wp_verify_nonce($post_data['fr_refund_request'], 'fr_refund_request_send');
-            $total_items = $this->count_refund_items($post_data['items']);
-            unset($post_data['request_refund'], $post_data['fr_refund_request']);
-            if ($nonce && $order && $total_items > 0) {
-                $post_data['attachments'] = [];
-                if (isset($post_data['upload_names'])) {
-                    foreach ($post_data['upload_names'] as $upload_name) {
-                        $file_data = $this->upload_files($upload_name);
-                        if ($file_data) {
-                            $post_data['attachments'][$upload_name] = $file_data;
-                        }
-                    }
+        if (!$order_id || empty($post_data['items'])) {
+            return;
+        }
+        $order = wc_get_order($order_id);
+        $nonce = wp_verify_nonce($post_data['fr_refund_request'], 'fr_refund_request_send');
+        $total_items = $this->count_refund_items($post_data['items']);
+        unset($post_data['request_refund'], $post_data['fr_refund_request']);
+        if (!$order || $total_items <= 0) {
+            return;
+        }
+        if (!$nonce || $order->get_customer_id() !== get_current_user_id()) {
+            return;
+        }
+        $post_data['attachments'] = [];
+        if (isset($post_data['upload_names'])) {
+            foreach ($post_data['upload_names'] as $upload_name) {
+                $file_data = $this->upload_files($upload_name);
+                if ($file_data) {
+                    $post_data['attachments'][$upload_name] = $file_data;
                 }
-                $order->update_meta_data('fr_refund_request_data', $post_data);
-                $order->update_meta_data('fr_refund_request_date', time());
-                $order->update_meta_data('fr_refund_request_status', Helpers\Statuses::REQUESTED_STATUS);
-                $order->update_meta_data('fr_refund_previous_order_status', $order->get_status());
-                $order->set_status(RegisterOrderStatus::REQUEST_REFUND_STATUS);
-                $order->save();
-                $auto_create = $this->ajax->should_auto_create_refund($order, ['order_ID' => $order->get_id(), 'note' => esc_html__('Your refund request has been accepted!', 'flexible-refund-and-return-order-for-woocommerce'), 'status' => 'approved', 'form' => '', 'items' => $post_data['items']]);
-                if ($auto_create) {
-                    $order->set_status(RegisterOrderStatus::REQUEST_REFUND_STATUS);
-                    $order->update_meta_data('fr_refund_request_status', Helpers\Statuses::APPROVED_STATUS);
-                    $order->save();
-                    $this->send_email($order);
-                    wp_safe_redirect(add_query_arg('request', 'auto-create'), 301);
-                    exit;
-                } else {
-                    $this->send_email($order);
-                    wp_safe_redirect(add_query_arg('request', 'send'), 301);
-                }
-                exit;
             }
         }
+        $order->update_meta_data('fr_refund_request_data', $post_data);
+        $order->update_meta_data('fr_refund_request_date', time());
+        $order->update_meta_data('fr_refund_request_status', Helpers\Statuses::REQUESTED_STATUS);
+        $order->update_meta_data('fr_refund_previous_order_status', $order->get_status());
+        $order->set_status(RegisterOrderStatus::REQUEST_REFUND_STATUS);
+        $order->save();
+        $auto_create = $this->ajax->should_auto_create_refund($order, ['order_ID' => $order->get_id(), 'note' => esc_html__('Your refund request has been accepted!', 'flexible-refund-and-return-order-for-woocommerce'), 'status' => 'approved', 'form' => '', 'items' => $post_data['items']]);
+        if ($auto_create) {
+            $order->set_status(RegisterOrderStatus::REQUEST_REFUND_STATUS);
+            $order->update_meta_data('fr_refund_request_status', Helpers\Statuses::APPROVED_STATUS);
+            $order->save();
+            $this->send_email($order);
+            wp_safe_redirect(add_query_arg('request', 'auto-create'), 301);
+            exit;
+        }
+        $this->send_email($order);
+        wp_safe_redirect(add_query_arg('request', 'send'), 301);
+        exit;
     }
     /**
      * Delete refund request by User.

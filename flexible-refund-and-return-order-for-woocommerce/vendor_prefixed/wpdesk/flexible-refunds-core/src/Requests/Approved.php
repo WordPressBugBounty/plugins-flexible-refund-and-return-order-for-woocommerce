@@ -6,6 +6,7 @@ use Exception;
 use WC_Order;
 use WC_Order_Item;
 use WP_Error;
+use WC_Payment_Gateways;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Coupon\Coupon;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
@@ -151,9 +152,16 @@ class Approved extends AbstractRequest
         $total_amount = round($total_amount, 2);
         self::$total_amount = wc_format_decimal($total_amount);
         wc_switch_to_site_locale();
-        $refund = wc_create_refund(['amount' => wc_format_decimal($total_amount), 'reason' => '', 'order_id' => $order->get_id(), 'line_items' => $refund_items]);
+        $refund = wc_create_refund(['amount' => wc_format_decimal($total_amount), 'reason' => '', 'order_id' => $order->get_id(), 'line_items' => $refund_items, 'refund_payment' => $this->gateway_supports_refunds($order)]);
         wc_restore_locale();
         return $refund;
+    }
+    private function gateway_supports_refunds(WC_Order $order): bool
+    {
+        $payment_method_id = $order->get_payment_method();
+        $gateways = WC_Payment_Gateways::instance()->payment_gateways();
+        $gateway = isset($gateways[$payment_method_id]) ? $gateways[$payment_method_id] : \false;
+        return $gateway && $gateway->supports('refunds');
     }
     private function increase_stock_quantity(int $product_id, int $qty): void
     {

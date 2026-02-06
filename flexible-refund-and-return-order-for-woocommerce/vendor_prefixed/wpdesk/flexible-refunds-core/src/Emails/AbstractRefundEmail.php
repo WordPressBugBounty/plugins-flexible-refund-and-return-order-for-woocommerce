@@ -26,7 +26,7 @@ abstract class AbstractRefundEmail extends WC_Email
         $this->template_html = 'emails/fr-refund.php';
         $this->template_plain = 'emails/plain/fr-refund.php';
         parent::__construct();
-        $this->placeholders = ['{shop_title}' => '', '{shop_address}' => '', '{shop_url}' => '', '{shop_email}' => '', '{refund_url}' => '', '{refund_note}' => '', '{refund_order_table}' => '', '{customer_name}' => '', '{order_id}' => '', '{order_date}' => '', '{order_number}' => '', '{order_payment_method}' => '', '{coupon_code}' => '', '{admin_order_url}' => '', '{admin_refunds_url}' => ''];
+        $this->placeholders = ['{shop_title}' => '', '{shop_address}' => '', '{shop_url}' => '', '{shop_email}' => '', '{refund_url}' => '', '{refund_note}' => '', '{refund_order_table}' => '', '{customer_name}' => '', '{order_id}' => '', '{order_date}' => '', '{order_number}' => '', '{order_payment_method}' => '', '{coupon_code}' => '', '{admin_order_url}' => '', '{admin_refunds_url}' => '', '{refund_info_page}' => ''];
         $this->append_wp_editor_to_fields();
     }
     /**
@@ -88,6 +88,7 @@ abstract class AbstractRefundEmail extends WC_Email
         $this->placeholders['{admin_order_url}'] = admin_url('post.php?post=' . $order->get_id() . '&action=edit');
         // TODO: handle links with HPOS. For now WC does the redirect.
         $this->placeholders['{admin_refunds_url}'] = admin_url('edit.php?post_status=wc-refund-request&post_type=shop_order');
+        $this->placeholders['{refund_info_page}'] = $this->get_refund_info_page_content();
         if ($this->is_enabled() && $this->get_recipient()) {
             $this->send($this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments());
         }
@@ -96,6 +97,20 @@ abstract class AbstractRefundEmail extends WC_Email
     public function get_content_html(): string
     {
         return wc_get_template_html($this->template_html, ['order' => $this->object, 'email_heading' => $this->get_heading(), 'additional_content' => $this->get_additional_content(), 'sent_to_admin' => \false, 'plain_text' => \false, 'email' => $this], '', $this->template_base);
+    }
+    private function get_refund_info_page_content(): string
+    {
+        $info_page_id = get_option('fr_refund_selected_post_id');
+        $info_page_link = '';
+        if (!empty($info_page_id)) {
+            $url = get_permalink($info_page_id);
+            $title = get_the_title($info_page_id);
+            if ($url && $title) {
+                $info_page_link = sprintf('<a href="%s">%s</a>', esc_url($url), esc_html($title));
+                $info_page_link = __('If you want to learn more about the returns process, please refer to ', 'flexible-refund-and-return-order-for-woocommerce') . $info_page_link;
+            }
+        }
+        return $info_page_link;
     }
     public function get_content_plain(): string
     {

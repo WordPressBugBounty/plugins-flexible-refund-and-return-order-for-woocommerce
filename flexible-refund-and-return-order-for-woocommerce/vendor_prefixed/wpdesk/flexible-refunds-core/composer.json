@@ -73,5 +73,6 @@
         "phpunit-integration": "phpunit --configuration phpunit-integration.xml --coverage-text --colors=never",
         "phpunit-integration-fast": "phpunit --configuration phpunit-integration.xml --no-coverage",
         "generate-pot": "wp i18n make-pot . lang\/flexible-refunds-core.pot"
-    }
+    },
+    "version": "9"
 }

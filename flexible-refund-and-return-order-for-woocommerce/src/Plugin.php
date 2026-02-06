@@ -37,9 +37,9 @@ class Plugin extends AbstractPlugin implements HookableCollection {
 
 		$this->start_here_url = admin_url( 'admin.php?page=wc-settings&tab=flexible_refunds&section=support' );
 		$this->settings_url   = admin_url( 'admin.php?page=wc-settings&tab=flexible_refunds' );
-		$this->docs_url       = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/docs/elastyczne-zwroty-i-reklamacje-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-docs&utm_content=plugin-list' : 'https://wpdesk.net/docs/flexible-refund-and-cancel-order-for-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-docs&utm_content=plugin-list';
-		$this->support_url    = get_locale() === 'pl_PL' ? 'https://wordpress.org/support/plugin/flexible-refund-and-return-order-for-woocommerce/' : 'https://wordpress.org/support/plugin/flexible-refund-and-return-order-for-woocommerce/';
-		$this->upgrade_url    = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/elastyczne-zwroty-i-reklamacje-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-pro&utm_content=plugin-list' : 'https://wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-pro&utm_content=plugin-list';
+		$this->docs_url       = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-refund-plugin-docs-pl' : 'https://www.wpdesk.net/sk/flexible-refund-plugin-docs-en';
+		$this->support_url    = 'https://wpdesk.link/flexible-refund-plugin-support/';
+		$this->upgrade_url    = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-refund-plugin-upgrade-pl' : 'https://wpdesk.net/sk/flexible-refund-plugin-upgrade-en';
 	}
 
 	public function links_filter( $links ) {

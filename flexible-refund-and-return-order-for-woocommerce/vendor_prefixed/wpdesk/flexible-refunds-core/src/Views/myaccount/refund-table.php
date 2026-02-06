@@ -53,7 +53,7 @@ foreach ($order_items as $item_id => $item) {
     $product = $item->get_product();
     $is_checked = $refund_meta['items'][$item_id]['enabled'] ?? 'no';
     $qty = $refund_meta['items'][$item_id]['qty'] ?? 0;
-    $item_price = ($item->get_subtotal() + $item->get_total_tax()) / $item->get_quantity() * (int) $qty;
+    $item_price = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity() * (int) $qty;
     $total_refund_sum += $item_price;
     ?>
 			<tr class="product_item">
@@ -70,7 +70,7 @@ foreach ($order_items as $item_id => $item) {
 				</td>
 				<td class="td">
 					<?php 
-    echo $order->get_formatted_line_subtotal($item);
+    echo \wc_price($item->get_total() + $item->get_total_tax(), ['currency' => $order->get_currency()]);
     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     ?>
 				</td>

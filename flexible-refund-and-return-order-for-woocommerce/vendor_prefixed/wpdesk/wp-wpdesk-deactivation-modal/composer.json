@@ -49,6 +49,15 @@
     "config": {
         "allow-plugins": {
             "dealerdirect\/phpcodesniffer-composer-installer": true
+        },
+        "gitlab-domains": [
+            "gitlab.wpdesk.dev"
+        ]
+    },
+    "repositories": {
+        "wpdesk": {
+            "type": "composer",
+            "url": "https:\/\/gitlab.wpdesk.dev\/api\/v4\/group\/wpdesk\/-\/packages\/composer\/"
         }
     }
 }

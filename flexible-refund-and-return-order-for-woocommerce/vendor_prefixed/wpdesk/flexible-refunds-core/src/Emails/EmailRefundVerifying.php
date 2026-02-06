@@ -5,7 +5,7 @@ namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Emails;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\EmailHelper;
 class EmailRefundVerifying extends AbstractRefundEmail
 {
-    const ID = 'fr_email_refund_verifying';
+    public const ID = 'fr_email_refund_verifying';
     public function __construct()
     {
         $this->title = esc_html__('[Flexible Refund] E-mail for shipment status', 'flexible-refund-and-return-order-for-woocommerce');
@@ -22,6 +22,6 @@ class EmailRefundVerifying extends AbstractRefundEmail
     }
     public function get_default_additional_content()
     {
-        return wpautop(wp_kses(__("Hi {customer_name},\n\nI wanted to let you know that your refund request is currently being reviewed.\nWe have 7 days to do so and will let you know if a refund has been granted.\n\nIf you would like to learn more about the returns process, check out this {refund-info-page}\n\nNote from store team: {refund_note}\n\n<a href='{refund_url}' target='_blank'>Click here if you wish to cancel your refund</a>.\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
+        return wpautop(wp_kses(__("Hi {customer_name},\n\nI wanted to let you know that your refund request is currently being reviewed.\nWe have 7 days to do so and will let you know if a refund has been granted.\n\n{refund_info_page}\n\nNote from store team: {refund_note}\n\n<a href='{refund_url}' target='_blank'>Click here if you wish to cancel your refund</a>.\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
     }
 }

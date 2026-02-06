@@ -21,7 +21,7 @@ class BoxRenderer
     /** @var Helpers\Markers */
     private $markers;
     /** @param array<string, array{type: string}> $boxes */
-    public function __construct(array $boxes, Renderer $renderer = null)
+    public function __construct(array $boxes, ?Renderer $renderer = null)
     {
         $this->boxes = $boxes;
         $this->renderer = $renderer ?? new SimplePhpRenderer(new DirResolver(__DIR__ . '/Views/'));

@@ -54,9 +54,6 @@ class Ajax implements Hookable
     }
     public function create_refund()
     {
-        if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['error_details' => __('You are not allowed to create refund!', 'flexible-refund-and-return-order-for-woocommerce'), 'error_code' => 100]);
-        }
         $post_data = wp_parse_args(
             //phpcs:ignore WordPress.Security.NonceVerification.Missing
             wp_unslash($_POST),
@@ -64,6 +61,9 @@ class Ajax implements Hookable
         );
         $status = $post_data['status'];
         $order_ID = $post_data['order_ID'];
+        if (!$order_ID || !current_user_can('edit_post', $order_ID)) {
+            wp_send_json_error(['error_details' => esc_html__('You are not allowed to create refund!', 'flexible-refund-and-return-order-for-woocommerce'), 'error_code' => 100]);
+        }
         parse_str($post_data['form'], $form);
         $post_data['items'] = $form['fr_refund_form']['items'] ?? [];
         if (!empty($status)) {

@@ -34,7 +34,7 @@ class FormOption
      * @param string|null $message  Message visible after selecting the reason in the form (may contain HTML).
      * @param string|null $question Label of additional question (visible after selecting the reason in the form).
      */
-    public function __construct(string $key, int $priority, string $label, string $message = null, string $question = null)
+    public function __construct(string $key, int $priority, string $label, ?string $message = null, ?string $question = null)
     {
         $this->key = $key;
         $this->priority = $priority;
@@ -80,7 +80,7 @@ class FormOption
     /**
      * @param string|null $message Message visible after selecting the reason in the form (may contain HTML).
      */
-    public function set_message(string $message = null): self
+    public function set_message(?string $message = null): self
     {
         $this->message = $message;
         return $this;
@@ -95,7 +95,7 @@ class FormOption
     /**
      * @param string|null $question Label of additional question (visible after selecting the reason in the form).
      */
-    public function set_question(string $question = null): self
+    public function set_question(?string $question = null): self
     {
         $this->question = $question;
         return $this;

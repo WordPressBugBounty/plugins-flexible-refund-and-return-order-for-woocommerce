@@ -14,9 +14,9 @@ class Plugin
     {
         switch ($source) {
             case 'email':
-                return get_locale() === 'pl_PL' ? 'https://wpdesk.link/fr-admin-email-pl' : 'https://wpdesk.link/fr-admin-email';
+                return self::get_url_with_suffix('plugin-email');
             default:
-                return get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/elastyczne-zwroty-i-reklamacje-woocommerce/' : 'https://wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/';
+                return self::get_url_with_suffix('plugin');
         }
     }
     /**
@@ -26,7 +26,15 @@ class Plugin
      */
     public static function get_url_to_docs(): string
     {
-        return get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/docs/elastyczne-zwroty-i-reklamacje-woocommerce/' : 'https://wpdesk.net/docs/flexible-refund-and-cancel-order-for-woocommerce/';
+        return self::get_url_with_suffix('docs');
+    }
+    public static function get_support_url(): string
+    {
+        return self::get_url_with_suffix('support');
+    }
+    public static function get_homepage_url(): string
+    {
+        return self::get_url_with_suffix('homepage');
     }
     /**
      * Get URL to product page of Pro version.
@@ -36,5 +44,13 @@ class Plugin
     public static function add_row_class(): string
     {
         return Integration::is_super() ? 'add_row' : 'add-row-free';
+    }
+    public static function get_current_plugin_slug(): string
+    {
+        return Integration::is_super() ? 'flexible-refunds-pro' : 'flexible-refund-and-return-order-for-woocommerce';
+    }
+    public static function get_url_with_suffix(string $suffix): string
+    {
+        return get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/' . self::get_current_plugin_slug() . '-' . $suffix . '-pl/' : 'https://www.wpdesk.net/sk/' . self::get_current_plugin_slug() . '-' . $suffix . '-en/';
     }
 }

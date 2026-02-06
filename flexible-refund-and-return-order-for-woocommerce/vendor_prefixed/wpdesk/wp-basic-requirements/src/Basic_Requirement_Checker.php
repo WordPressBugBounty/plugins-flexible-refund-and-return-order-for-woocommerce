@@ -39,6 +39,8 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
         private $min_openssl_version = null;
         /** @var array */
         protected $plugin_require;
+        /** @var array */
+        protected $class_require;
         /** @var bool */
         protected $should_check_plugin_versions = \false;
         /** @var array */
@@ -73,6 +75,7 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
             $this->module_require = array();
             $this->setting_require = array();
             $this->notices = array();
+            $this->class_require = array();
         }
         /**
          * @param string $version
@@ -144,6 +147,20 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
             return $this;
         }
         /**
+         * Add a class to require list.
+         *
+         * @param string $class_name       Name of the class.
+         * @param string $plugin_nice_name Nice plugin name for better looks in notice.
+         *
+         * @return $this
+         *
+         */
+        public function add_class_require($class_name, $plugin_nice_name)
+        {
+            $this->class_require[$class_name] = $plugin_nice_name;
+            return $this;
+        }
+        /**
          * @param string $module_name
          * @param string $nice_name Nice module name for better looks in notice
          *
@@ -200,6 +217,7 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
             $notices = $this->append_plugin_require_notices($notices);
             $notices = $this->append_module_require_notices($notices);
             $notices = $this->append_settings_require_notices($notices);
+            $notices = $this->append_class_require_notices($notices);
             if ($this->should_check_plugin_versions) {
                 $notices = $this->check_minimum_require_plugins_version_and_append_notices($notices);
             }
@@ -236,7 +254,11 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
          */
         public static function is_wp_at_least($min_version)
         {
-            return \version_compare(\get_bloginfo('version'), $min_version, '>=');
+            $wp_version = \get_bloginfo('version');
+            if ($wp_version === null || $wp_version === '') {
+                return \false;
+            }
+            return \version_compare($wp_version, $min_version, '>=');
         }
         /**
          * Are plugins loaded so we can check the version
@@ -256,7 +278,10 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
          */
         public static function is_wc_at_least($min_version)
         {
-            return \defined('WC_VERSION') && \version_compare(\WC_VERSION, $min_version, '>=');
+            if (!\defined('WC_VERSION') || \WC_VERSION === null || \WC_VERSION === '') {
+                return \false;
+            }
+            return \version_compare(\WC_VERSION, $min_version, '>=');
         }
         /**
          * Checks if ssl version is valid
@@ -281,7 +306,7 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
             $required_plugins = $this->retrieve_required_plugins_data();
             if (\count($required_plugins) > 0) {
                 foreach ($required_plugins as $plugin) {
-                    if (isset($plugin['Version']) && \version_compare($plugin['Version'], $plugin[self::PLUGIN_INFO_APPEND_PLUGIN_DATA], '<=')) {
+                    if (isset($plugin['Version']) && $plugin['Version'] !== null && $plugin['Version'] !== '' && \version_compare($plugin['Version'], $plugin[self::PLUGIN_INFO_APPEND_PLUGIN_DATA], '<')) {
                         $notices[] = $this->prepare_notice_message(\sprintf(\__('The &#8220;%1$s&#8221; plugin requires at least %2$s version of %3$s to work correctly. Please update it to its latest release.', 'flexible-refund-and-return-order-for-woocommerce'), \esc_html($this->plugin_name), $plugin[self::PLUGIN_INFO_APPEND_PLUGIN_DATA], $plugin['Name']));
                     }
                 }
@@ -398,6 +423,21 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
             return $notices;
         }
         /**
+         * @param array $notices
+         *
+         * @return array
+         */
+        private function append_class_require_notices($notices)
+        {
+            foreach ($this->class_require as $class_name => $plugin_nice_name) {
+                if (\class_exists($class_name)) {
+                    continue;
+                }
+                $notices[] = $this->prepare_notice_message(\sprintf('The &#8220;%s&#8221; plugin cannot run without %s active. Please install and activate %s plugin.', \esc_html($this->plugin_name), \esc_html($plugin_nice_name), \esc_html($plugin_nice_name)));
+            }
+            return $notices;
+        }
+        /**
          * Prepares WP install url and injects info about plugin to the WP update engine.
          *
          * @param array $plugin_info
@@ -406,7 +446,7 @@ if (!\class_exists('FRFreeVendor\WPDesk_Basic_Requirement_Checker')) {
          */
         private function prepare_plugin_repository_install_url($plugin_info)
         {
-            $slug = \basename($plugin_info[self::PLUGIN_INFO_KEY_NAME]);
+            $slug = \basename(\explode('/', $plugin_info[self::PLUGIN_INFO_KEY_NAME])[0]);
             $install_url = \self_admin_url('update.php?action=install-plugin&plugin=' . $slug);
             if (\function_exists('wp_nonce_url') && \function_exists('wp_create_nonce')) {
                 $install_url = \wp_nonce_url($install_url, 'install-plugin_' . $slug);

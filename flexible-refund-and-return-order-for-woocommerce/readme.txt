@@ -1,12 +1,12 @@
 === Flexible Refund and Return Order for WooCommerce ===
 
 Contributors: wpdesk,piotrpo,marcinkolanko
-Donate link: https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/
+Donate link: https://www.wpdesk.net/sk/flexible-refund-donate/
 Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, woocommerce order management, woocommerce refunds
 Requires at least: 6.1
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.38
+Stable tag: 1.0.48
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -43,13 +43,13 @@ See the main features of the free version:
 * Adjust the order returns with the plugin,
 * **Compatible with WooCommerce Subscriptions.**
 
-**Visit** [**Flexible Refund Docs**](https://wpdesk.link/docs-fr) to see all features of the plugin & how to set up a refund and return system for your WooCommerce orders.
+**Visit** [**Flexible Refund Docs**](https://wpdesk.net/sk/flexible-refund-readme-docs) to see all features of the plugin & how to set up a refund and return system for your WooCommerce orders.
 
 [youtube https://www.youtube.com/watch?v=mBhu-ULO3BU]
 
 ### Flexible Refund for WooCommerce - PRO Features
 
-Do you need more automation for WooCommerce refunds? You may manage the refund system automatically with [**Flexible Refund and Return Order for WooCommerce PRO**](https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-refund).
+Do you need more automation for WooCommerce refunds? You may manage the refund system automatically with [**Flexible Refund and Return Order for WooCommerce PRO**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/).
 
 **See some of its features:**
 * [PRO] **Enable the conditions for the refund button visibility**,
@@ -67,7 +67,7 @@ Do you need more automation for WooCommerce refunds? You may manage the refund s
 * [PRO] Use the Multiselect form field to collect data about refunds and returns,
 * [PRO] **Priority email support**.
 
-[**Upgrade to PRO Now &rarr;**](https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-refund)
+[**Upgrade to PRO Now &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
 #### Try refunds and returns for WooCommerce - Live Demo
 
@@ -87,7 +87,7 @@ The benefits and scenarios for the plugin to help you manage your advanced refun
 * Enable **partial refunds and automatic returns** in WooCommerce (PRO) 💞
 * Get **professional assistance** for the plugin on the plugin forum or through priority email support (PRO) 🚀
 
-[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-refund)
+[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
 ### Languages
 
@@ -100,11 +100,11 @@ You may help us [translate the plugin](https://translate.wordpress.org/projects/
 
 ### Docs
 
-[View Flexible Refund and Return Order for WooCommerce Documentation](https://wpdesk.link/docs-fr)
+[View Flexible Refund and Return Order for WooCommerce Documentation](https://wpdesk.net/sk/flexible-refund-readme-docs)
 
 ### Support Policy
 
-We provide support for the free version in the [plugin Support Forum](https://wordpress.org/support/plugin/flexible-refund-and-return-order-for-woocommerce/). You may purchase the PRO to receive priority email support and all PRO features. [**Upgrade Now &rarr;**](https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-refund)
+We provide support for the free version in the [plugin Support Forum](https://wordpress.org/support/plugin/flexible-refund-and-return-order-for-woocommerce/). You may purchase the PRO to receive priority email support and all PRO features. [**Upgrade Now &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
 ### Flexible Refund and Return Order for WooCommerce in a nutshell
 
@@ -125,7 +125,7 @@ You can also use WordPress uploader to upload the plugin zip file in WordPress m
 
 == Data use policy ==
 
-Learn about [Use of Data Policy by WP Desk Plugins](https://wpdesk.net/terms-conditions/privacy-policy-use-of-data-collected-by-wp-desk-plugins/?utm_source=wporg&utm_medium=link&utm_campaign=data-use-policy)
+Learn about [Use of Data Policy by WP Desk Plugins](https://wpdesk.net/sk/flexible-refunds-privacy/)
 
 == Frequently Asked Questions ==
 
@@ -155,7 +155,7 @@ Yes. You can enable that option in the plugin settings. The plugin will allow yo
 
 Customers can select specific items for a partial refund in the PRO version of the plugin.
 
-[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-refund)
+[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
 = When to use the plugin? =
 
@@ -165,7 +165,7 @@ The automatic email notifications will shorten communication and support.
 
 You may also choose the conditions for refunds, enable auto refund, hide the refund button after some time, handle partial refunds, and choose an automatic WooCommerce coupon refund type in the PRO version of the plugin.
 
-[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-refund)
+[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
 = What are the benefits of Flexible Refund and Return Order for WooCommerce? =
 
@@ -175,7 +175,7 @@ You will no longer have to handle the refund and return requests by phone or ema
 
 The whole communication will take place directly in WooCommerce (with automatic and adjustable emails too). You can adjust the refund form by asking to accept the checkbox of your WooCommerce terms and conditions, or privacy and refund policy. And there is even more automation, new settings, new form field types, partial refunds, and priority support in PRO if you need additional speed.
 
-[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-refund)
+[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
 = Can I allow users to request and withdraw their refund requests from one place? =
 
@@ -189,7 +189,7 @@ Yes. You may add a checkbox to accept the privacy and refund policy. You can do 
 
 Also, by setting the conditions for the refund button in the PRO version of the plugin, you may show it only for some orders. You may autohide the refund button after a specified time too.
 
-[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/products/flexible-refund-and-return-order-for-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-refund)
+[**Upgrade to PRO &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
 The plugin will help you manage refunds for WooCommerce orders based on your refund requirements.
 
@@ -203,25 +203,25 @@ The plugin options and form fields will provide you with the WooCommerce managem
 
 Yes. You may translate it and also add your [translation for other users of the plugin](https://translate.wordpress.org/projects/wp-plugins/flexible-refund-and-return-order-for-woocommerce).
 
-Read more about [translating WordPress plugins](https://www.wpdesk.net/blog/how-to-translate-a-wordpress-plugin/).
+Read more about [translating WordPress plugins](https://www.wpdesk.net/sk/flexible-refund-translate/).
 
 = Where can I read more about the plugin, WooCommerce refunds, and refund policy? =
 
 Visit our blog to find interesting knowledge about WooCommerce.
 
-Read [how to set your WooCommerce refund and return system with this free plugin](https://wpdesk.net/blog/woocommerce-refund-and-return-free-plugin/).
+Read [how to set your WooCommerce refund and return system with this free plugin](https://wpdesk.net/sk/woocommerce-refund/).
 
-Also, about adding the [return policy and managing order refunds in WooCommerce stores](https://wpdesk.net/blog/return-policy-order-refund-woocommerce/).
+Also, about adding the [return policy and managing order refunds in WooCommerce stores](https://wpdesk.net/sk/refund-return-policy/).
 
-Last but not least, how to [build trust and handle returns and warranty requests in your WooCommerce store](https://wpdesk.net/blog/returns-and-warranty-requests-woocommerce/).
+Last but not least, how to [build trust and handle returns and warranty requests in your WooCommerce store](https://wpdesk.net/sk/fr-returns-and-warranty/).
 
 = How to process a full or partial refund in WooCommerce? =
 
-Read about the default [WooCommerce refund process](https://wpdesk.net/blog/how-to-make-a-full-and-partial-refund-in-woocommerce/). You can then compare it with the possibilities of Flexible Refund and Return Order for WooCommerce. The plugin lets you manage and process the refunds in WooCommerce much faster!
+Read about the default [WooCommerce refund process](https://wpdesk.net/sk/fr-refund-article/). You can then compare it with the possibilities of Flexible Refund and Return Order for WooCommerce. The plugin lets you manage and process the refunds in WooCommerce much faster!
 
 = How to manage the pending payment orders and cancellations in WooCommerce? =
 
-You may read how to [cancel an order in WooCommerce, set the WooCommerce pending payment time limit, and clear the WooCommerce cart after a chosen time](https://wpdesk.net/blog/some-tips-about-managing-woocommerce-orders/).
+You may read how to [cancel an order in WooCommerce, set the WooCommerce pending payment time limit, and clear the WooCommerce cart after a chosen time](https://wpdesk.net/sk/fr-order-tips/).
 
 = Is the plugin similar to YITH Advanced Refund System for WooCommerce? =
 
@@ -251,7 +251,7 @@ Customers will be able to send refund requests for their WooCommerce orders from
 
 The store administrator will be able to manage all refunds, returns, and warranty requests in WooCommerce &rarr; Refund Requests tab. After the customer requests a refund for a WooCommerce order, the new section with refund info will appear in the specific order view.
 
-See the screenshots above or read how to set the [advanced WooCommerce refund and return system with the plugin](https://wpdesk.net/blog/woocommerce-refund-and-return-free-plugin/).
+See the screenshots above or read how to set the [advanced WooCommerce refund and return system with the plugin](https://wpdesk.net/sk/fr-woocommerce-refund-article/).
 
 = Do you have more free plugins for WooCommerce? =
 
@@ -269,6 +269,9 @@ You can also choose one from the list below based on your needs.
 * [**Flexible Product Fields**](https://wordpress.org/plugins/flexible-product-fields/) - add custom product fields for WooCommerce products. Customize the product page layout with the free plugin (designer) and sell customizable products in WooCommerce.
 * [**ShopMagic**](https://wordpress.org/plugins/shopmagic-for-woocommerce/) - a free email marketing plugin for WordPress and WooCommerce (with 5 free add-ons)! Create, customize, and send personalized emails to your WordPress users and WooCommerce customers.
 
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the Flexible Refund and Return Order for WooCommerce plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/93d86b12-3343-4c94-8f47-cfca37d86aab). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 ### Roadmap
 
@@ -299,6 +302,37 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.0.48 - 2026-01-29 =
+* Fixed email placeholders
+
+= 1.0.47 - 2026-01-21 =
+* Added support for WooCommerce 10.5
+
+= 1.0.46 - 2026-01-15 =
+* Fixed payment provider refunds
+
+= 1.0.45 - 2025-12-03 =
+* Added support for WordPress 6.9
+* Added support for WooCommerce 10.4
+
+= 1.0.44 - 2025-11-07 =
+* Added support for WooCommerce 10.3
+
+= 1.0.43 - 2025-11-06 =
+* Fixed security vulnerability
+
+= 1.0.42 - 2025-10-15 =
+* Update readme
+
+= 1.0.41 - 2025-10-13 =
+* Added Patchstack Vulnerability Disclosure Program
+
+= 1.0.40 - 2025-10-09 =
+* Changed promo links
+
+= 1.0.39 - 2025-10-07 =
+* Fixed security vulnerability
 
 = 1.0.38 - 2025-09-07 =
 * Added support for WooCommerce 10.2

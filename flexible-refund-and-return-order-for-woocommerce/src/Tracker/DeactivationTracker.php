@@ -38,8 +38,8 @@ class DeactivationTracker implements Hookable {
 	 * @internal
 	 */
 	public function load_deactivation_modal() {
-		$docs_url    = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/docs/elastyczne-zwroty-i-reklamacje-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-docs&utm_content=plugin-list' : 'https://wpdesk.net/docs/flexible-refund-and-cancel-order-for-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-refund-docs&utm_content=plugin-list';
-		$support_url = get_locale() === 'pl_PL' ? 'https://wordpress.org/support/plugin/flexible-refund-and-return-order-for-woocommerce/' : 'https://wordpress.org/support/plugin/flexible-refund-and-return-order-for-woocommerce/';
+		$docs_url    = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-refund-plugin-docs-pl' : 'https://www.wpdesk.net/sk/flexible-refund-plugin-docs-en';
+		$support_url = 'https://wpdesk.link/flexible-refund-plugin-support/';
 
 		new DeactivationModal\Modal(
 			self::PLUGIN_SLUG,
