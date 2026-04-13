@@ -1,12 +1,12 @@
-=== Flexible Refund and Return Order for WooCommerce ===
+=== Flexible Refund for WooCommerce – EU One Click Return ===
 
 Contributors: wpdesk,piotrpo,marcinkolanko
 Donate link: https://www.wpdesk.net/sk/flexible-refund-donate/
-Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, woocommerce order management, woocommerce refunds
+Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, one click return, eu return directive
 Requires at least: 6.1
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.49
+Stable tag: 1.0.50
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,9 +14,11 @@ WooCommerce refund and returns process made simple. Let your customers request a
 
 == Description ==
 
-Flexible Refund and Return Order for WooCommerce is a plugin that lets you manage refund and return requests. Your customers will be able to send a refund request directly from the My Account page. The plugin will handle return and refund requests and communication with your customers directly in WooCommerce! You may also inform customers about the privacy and refund policy to help you with returns and warranty requests.
+Flexible Refund for WooCommerce – EU One Click Return is a plugin that lets you manage refund and return requests. Your customers will be able to send a refund request directly from the My Account page. The plugin will handle return and refund requests and communication with your customers directly in WooCommerce! You may also inform customers about the privacy and refund policy to help you with returns and warranty requests.
 
-### Flexible Refund for WooCommerce - Plugin Features
+**The plugin helps you align with the EU 'One Click Return' directive** by letting customers submit and withdraw refund requests in one click from their WooCommerce account while store admins keep a full status history and automated notifications.
+
+### Flexible Refund for WooCommerce – EU One Click Return - Plugin Features
 
 See the main features of the free version:
 
@@ -47,9 +49,9 @@ See the main features of the free version:
 
 [youtube https://www.youtube.com/watch?v=mBhu-ULO3BU]
 
-### Flexible Refund for WooCommerce - PRO Features
+### Flexible Refund for WooCommerce – EU One Click Return - PRO Features
 
-Do you need more automation for WooCommerce refunds? You may manage the refund system automatically with [**Flexible Refund and Return Order for WooCommerce PRO**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/).
+Do you need more automation for WooCommerce refunds? You may manage the refund system automatically with [**Flexible Refund for WooCommerce – EU One Click Return PRO**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/).
 
 **See some of its features:**
 * [PRO] **Enable the conditions for the refund button visibility**,
@@ -71,9 +73,9 @@ Do you need more automation for WooCommerce refunds? You may manage the refund s
 
 #### Try refunds and returns for WooCommerce - Live Demo
 
-Test Flexible Refund and Return Order for WooCommerce (free and PRO) in [**your free demo**](https://wpdesk.link/demo-fr).
+Test Flexible Refund for WooCommerce – EU One Click Return (free and PRO) in [**your free demo**](https://wpdesk.link/demo-fr).
 
-### The Flexible Refund and Return Order for WooCommerce plugin checklist
+### The Flexible Refund for WooCommerce – EU One Click Return plugin checklist
 
 The benefits and scenarios for the plugin to help you manage your advanced refund system in WooCommerce.
 
@@ -91,7 +93,7 @@ The benefits and scenarios for the plugin to help you manage your advanced refun
 
 ### Languages
 
-The Flexible Refund and Return Order for WooCommerce plugin is available in:
+The Flexible Refund for WooCommerce – EU One Click Return plugin is available in:
 
 * English
 * Polish
@@ -100,15 +102,15 @@ You may help us [translate the plugin](https://translate.wordpress.org/projects/
 
 ### Docs
 
-[View Flexible Refund and Return Order for WooCommerce Documentation](https://wpdesk.net/sk/flexible-refund-readme-docs)
+[View Flexible Refund for WooCommerce – EU One Click Return Documentation](https://wpdesk.net/sk/flexible-refund-readme-docs)
 
 ### Support Policy
 
 We provide support for the free version in the [plugin Support Forum](https://wordpress.org/support/plugin/flexible-refund-and-return-order-for-woocommerce/). You may purchase the PRO to receive priority email support and all PRO features. [**Upgrade Now &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
-### Flexible Refund and Return Order for WooCommerce in a nutshell
+### Flexible Refund for WooCommerce – EU One Click Return in a nutshell
 
-Flexible Refund and Return Order for WooCommerce is a plugin you need when you want to handle return and refund requests directly in your store.
+Flexible Refund for WooCommerce – EU One Click Return is a plugin you need when you want to handle return and refund requests directly in your store.
 
 The plugin helps you to add a refund form and allows your customers to request an order refund or return directly from the My Account page. Also, communicate about the WooCommerce refund with a customer by using refund request order statuses, notes, and emails. Add a privacy and refund policy (or terms and conditions) checkbox for users to accept to proceed with the refund for WooCommerce orders. Define conditions for returns and warranty requests in WooCommerce with the form fields and description.
 
@@ -139,13 +141,13 @@ You will find refund requests in your WooCommerce -> Refund Request menu. You'll
 
 The customer will receive your notes and refund request status changes via automatic emails (that are customizable too). For example, you may add the refund requirements or further steps to follow by your customers.
 
-So, the Flexible Refund and Return Order for WooCommerce plugin will help you manage refund requests and communication with your customers!
+So, the Flexible Refund for WooCommerce – EU One Click Return plugin will help you manage refund requests and communication with your customers!
 
 = What are the differences between the Flexible Refund and the built-in WooCommerce refund options? =
 
 By default, WooCommerce lets you process the refund manually. After you receive the call or an email from a customer, go to the *WooCommerce &rarr; Orders &rarr; Edit the order &rarr;* and use the Refund button below the product list.
 
-If you want to speed up the refund and returns process and do not miss any calls or emails from your customers, use  Flexible Refund and Return Order for WooCommerce. The plugin makes refund requests easier for your customers and yourself! You will manage all order refunds under the *WooCommerce &rarr; Orders* menu.
+If you want to speed up the refund and returns process and do not miss any calls or emails from your customers, use  Flexible Refund for WooCommerce – EU One Click Return. The plugin makes refund requests easier for your customers and yourself! You will manage all order refunds under the *WooCommerce &rarr; Orders* menu.
 
 The plugin lets you add and customize the refund form, communicate with customers, and process the refund in WooCommerce!
 
@@ -167,7 +169,7 @@ You may also choose the conditions for refunds, enable auto refund, hide the ref
 
 [**Upgrade to PRO &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
-= What are the benefits of Flexible Refund and Return Order for WooCommerce? =
+= What are the benefits of Flexible Refund for WooCommerce – EU One Click Return? =
 
 The plugin is easy to configure and start using!
 
@@ -217,7 +219,7 @@ Last but not least, how to [build trust and handle returns and warranty requests
 
 = How to process a full or partial refund in WooCommerce? =
 
-Read about the default [WooCommerce refund process](https://wpdesk.net/sk/fr-refund-article/). You can then compare it with the possibilities of Flexible Refund and Return Order for WooCommerce. The plugin lets you manage and process the refunds in WooCommerce much faster!
+Read about the default [WooCommerce refund process](https://wpdesk.net/sk/fr-refund-article/). You can then compare it with the possibilities of Flexible Refund for WooCommerce – EU One Click Return. The plugin lets you manage and process the refunds in WooCommerce much faster!
 
 = How to manage the pending payment orders and cancellations in WooCommerce? =
 
@@ -231,7 +233,7 @@ Yes. The Flexible Refund helps you manage the WooCommerce refund process like th
 
 The plugin lets your customers send you WooCommerce order refund requests much faster. They may also cancel such requests before your reply on the My Account page if they change their mind, or want to correct the refund request.
 
-With the Flexible Refund and Return Order for WooCommerce plugin, buyers may also cancel WooCommerce orders using the refund request button for an order before payment. You can add the information about the refund process on the separate page (Refund Policy or Terms &amp; Conditions), and in the refund form as well. In that case, of course, you will not have to give the money back.
+With the Flexible Refund for WooCommerce – EU One Click Return plugin, buyers may also cancel WooCommerce orders using the refund request button for an order before payment. You can add the information about the refund process on the separate page (Refund Policy or Terms &amp; Conditions), and in the refund form as well. In that case, of course, you will not have to give the money back.
 
 If you want to cancel the WooCommerce orders automatically if buyers don't pay for them online, use the WooCommerce built-in settings. Go to *WooCommerce &rarr; Settings &rarr; Products &rarr; Inventory*, enable stock management, and choose the maximum time for the payment (Hold Stock). That will auto-cancel a WooCommerce order for you without the need to change something programmatically.
 
@@ -271,7 +273,7 @@ You can also choose one from the list below based on your needs.
 
 = Where do I report security bugs found in this plugin? =
 
-Please report security bugs found in the source code of the Flexible Refund and Return Order for WooCommerce plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/93d86b12-3343-4c94-8f47-cfca37d86aab). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+Please report security bugs found in the source code of the Flexible Refund for WooCommerce – EU One Click Return plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/93d86b12-3343-4c94-8f47-cfca37d86aab). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 ### Roadmap
 
@@ -281,7 +283,7 @@ We may also focus on better compatibility with invoicing plugins.
 
 == Screenshots ==
 
-1. Flexible Refund and Return Order for WooCommerce - plugin settings.
+1. Flexible Refund for WooCommerce – EU One Click Return - plugin settings.
 2. WooCommerce Refund Form settings.
 3. Refund form field settings - refund reason.
 4. Additional settings of the refund form fields - description and length.
@@ -302,6 +304,10 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.0.50 - 2026-04-13 =
+* Updated readme file
+* Added support for WooCommerce 10.7
 
 = 1.0.49 - 2026-03-07 =
 * Added support for WooCommerce 10.6
@@ -326,7 +332,7 @@ We may also focus on better compatibility with invoicing plugins.
 * Fixed security vulnerability
 
 = 1.0.42 - 2025-10-15 =
-* Update readme
+* Updated readme file
 
 = 1.0.41 - 2025-10-13 =
 * Added Patchstack Vulnerability Disclosure Program
