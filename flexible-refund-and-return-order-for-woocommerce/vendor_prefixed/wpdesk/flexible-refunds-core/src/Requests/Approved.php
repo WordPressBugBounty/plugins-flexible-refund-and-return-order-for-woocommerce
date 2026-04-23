@@ -128,9 +128,6 @@ class Approved extends AbstractRequest
                 $refund_items[$refund_item_id] = ['qty' => $refund_item['qty'], 'refund_total' => $item_amount * $refund_item['qty'], 'refund_tax' => $refund_taxes['total'] ?? []];
                 $total = round($total, 2);
                 $total_amount += $total;
-                if ((int) $refund_item['qty'] > 0) {
-                    $this->increase_stock_quantity($item->get_product_id(), (int) $refund_item['qty']);
-                }
             } elseif ($item->get_type() === 'shipping') {
                 $item_amount = $item->get_total();
                 $refund_taxes = $this->calc_refund_taxes($taxes, (int) $refund_item['qty'], $item->get_quantity());
@@ -152,7 +149,7 @@ class Approved extends AbstractRequest
         $total_amount = round($total_amount, 2);
         self::$total_amount = wc_format_decimal($total_amount);
         wc_switch_to_site_locale();
-        $refund = wc_create_refund(['amount' => wc_format_decimal($total_amount), 'reason' => '', 'order_id' => $order->get_id(), 'line_items' => $refund_items, 'refund_payment' => $this->gateway_supports_refunds($order)]);
+        $refund = wc_create_refund(['amount' => wc_format_decimal($total_amount), 'reason' => '', 'order_id' => $order->get_id(), 'line_items' => $refund_items, 'refund_payment' => $this->gateway_supports_refunds($order), 'restock_items' => \true]);
         wc_restore_locale();
         return $refund;
     }
@@ -162,15 +159,5 @@ class Approved extends AbstractRequest
         $gateways = WC_Payment_Gateways::instance()->payment_gateways();
         $gateway = isset($gateways[$payment_method_id]) ? $gateways[$payment_method_id] : \false;
         return $gateway && $gateway->supports('refunds');
-    }
-    private function increase_stock_quantity(int $product_id, int $qty): void
-    {
-        $product = wc_get_product($product_id);
-        if (!$product) {
-            return;
-        }
-        $quantity = $product->get_stock_quantity();
-        $product->set_stock_quantity($quantity + $qty);
-        $product->save();
     }
 }

@@ -3,7 +3,7 @@
  * Plugin Name: Flexible Refund for WooCommerce – EU One Click Return
  * Plugin URI: https://wpdesk.link/flexible-refunds
  * Description: The plugin to handle the refund form on My Account and automates the refund process for the WooCommerce store support.
- * Version: 1.0.50
+ * Version: 1.0.51
  * Author: WP Desk
  * Author URI: https://www.wpdesk.net/sk/flexible-refund-and-return-order-for-woocommerce-author
  * Text Domain: flexible-refund-and-return-order-for-woocommerce
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 /* THESE TWO VARIABLES CAN BE CHANGED AUTOMATICALLY */
-$plugin_version = '1.0.50';
+$plugin_version = '1.0.51';
 
 $plugin_name        = 'Flexible Refund and Return Order for WooCommerce';
 $plugin_class_name  = '\WPDesk\WPDeskFRFree\Plugin';

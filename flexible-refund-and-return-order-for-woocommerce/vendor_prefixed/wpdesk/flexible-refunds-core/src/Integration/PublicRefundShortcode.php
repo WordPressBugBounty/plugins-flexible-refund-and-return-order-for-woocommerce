@@ -15,8 +15,8 @@ class PublicRefundShortcode implements Hookable
      */
     private $my_account;
     public const REFUND_REQUEST_GET_KEY = 'send_public_refund';
-    private const EMAIL_REQUEST_KEY = 'refund_email';
-    private const ORDER_ID_REQUEST_KEY = 'refund_order_id';
+    public const EMAIL_REQUEST_KEY = 'refund_email';
+    public const ORDER_ID_REQUEST_KEY = 'refund_order_id';
     private const CANCEL_NONCE_ACTION = 'cancel_refund';
     private const NONCE = 'fr-request-refund';
     private const NONCE_NAME = '_shortcodenonce';
@@ -42,8 +42,7 @@ class PublicRefundShortcode implements Hookable
             //phpcs:enable
             $order = wc_get_order($order_id);
             if ($order && $order->get_billing_email() === $email) {
-                $this->my_account->refund_public_request($order_id);
-                return '';
+                return $this->my_account->refund_public_request($order_id);
             }
             return $this->render_form_with_notice($this->render_invalid_request());
         }

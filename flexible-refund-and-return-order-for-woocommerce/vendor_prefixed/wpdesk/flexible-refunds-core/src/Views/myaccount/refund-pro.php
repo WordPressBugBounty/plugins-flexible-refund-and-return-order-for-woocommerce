@@ -82,13 +82,26 @@ foreach ($order_items as $item_id => $item) {
     ?>
 					<tr class="product_item">
 						<td class="item-name">
-							<a href="<?php 
-    echo \esc_url($product->get_permalink());
-    ?>">
+							<?php 
+    $item_name = \wp_kses_post($item->get_name());
+    if ($product) {
+        ?>
+								<a href="<?php 
+        echo \esc_url($product->get_permalink());
+        ?>">
+									<?php 
+        echo $item_name;
+        ?>
+								</a>
+							<?php 
+    } else {
+        ?>
 								<?php 
-    echo \wp_kses_post($item->get_name());
+        echo $item_name;
+        ?>
+							<?php 
+    }
     ?>
-							</a>
 						</td>
 						<td class="item-cost">
 							<?php 

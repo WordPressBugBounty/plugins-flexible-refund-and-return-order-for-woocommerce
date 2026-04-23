@@ -200,18 +200,39 @@ class MyAccount implements Hookable
      *
      * @return void
      */
-    public function refund_public_request($order_id): void
+    public function refund_public_request($order_id): ?string
     {
         $order = wc_get_order($order_id);
-        if ($order) {
-            $this->handle_refund_request($order);
+        if (!$order) {
+            return '';
         }
+        ob_start();
+        $this->handle_refund_request($order);
+        return ob_get_clean();
     }
     private function is_user_owner_of_the_order(\WC_Order $order): bool
     {
         $order_owner = $order->get_user_id();
         $current_user = get_current_user_id();
         return $order_owner === $current_user;
+    }
+    private function is_public_refund_request_authorized(\WC_Order $order): bool
+    {
+        //phpcs:disable WordPress.Security.NonceVerification.Recommended
+        $email = isset($_GET[PublicRefundShortcode::EMAIL_REQUEST_KEY]) ? sanitize_email(wp_unslash($_GET[PublicRefundShortcode::EMAIL_REQUEST_KEY])) : '';
+        $order_id = isset($_GET[PublicRefundShortcode::ORDER_ID_REQUEST_KEY]) ? absint(wp_unslash($_GET[PublicRefundShortcode::ORDER_ID_REQUEST_KEY])) : 0;
+        //phpcs:enable
+        if (empty($email) || empty($order_id)) {
+            return \false;
+        }
+        if ($order_id !== (int) $order->get_order_number()) {
+            return \false;
+        }
+        $billing_email = (string) $order->get_billing_email();
+        if ('' === $billing_email) {
+            return \false;
+        }
+        return hash_equals(strtolower($billing_email), strtolower($email));
     }
     /**
      * @param array $refund_items
@@ -281,7 +302,14 @@ class MyAccount implements Hookable
         if (!$order || $total_items <= 0) {
             return;
         }
-        if (!$nonce || $order->get_customer_id() !== get_current_user_id()) {
+        if (!$nonce) {
+            return;
+        }
+        $is_authorized = $order->get_customer_id() === get_current_user_id();
+        if (!$is_authorized) {
+            $is_authorized = $this->is_public_refund_request_authorized($order);
+        }
+        if (!$is_authorized) {
             return;
         }
         $post_data['attachments'] = [];
