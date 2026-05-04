@@ -29,7 +29,7 @@ $request_note = $order->get_meta('fr_refund_request_note');
 if (!empty($request_note)) {
     ?>
 	<p><?php 
-    echo $request_note;
+    echo \wp_kses_post($request_note);
     ?></p>
 <?php 
 }

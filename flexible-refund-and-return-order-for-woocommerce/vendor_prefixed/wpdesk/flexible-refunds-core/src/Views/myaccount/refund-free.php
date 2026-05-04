@@ -28,7 +28,7 @@ if (\in_array($request_status, ['approved', 'rejected'])) {
     if (!empty($request_note)) {
         ?>
 		<p><?php 
-        echo $request_note;
+        echo \wp_kses_post($request_note);
         ?></p>
 	<?php 
     }

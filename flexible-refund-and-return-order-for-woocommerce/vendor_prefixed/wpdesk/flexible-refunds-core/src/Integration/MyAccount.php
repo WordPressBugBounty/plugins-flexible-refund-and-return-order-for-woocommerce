@@ -321,6 +321,7 @@ class MyAccount implements Hookable
                 }
             }
         }
+        $post_data = $this->sanitize_text_fields($post_data);
         $order->update_meta_data('fr_refund_request_data', $post_data);
         $order->update_meta_data('fr_refund_request_date', time());
         $order->update_meta_data('fr_refund_request_status', Helpers\Statuses::REQUESTED_STATUS);
@@ -380,6 +381,27 @@ class MyAccount implements Hookable
         if (isset($emails[EmailRefundRequestedAdmin::ID])) {
             $emails[EmailRefundRequestedAdmin::ID]->trigger($order);
         }
+    }
+    private function sanitize_text_fields(array $post_data): array
+    {
+        $fields = $this->form_settings->get_fallback('form_builder', []);
+        foreach ($fields as $name => $field) {
+            $post_data = $this->sanitize_text_field_value($post_data, $name, $field['type'] ?? '');
+        }
+        return $post_data;
+    }
+    private function sanitize_text_field_value(array $post_data, string $name, string $type): array
+    {
+        if (!isset($post_data[$name]) || is_array($post_data[$name])) {
+            return $post_data;
+        }
+        if ($type === 'text') {
+            $post_data[$name] = sanitize_text_field(wp_unslash($post_data[$name]));
+        }
+        if ($type === 'textarea') {
+            $post_data[$name] = sanitize_textarea_field(wp_unslash($post_data[$name]));
+        }
+        return $post_data;
     }
     private function get_upload_files_limit(string $field_name): string
     {

@@ -26,7 +26,8 @@ class FormValuesRenderer
                     $output = $this->output_upload_field($field, $name, $form_data, $output);
                 }
                 if (isset($form_data[$name])) {
-                    $output .= '<p><strong>' . $field['label'] . '</strong>: ' . (is_array($form_data[$name]) ? implode(', ', $form_data[$name]) : $form_data[$name]) . '<p>';
+                    $value = is_array($form_data[$name]) ? implode(', ', array_map('esc_html', $form_data[$name])) : esc_html($form_data[$name]);
+                    $output .= '<p><strong>' . esc_html($field['label']) . '</strong>: ' . $value . '</p>';
                 }
             }
         }
@@ -37,12 +38,12 @@ class FormValuesRenderer
         if (isset($form_data['attachments'][$name]['file'])) {
             $file_name = basename($form_data['attachments'][$name]['file']);
             $file_url = $form_data['attachments'][$name]['url'];
-            return $output . '<p><strong>' . $field['label'] . '</strong>: <a href="' . esc_url($file_url) . '" target="_blank">' . esc_html($file_name) . '</a><p>';
+            return $output . '<p><strong>' . esc_html($field['label']) . '</strong>: <a href="' . esc_url($file_url) . '" target="_blank">' . esc_html($file_name) . '</a></p>';
         }
         if (!isset($form_data['attachments'][$name][0]['file'])) {
             return $output;
         }
-        $output .= '<p><strong>' . $field['label'] . '</strong> : <ul>';
+        $output .= '<p><strong>' . esc_html($field['label']) . '</strong> : <ul>';
         foreach ($form_data['attachments'][$name] as $file) {
             $file_name = basename($file['file']);
             $file_url = $file['url'];
