@@ -3,10 +3,10 @@
 Contributors: wpdesk,piotrpo,marcinkolanko
 Donate link: https://www.wpdesk.net/sk/flexible-refund-donate/
 Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, one click return, eu return directive
-Requires at least: 6.1
-Tested up to: 6.9
+Requires at least: 6.5
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.52
+Stable tag: 1.0.53
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -304,6 +304,10 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.0.53 - 2026-05-20 =
+* Added support for WordPress 7.0
+* Added support for WooCommerce 10.8
 
 = 1.0.52 - 2026-05-04 =
 * Updated libraries
