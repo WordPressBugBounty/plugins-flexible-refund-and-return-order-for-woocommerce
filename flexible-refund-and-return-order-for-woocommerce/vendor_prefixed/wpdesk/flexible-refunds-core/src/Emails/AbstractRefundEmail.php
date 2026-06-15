@@ -26,7 +26,7 @@ abstract class AbstractRefundEmail extends WC_Email
         $this->template_html = 'emails/fr-refund.php';
         $this->template_plain = 'emails/plain/fr-refund.php';
         parent::__construct();
-        $this->placeholders = ['{shop_title}' => '', '{shop_address}' => '', '{shop_url}' => '', '{shop_email}' => '', '{refund_url}' => '', '{refund_note}' => '', '{refund_order_table}' => '', '{customer_name}' => '', '{order_id}' => '', '{order_date}' => '', '{order_number}' => '', '{order_payment_method}' => '', '{coupon_code}' => '', '{admin_order_url}' => '', '{admin_refunds_url}' => '', '{refund_info_page}' => ''];
+        $this->placeholders = ['{shop_title}' => '', '{shop_address}' => '', '{shop_url}' => '', '{shop_email}' => '', '{refund_url}' => '', '{refund_note}' => '', '{refund_order_table}' => '', '{customer_name}' => '', '{order_id}' => '', '{order_date}' => '', '{order_number}' => '', '{order_payment_method}' => '', '{coupon_code}' => '', '{admin_order_url}' => '', '{admin_refunds_url}' => '', '{refund_info_page}' => '', '{refund_request_date}' => ''];
         $this->append_wp_editor_to_fields();
     }
     /**
@@ -81,6 +81,7 @@ abstract class AbstractRefundEmail extends WC_Email
         $this->placeholders['{customer_name}'] = $this->object->get_formatted_billing_full_name();
         $this->placeholders['{order_id}'] = $this->object->get_id();
         $this->placeholders['{order_date}'] = wc_format_datetime($this->object->get_date_created());
+        $this->placeholders['{refund_request_date}'] = $this->get_refund_request_date();
         $this->placeholders['{order_number}'] = $this->object->get_order_number();
         $this->placeholders['{order_payment_method}'] = $this->object->get_payment_method_title();
         $this->placeholders['{coupon_code}'] = is_array($coupon_codes) ? implode(', ', $coupon_codes) : esc_attr($coupon_codes);
@@ -111,6 +112,11 @@ abstract class AbstractRefundEmail extends WC_Email
             }
         }
         return $info_page_link;
+    }
+    private function get_refund_request_date(): string
+    {
+        $timestamp = (int) $this->object->get_meta('fr_refund_request_date');
+        return $timestamp ? wc_format_datetime((new \WC_DateTime())->setTimestamp($timestamp), wc_date_format() . ' ' . wc_time_format()) : '';
     }
     public function get_content_plain(): string
     {

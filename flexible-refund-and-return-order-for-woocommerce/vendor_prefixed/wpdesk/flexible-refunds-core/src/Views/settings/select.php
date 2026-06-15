@@ -50,11 +50,18 @@ if ($field->has_placeholder()) {
 	<?php 
 foreach ($field->get_possible_values() as $possible_value => $label) {
     ?>
+		<?php 
+    if ($possible_value === $value) {
+        $is_selected = \true;
+    } elseif (is_array($value)) {
+        $is_selected = in_array($possible_value, $value, \true) || is_numeric($possible_value) && in_array((string) $possible_value, array_map('strval', $value), \true);
+    } else {
+        $is_selected = is_numeric($possible_value) && is_numeric($value) && (int) $possible_value === (int) $value;
+    }
+    ?>
 		<option
 			<?php 
-    if ($possible_value === $value || is_array($value) && in_array($possible_value, $value, \true) || is_numeric($possible_value) && is_numeric($value) && (int) $possible_value === (int) $value) {
-        echo ' selected="selected"';
-    }
+    selected($is_selected);
     ?>
 			value="<?php 
     echo esc_attr($possible_value);
