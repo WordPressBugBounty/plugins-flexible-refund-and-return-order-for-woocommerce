@@ -1,12 +1,12 @@
 === Flexible Refund for WooCommerce – EU One Click Return ===
 
-Contributors: wpdesk,piotrpo,marcinkolanko
+Contributors: wpdesk,marcinkolanko
 Donate link: https://www.wpdesk.net/sk/flexible-refund-donate/
 Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, one click return, eu return directive
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -16,36 +16,36 @@ WooCommerce refund and returns process made simple. Let your customers request a
 
 Flexible Refund for WooCommerce – EU One Click Return is a plugin that lets you manage refund and return requests. Your customers will be able to send a refund request directly from the My Account page. The plugin will handle return and refund requests and communication with your customers directly in WooCommerce! You may also inform customers about the privacy and refund policy to help you with returns and warranty requests.
 
-**The plugin helps you align with the EU 'One Click Return' directive** by letting customers submit and withdraw refund requests in one click from their WooCommerce account while store admins keep a full status history and automated notifications.
+**The plugin helps you align with the EU 'One Click Return' directive** by letting customers submit and **Withdrawal** refund requests in one click from their WooCommerce account while store admins keep a full status history — including every **Withdrawal** event — and automated notifications.
 
 ### Flexible Refund for WooCommerce – EU One Click Return - Plugin Features
 
 See the main features of the free version:
 
-* Enable the **refund and return system for WooCommerce**,
-* **Cash/ On bank account refund type,**
-* Allow shipping costs refund too,
-* Handle full refunds for WooCommerce orders,
-* **Refund form builder,**
-* Text, textarea, checkbox, radio, select with description, CSS class, and additional form fields' settings,
-* Describe your refund and return policy, terms and conditions, or conditions for returns and warranty requests for WooCommerce orders with the form as well,
-* **Add privacy and refund policy checkbox,**
-* Include the terms and conditions text and conditions to accept,
-* Describe the return policy and refund requirements of your WooCommerce store,
-* Refund button for an order on the customer My Account page -> Orders,
-* Refund form for an order,
-* **Withdraw the refund request with the cancel button,**
-* Refund Request management page,
-* Decide about the refund status for a WooCommerce order directly from the Order Edit Screen,
-* Add notes to the customer about the refund request status change,
-* **Automatic emails to the customer after the WooCommerce refund request status changes,**
-* **Edit and customize the content of these notifications,**
-* Handle the refund communication and the process faster,
-* Send an email to the store administrator about the WooCommerce refund request,
-* Adjust the order returns with the plugin,
-* **Compatible with WooCommerce Subscriptions.**
+* Enable the **refund and return system for WooCommerce**
+* **Cash / On bank account refund type**
+* Allow shipping costs refund too
+* Handle full refunds for WooCommerce orders
+* **Refund form builder**
+* Text, textarea, checkbox, radio, select with description, CSS class, and additional form fields' settings
+* Describe your refund and return policy, terms and conditions, or conditions for returns and warranty requests for WooCommerce orders with the form as well
+* **Add privacy and refund policy checkbox**
+* Include the terms and conditions text and conditions to accept
+* Describe the return policy and refund requirements of your WooCommerce store
+* Refund button for an order on the customer My Account page -> Orders
+* Refund form for an order
+* **Withdrawal** the refund request with the cancel button
+* Refund Request management page
+* Decide about the refund status for a WooCommerce order directly from the Order Edit Screen
+* Add notes to the customer about the refund request status change
+* **Automatic emails to the customer** after the WooCommerce refund request status changes
+* **Edit and customize the content of these notifications**
+* Handle the refund communication and the process faster
+* Send an email to the store administrator about the WooCommerce refund request
+* Adjust the order returns with the plugin
+* **Compatible with WooCommerce Subscriptions** and [**Flexible Subscriptions**](https://wpdesk.link/flexible-subscriptions-refund-readme).
 
-**Visit** [**Flexible Refund Docs**](https://wpdesk.net/sk/flexible-refund-readme-docs) to see all features of the plugin & how to set up a refund and return system for your WooCommerce orders.
+Visit [**Flexible Refund Docs**](https://wpdesk.net/sk/flexible-refund-readme-docs) to see all features of the plugin & how to set up a refund and return system for your WooCommerce orders.
 
 [youtube https://www.youtube.com/watch?v=mBhu-ULO3BU]
 
@@ -54,35 +54,35 @@ See the main features of the free version:
 Do you need more automation for WooCommerce refunds? You may manage the refund system automatically with [**Flexible Refund for WooCommerce – EU One Click Return PRO**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/).
 
 **See some of its features:**
-* [PRO] **Enable the conditions for the refund button visibility**,
-* [PRO] **[NEW] Enable refund for shop customers who do not have an account (guests)**,
-* [PRO] Refund button for specific user roles, order statuses, product categories, products, and payment methods,
-* [PRO] **Partial refunds**,
-* [PRO] Change the refund type to an **automatic WooCommerce coupon**,
-* [PRO] **Auto refund option to accept order refund requests automatically**,
-* [PRO] **Hide the refund button** after a specified time (days, weeks, months, years),
-* [PRO] Additional form fields (Multiselect, Upload, HTML),
-* [PRO] Add the privacy and refund policy checkbox and link to the terms and conditions page you set in WooCommerce,
-* [PRO] Use as a WooCommerce warranty plugin,
-* [PRO] **Let customers upload files for warranty requests**,
-* [PRO] Benefit from your return and warranty management system for WooCommerce (with automatic refunds),
-* [PRO] Use the Multiselect form field to collect data about refunds and returns,
+* [PRO] **Enable the conditions for the refund button visibility**
+* [PRO] **[NEW] Enable refund for shop customers who do not have an account (guests)**
+* [PRO] Refund button for specific user roles, order statuses, product categories, products, and payment methods
+* [PRO] **Partial refunds**
+* [PRO] Change the refund type to an **automatic WooCommerce coupon**
+* [PRO] **Auto refund option to accept order refund requests automatically**
+* [PRO] **Hide the refund button** after a specified time (days, weeks, months, years)
+* [PRO] Additional form fields (Multiselect, Upload, HTML)
+* [PRO] Add the privacy and refund policy checkbox and link to the terms and conditions page you set in WooCommerce
+* [PRO] Use as a WooCommerce warranty plugin
+* [PRO] **Let customers upload files for warranty requests**
+* [PRO] Benefit from your return and warranty management system for WooCommerce (with automatic refunds)
+* [PRO] Use the Multiselect form field to collect data about refunds and returns
 * [PRO] **Priority email support**.
 
 [**Upgrade to PRO Now &rarr;**](https://www.wpdesk.net/sk/flexible-refund-plugin-pro/)
 
 #### Try refunds and returns for WooCommerce - Live Demo
 
-Test Flexible Refund for WooCommerce – EU One Click Return (free and PRO) in [**your free demo**](https://wpdesk.link/demo-fr).
+Test Flexible Refund for WooCommerce – EU One Click Return (free and PRO) in [**your free demo**](https://wpdesk.link/demo-fr). The demo also lets you preview the full **Withdrawal** flow from the customer's side.
 
-### The Flexible Refund for WooCommerce – EU One Click Return plugin checklist
+### The Flexible Refund for WooCommerce – EU One Click Return Plugin Checklist
 
 The benefits and scenarios for the plugin to help you manage your advanced refund system in WooCommerce.
 
 * **Enable the advanced refund system for WooCommerce with a free plugin** 🔄
-* Let customers ask for a **refund, return and exchange products, or warranty requests in WooCommerce** 🔐
+* Let customers ask for a **refund, return and exchange products, or warranty requests in WooCommerce** 🔁
 * Choose to refund **cash or send automatic WooCommerce discount coupons** 💲
-* Allow customers to **cancel a refund request for a WooCommerce order** ↩️
+* Allow customers a **Withdrawal** of a refund request for a WooCommerce order ↩️
 * Use and customize the **refund form builder** with multiple fields and options 🎛️
 * Accept, deny, and **manage all WooCommerce refunds and returns in one place** ⚙️
 * Adjust the email templates to personalize the communication for refunds, returns, and warranty requests in WooCommerce 📨
@@ -304,6 +304,9 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.1.1 - 2026-06-23 =
+* Readme modifications.
 
 = 1.1.0 - 2026-06-15 =
 * Added {refund_request_date} email placeholder
