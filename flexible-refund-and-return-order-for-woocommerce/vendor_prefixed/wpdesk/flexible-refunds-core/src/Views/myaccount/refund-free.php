@@ -34,7 +34,6 @@ if (\in_array($request_status, ['approved', 'rejected'])) {
     }
 }
 ?>
-
 <form method="post" class="refund-front-form" action="" enctype="multipart/form-data">
 	<section id="fr_refund_table_free" class="woocommerce-refund-details">
 		<?php 

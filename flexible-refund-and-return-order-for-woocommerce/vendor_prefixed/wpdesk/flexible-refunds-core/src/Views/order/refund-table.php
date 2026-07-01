@@ -251,11 +251,7 @@ foreach ($shipping_items as $shipping_item) {
 		<td colspan="4"></td>
 		<td class="total-refund-amount"><strong><span class="refund-total-calc">
 		<?php 
-if ($total_refund_sum <= 0) {
-    echo '-';
-} else {
-    echo \number_format((float) $total_refund_sum, \wc_get_price_decimals(), ',', '');
-}
+echo \number_format(\max(0, (float) $total_refund_sum), \wc_get_price_decimals(), ',', '');
 ?>
 		</span></strong>
 		</td>

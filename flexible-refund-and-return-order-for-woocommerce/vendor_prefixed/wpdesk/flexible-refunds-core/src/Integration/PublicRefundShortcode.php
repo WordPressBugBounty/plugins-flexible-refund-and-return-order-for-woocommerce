@@ -2,6 +2,8 @@
 
 namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\OrderReferenceResolver;
+use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
 use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 class PublicRefundShortcode implements Hookable
@@ -14,16 +16,26 @@ class PublicRefundShortcode implements Hookable
      * @var MyAccount
      */
     private $my_account;
+    /**
+     * @var OrderReferenceResolver
+     */
+    private $order_reference_resolver;
+    /**
+     * @var PersistentContainer
+     */
+    private $settings;
     public const REFUND_REQUEST_GET_KEY = 'send_public_refund';
     public const EMAIL_REQUEST_KEY = 'refund_email';
     public const ORDER_ID_REQUEST_KEY = 'refund_order_id';
     private const CANCEL_NONCE_ACTION = 'cancel_refund';
     private const NONCE = 'fr-request-refund';
     private const NONCE_NAME = '_shortcodenonce';
-    public function __construct(Renderer $renderer, MyAccount $my_account)
+    public function __construct(Renderer $renderer, MyAccount $my_account, OrderReferenceResolver $order_reference_resolver, PersistentContainer $settings)
     {
         $this->renderer = $renderer;
         $this->my_account = $my_account;
+        $this->order_reference_resolver = $order_reference_resolver;
+        $this->settings = $settings;
     }
     public function hooks()
     {
@@ -37,12 +49,12 @@ class PublicRefundShortcode implements Hookable
                 return $this->render_form_with_notice(__('Form has expired. Please try again.', 'flexible-refund-and-return-order-for-woocommerce'));
             }
             //phpcs:disable
-            $email = $_GET[self::EMAIL_REQUEST_KEY];
-            $order_id = $_GET[self::ORDER_ID_REQUEST_KEY];
+            $email = sanitize_email(wp_unslash($_GET[self::EMAIL_REQUEST_KEY] ?? ''));
+            $order_reference = sanitize_text_field(wp_unslash($_GET[self::ORDER_ID_REQUEST_KEY] ?? ''));
             //phpcs:enable
-            $order = wc_get_order($order_id);
-            if ($order && $order->get_billing_email() === $email) {
-                return $this->my_account->refund_public_request($order_id);
+            $order = $this->order_reference_resolver->find_order($order_reference, $email);
+            if ($order) {
+                return $this->my_account->refund_public_request($order->get_id());
             }
             return $this->render_form_with_notice($this->render_invalid_request());
         }
@@ -54,7 +66,8 @@ class PublicRefundShortcode implements Hookable
     }
     private function render_refund_form(): string
     {
-        return $this->renderer->render('public-refund/public-refund', ['submit_field_name' => self::REFUND_REQUEST_GET_KEY, 'email_field_name' => self::EMAIL_REQUEST_KEY, 'order_field_name' => self::ORDER_ID_REQUEST_KEY, 'nonce' => self::NONCE, 'nonce_field_name' => self::NONCE_NAME]);
+        $order_reference_label = $this->settings->get_fallback(OrderReferenceResolver::SEARCH_BY_ORDER_NUMBER_OPTION, 'no') === 'yes' ? esc_html__('Order number', 'flexible-refund-and-return-order-for-woocommerce') : esc_html__('Order ID', 'flexible-refund-and-return-order-for-woocommerce');
+        return $this->renderer->render('public-refund/public-refund', ['submit_field_name' => self::REFUND_REQUEST_GET_KEY, 'email_field_name' => self::EMAIL_REQUEST_KEY, 'order_field_name' => self::ORDER_ID_REQUEST_KEY, 'order_reference_label' => $order_reference_label, 'nonce' => self::NONCE, 'nonce_field_name' => self::NONCE_NAME]);
     }
     private function render_invalid_request(): string
     {

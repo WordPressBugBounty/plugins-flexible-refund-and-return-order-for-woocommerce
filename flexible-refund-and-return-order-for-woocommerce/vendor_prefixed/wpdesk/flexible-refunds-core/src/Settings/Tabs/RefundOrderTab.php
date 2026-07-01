@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs;
 
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\OrderReferenceResolver;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin;
 use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
@@ -29,7 +30,7 @@ final class RefundOrderTab extends AbstractSettingsTab
         $custom_attributes = Integration::is_super() ? [] : ['disabled' => 'disabled'];
         $docs_link = Plugin::get_url_to_docs();
         $pro_link = Plugin::get_url_to_pro();
-        return [['title' => esc_html__('Order Refund', 'flexible-refund-and-return-order-for-woocommerce'), 'type' => 'title', 'desc' => sprintf(esc_html__('Define the settings for the refund button and the approval process. Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . esc_url($docs_link) . '" target="_blank" style="color: #D27334;">', '</a>'), 'id' => self::SETTING_PREFIX . 'refund_header'], ['title' => esc_html__('Refund order button', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . 'refund_button', 'desc' => esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => esc_html__('Check this option to enable refund process button.', 'flexible-refund-and-return-order-for-woocommerce'), 'default' => 'no', 'type' => 'checkbox'], ['id' => self::SETTING_PREFIX . 'refund_conditions_setting', 'type' => 'conditions_setting'], [
+        return [['title' => esc_html__('Order Refund', 'flexible-refund-and-return-order-for-woocommerce'), 'type' => 'title', 'desc' => sprintf(esc_html__('Define the settings for the refund button and the approval process. Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . esc_url($docs_link) . '" target="_blank" style="color: #D27334;">', '</a>'), 'id' => self::SETTING_PREFIX . 'refund_header'], ['title' => esc_html__('Refund order button', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . 'refund_button', 'desc' => esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => esc_html__('Check this option to enable refund process button.', 'flexible-refund-and-return-order-for-woocommerce'), 'default' => 'no', 'type' => 'checkbox'], ['title' => esc_html__('Search by visible order number', 'flexible-refund-and-return-order-for-woocommerce'), 'id' => self::SETTING_PREFIX . OrderReferenceResolver::SEARCH_BY_ORDER_NUMBER_OPTION, 'desc' => esc_html__('Enable', 'flexible-refund-and-return-order-for-woocommerce'), 'desc_tip' => esc_html__('Check this option to search orders in the public refund form by the order number shown to the customer instead of the internal WooCommerce order ID.', 'flexible-refund-and-return-order-for-woocommerce'), 'default' => 'no', 'type' => 'checkbox'], ['id' => self::SETTING_PREFIX . 'refund_conditions_setting', 'type' => 'conditions_setting'], [
             'title' => esc_html__('Refund type', 'flexible-refund-and-return-order-for-woocommerce'),
             /* translators: %s: URL to settings. */
             'desc' => '',

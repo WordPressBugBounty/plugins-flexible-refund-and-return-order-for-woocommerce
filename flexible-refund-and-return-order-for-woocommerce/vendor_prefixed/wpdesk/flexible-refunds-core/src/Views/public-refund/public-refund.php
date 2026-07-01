@@ -19,7 +19,7 @@ namespace FRFreeVendor;
 \esc_attr_e($params['order_field_name']);
 ?>" class="fr-refund-shortcode-label">
 				<?php 
-\esc_html_e('Order number', 'flexible-refund-and-return-order-for-woocommerce');
+echo \esc_html($params['order_reference_label']);
 ?>
 			</label>
 			<input class="fr-refund-shortcode-field" type="text"
@@ -30,7 +30,7 @@ namespace FRFreeVendor;
 \esc_attr_e($params['order_field_name']);
 ?>" value=""
 					placeholder="<?php 
-\esc_attr_e('Order number', 'flexible-refund-and-return-order-for-woocommerce');
+echo \esc_attr($params['order_reference_label']);
 ?>"/>
 		</div>
 

@@ -34,7 +34,6 @@ if (\in_array($request_status, ['approved', 'rejected'])) {
     }
 }
 ?>
-
 <form method="post" class="refund-front-form" action="" enctype="multipart/form-data">
 	<section id="fr_refund_table" class="woocommerce-refund-details">
 		<?php 
@@ -249,7 +248,8 @@ if ($show_shipping === 'yes') {
         if ($refunded) {
             echo '-';
         } else {
-            echo '0';
+            echo \wc_price(0, ['currency' => $order->get_currency()]);
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
         ?>
 														</span></td>
@@ -265,7 +265,10 @@ if ($show_shipping === 'yes') {
 					<td>
 						<input type="hidden" id="refund-total-qty-input" value="0" name="fr_refund_form[total_refund_qty]"/>
 					</td>
-					<td><span class="refund-total-calc">0</span></td>
+					<td><span class="refund-total-calc"><?php 
+echo \wc_price(0, ['currency' => $order->get_currency()]);
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+?></span></td>
 				</tr>
 				</tbody>
 			</table>

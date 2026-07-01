@@ -11,6 +11,8 @@ use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 use FRFreeVendor\WPDesk\View\Renderer\SimplePhpRenderer;
 use FRFreeVendor\WPDesk\View\Resolver\ChainResolver;
 use FRFreeVendor\WPDesk\View\Resolver\DirResolver;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\OrderReferenceResolver;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\RefundRequestAvailability;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\SettingsForm;
 /**
  * Main class for integrate library with plugin.
@@ -93,9 +95,11 @@ class Integration implements Hookable
         $this->add_hookable(new Integration\Assets(self::get_library_url()));
         $this->add_hookable(new SettingsForm());
         $ajax = new Integration\Ajax($settings, $renderer);
-        $my_account = new Integration\MyAccount($renderer, $settings, $ajax);
+        $order_reference_lookup = new OrderReferenceResolver($settings);
+        $refund_availability = new RefundRequestAvailability($settings);
+        $my_account = new Integration\MyAccount($renderer, $settings, $ajax, $order_reference_lookup, $refund_availability);
         if (self::is_super()) {
-            $this->add_hookable(new Integration\PublicRefundShortcode($renderer, $my_account));
+            $this->add_hookable(new Integration\PublicRefundShortcode($renderer, $my_account, $order_reference_lookup, $settings));
         }
         if ($settings->get_fallback('refund_button', 'no') === 'yes') {
             $this->add_hookable($my_account);

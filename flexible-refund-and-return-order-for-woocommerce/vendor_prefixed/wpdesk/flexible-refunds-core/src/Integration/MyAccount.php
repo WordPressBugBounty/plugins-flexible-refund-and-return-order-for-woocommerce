@@ -10,10 +10,10 @@ use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
 use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 use WC_Order;
-use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Conditions\DateCondition;
-use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Conditions\RefundCondition;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\OrderReferenceResolver;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\RefundRequestAvailability;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 class MyAccount implements Hookable
 {
@@ -37,12 +37,22 @@ class MyAccount implements Hookable
      * @var WordpressOptionsContainer
      */
     private $form_settings;
-    public function __construct(Renderer $renderer, PersistentContainer $settings, Ajax $ajax)
+    /**
+     * @var OrderReferenceResolver
+     */
+    private $order_reference_resolver;
+    /**
+     * @var RefundRequestAvailability
+     */
+    private $refund_request_availability;
+    public function __construct(Renderer $renderer, PersistentContainer $settings, Ajax $ajax, OrderReferenceResolver $order_reference_resolver, RefundRequestAvailability $refund_request_availability)
     {
         $this->form_settings = new WordpressOptionsContainer(RefundOrderTab::SETTING_PREFIX);
         $this->renderer = $renderer;
         $this->settings = $settings;
         $this->ajax = $ajax;
+        $this->order_reference_resolver = $order_reference_resolver;
+        $this->refund_request_availability = $refund_request_availability;
     }
     public function hooks()
     {
@@ -62,12 +72,7 @@ class MyAccount implements Hookable
      */
     public function account_my_orders_actions(array $actions, WC_Order $order): array
     {
-        $conditions = $this->settings->get_fallback('refund_conditions_setting', []);
-        if (!is_array($conditions)) {
-            $conditions = [];
-        }
-        $condition = new RefundCondition($conditions, $order);
-        if ($condition->should_show() && !$this->should_auto_hide($order)) {
+        if ($this->refund_request_availability->can_initiate_refund_request($order)) {
             $actions['refund'] = ['url' => Helpers\MyAccount::get_refund_url($order), 'name' => esc_html__('Refund', 'flexible-refund-and-return-order-for-woocommerce')];
         }
         if (Integration::is_super()) {
@@ -112,18 +117,6 @@ class MyAccount implements Hookable
             wp_safe_redirect(wc_get_endpoint_url('orders', '', wc_get_page_permalink('myaccount')));
             exit;
         }
-    }
-    private function should_auto_hide(WC_Order $order): bool
-    {
-        if ($this->settings->get_fallback('refund_auto_hide', 'no') === 'yes' && Integration::is_super()) {
-            $conditions = $this->settings->get_fallback('refund_auto_hide_settings', []);
-            if (!is_array($conditions)) {
-                $conditions = [];
-            }
-            $date_condition = new DateCondition($conditions, $order);
-            return !$date_condition->should_show();
-        }
-        return \false;
     }
     /**
      * @param $title
@@ -170,13 +163,29 @@ class MyAccount implements Hookable
      */
     private function handle_refund_request(\WC_Order $order): void
     {
-        $is_total_refunded = (float) $order->get_total() - (float) $order->get_total_refunded() === 0.0;
+        $is_total_refunded = $this->is_order_fully_refunded($order);
         $request_status = $order->get_meta('fr_refund_request_status');
         if ($is_total_refunded || !empty($request_status) && !in_array($order->get_meta('fr_refund_request_status'), ['approved', 'rejected'], \true)) {
             $this->renderer->output_render('myaccount/' . $this->get_template_name('refund-in-progress'), ['order' => $order, 'fields' => new FieldRenderer(), 'show_shipping' => $this->settings->get_fallback('refund_enable_shipment', 'no'), 'request_status' => $request_status]);
+        } elseif (!$this->refund_request_availability->can_initiate_refund_request($order)) {
+            $this->renderer->output_render('myaccount/refund-unavailable', ['title' => $this->get_refund_unavailable_title($order), 'message' => $this->get_refund_unavailable_message($order)]);
         } else {
             $this->renderer->output_render('myaccount/' . $this->get_template_name('refund'), ['show_shipping' => $this->settings->get_fallback('refund_enable_shipment', 'no'), 'order' => $order, 'fields' => new FieldRenderer(), 'request_status' => $request_status]);
         }
+    }
+    private function is_order_fully_refunded(\WC_Order $order): bool
+    {
+        foreach ($order->get_items() as $item_id => $item) {
+            if (absint($item->get_quantity()) > absint($order->get_qty_refunded_for_item($item_id))) {
+                return \false;
+            }
+        }
+        foreach ($order->get_items('shipping') as $shipping_item) {
+            if (absint($shipping_item->get_quantity()) > absint($order->get_qty_refunded_for_item($shipping_item->get_id(), 'shipping'))) {
+                return \false;
+            }
+        }
+        return \true;
     }
     /**
      * @param mixed $order_id Order ID is passed as string.
@@ -218,21 +227,8 @@ class MyAccount implements Hookable
     }
     private function is_public_refund_request_authorized(\WC_Order $order): bool
     {
-        //phpcs:disable WordPress.Security.NonceVerification.Recommended
-        $email = isset($_GET[PublicRefundShortcode::EMAIL_REQUEST_KEY]) ? sanitize_email(wp_unslash($_GET[PublicRefundShortcode::EMAIL_REQUEST_KEY])) : '';
-        $order_id = isset($_GET[PublicRefundShortcode::ORDER_ID_REQUEST_KEY]) ? absint(wp_unslash($_GET[PublicRefundShortcode::ORDER_ID_REQUEST_KEY])) : 0;
-        //phpcs:enable
-        if (empty($email) || empty($order_id)) {
-            return \false;
-        }
-        if ($order_id !== (int) $order->get_order_number()) {
-            return \false;
-        }
-        $billing_email = (string) $order->get_billing_email();
-        if ('' === $billing_email) {
-            return \false;
-        }
-        return hash_equals(strtolower($billing_email), strtolower($email));
+        $authorized_order = $this->get_public_refund_request_order();
+        return $authorized_order instanceof WC_Order && $authorized_order->get_id() === $order->get_id();
     }
     /**
      * @param array $refund_items
@@ -288,14 +284,13 @@ class MyAccount implements Hookable
     {
         global $wp;
         //phpcs:disable
-        $refund_order_id = $_GET['refund_order_id'] ?? 0;
-        $order_id = $wp->query_vars[self::QUERY_VAR_KEY] ?? $refund_order_id;
+        $order_id = $wp->query_vars[self::QUERY_VAR_KEY] ?? 0;
         $post_data = $_POST[FieldRenderer::FIELD_PREFIX] ?? [];
         //phpcs:enable
-        if (!$order_id || empty($post_data['items'])) {
+        if (!$order_id && !$this->has_public_refund_request_order_reference() || empty($post_data['items'])) {
             return;
         }
-        $order = wc_get_order($order_id);
+        $order = $order_id ? wc_get_order($order_id) : $this->get_public_refund_request_order();
         $nonce = wp_verify_nonce($post_data['fr_refund_request'], 'fr_refund_request_send');
         $total_items = $this->count_refund_items($post_data['items']);
         unset($post_data['request_refund'], $post_data['fr_refund_request']);
@@ -310,6 +305,9 @@ class MyAccount implements Hookable
             $is_authorized = $this->is_public_refund_request_authorized($order);
         }
         if (!$is_authorized) {
+            return;
+        }
+        if (!$this->refund_request_availability->can_initiate_refund_request($order)) {
             return;
         }
         $post_data['attachments'] = [];
@@ -407,5 +405,72 @@ class MyAccount implements Hookable
     {
         $fields = $this->form_settings->get_fallback('form_builder', []);
         return isset($fields[$field_name]['files_limit']) ? (int) $fields[$field_name]['files_limit'] : 1;
+    }
+    private function has_public_refund_request_order_reference(): bool
+    {
+        return '' !== $this->get_public_refund_request_order_reference();
+    }
+    private function get_public_refund_request_order(): ?WC_Order
+    {
+        $reference = $this->get_public_refund_request_order_reference();
+        $email = $this->get_public_refund_request_email();
+        if ('' === $reference || '' === $email) {
+            return null;
+        }
+        return $this->order_reference_resolver->find_order($reference, $email);
+    }
+    private function get_public_refund_request_email(): string
+    {
+        //phpcs:disable WordPress.Security.NonceVerification.Recommended
+        return isset($_GET[PublicRefundShortcode::EMAIL_REQUEST_KEY]) ? sanitize_email(wp_unslash($_GET[PublicRefundShortcode::EMAIL_REQUEST_KEY])) : '';
+        //phpcs:enable
+    }
+    private function get_public_refund_request_order_reference(): string
+    {
+        //phpcs:disable WordPress.Security.NonceVerification.Recommended
+        return isset($_GET[PublicRefundShortcode::ORDER_ID_REQUEST_KEY]) ? sanitize_text_field(wp_unslash($_GET[PublicRefundShortcode::ORDER_ID_REQUEST_KEY])) : '';
+        //phpcs:enable
+    }
+    private function get_refund_unavailable_title(WC_Order $order): string
+    {
+        if ($this->refund_request_availability->is_auto_hidden($order)) {
+            return esc_html__('Refund time has expired', 'flexible-refund-and-return-order-for-woocommerce');
+        }
+        return esc_html__('Refund unavailable', 'flexible-refund-and-return-order-for-woocommerce');
+    }
+    private function get_refund_unavailable_message(WC_Order $order): string
+    {
+        if ($this->refund_request_availability->is_auto_hidden($order)) {
+            return sprintf(
+                /* translators: %s: refund availability duration. */
+                esc_html__('Refund requests are available for %s after placing the order.', 'flexible-refund-and-return-order-for-woocommerce'),
+                $this->get_auto_hide_duration_label()
+            );
+        }
+        return esc_html__('Refund request is unavailable for this order based on the current refund conditions.', 'flexible-refund-and-return-order-for-woocommerce');
+    }
+    private function get_auto_hide_duration_label(): string
+    {
+        $conditions = $this->refund_request_availability->get_auto_hide_settings();
+        $time_value = max(1, (int) ($conditions['time_value'] ?? 1));
+        $time_period = (string) ($conditions['time_period'] ?? 'days');
+        $period_label = $this->get_auto_hide_period_label($time_period, $time_value);
+        return sprintf('%d %s', $time_value, $period_label);
+    }
+    private function get_auto_hide_period_label(string $time_period, int $time_value): string
+    {
+        switch ($time_period) {
+            case 'hours':
+                return 1 === $time_value ? esc_html__('hour', 'flexible-refund-and-return-order-for-woocommerce') : esc_html__('hours', 'flexible-refund-and-return-order-for-woocommerce');
+            case 'weeks':
+                return 1 === $time_value ? esc_html__('week', 'flexible-refund-and-return-order-for-woocommerce') : esc_html__('weeks', 'flexible-refund-and-return-order-for-woocommerce');
+            case 'months':
+                return 1 === $time_value ? esc_html__('month', 'flexible-refund-and-return-order-for-woocommerce') : esc_html__('months', 'flexible-refund-and-return-order-for-woocommerce');
+            case 'years':
+                return 1 === $time_value ? esc_html__('year', 'flexible-refund-and-return-order-for-woocommerce') : esc_html__('years', 'flexible-refund-and-return-order-for-woocommerce');
+            case 'days':
+            default:
+                return 1 === $time_value ? esc_html__('day', 'flexible-refund-and-return-order-for-woocommerce') : esc_html__('days', 'flexible-refund-and-return-order-for-woocommerce');
+        }
     }
 }
