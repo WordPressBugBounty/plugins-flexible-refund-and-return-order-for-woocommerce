@@ -382,7 +382,7 @@ class MyAccount implements Hookable
     }
     private function sanitize_text_fields(array $post_data): array
     {
-        $fields = $this->form_settings->get_fallback('form_builder', []);
+        $fields = $this->get_supported_form_fields();
         foreach ($fields as $name => $field) {
             $post_data = $this->sanitize_text_field_value($post_data, $name, $field['type'] ?? '');
         }
@@ -403,8 +403,16 @@ class MyAccount implements Hookable
     }
     private function get_upload_files_limit(string $field_name): string
     {
-        $fields = $this->form_settings->get_fallback('form_builder', []);
+        $fields = $this->get_supported_form_fields();
         return isset($fields[$field_name]['files_limit']) ? (int) $fields[$field_name]['files_limit'] : 1;
+    }
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function get_supported_form_fields(): array
+    {
+        $fields = $this->form_settings->get_fallback('form_builder', []);
+        return is_array($fields) ? Helpers\FormBuilder::get_supported_fields($fields) : [];
     }
     private function has_public_refund_request_order_reference(): bool
     {

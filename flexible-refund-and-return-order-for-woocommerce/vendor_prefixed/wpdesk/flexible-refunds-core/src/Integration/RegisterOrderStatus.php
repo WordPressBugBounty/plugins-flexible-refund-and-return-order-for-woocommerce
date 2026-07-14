@@ -13,6 +13,7 @@ class RegisterOrderStatus implements Hookable
     {
         add_action('init', [$this, 'register_status'], 200);
         add_filter('wc_order_statuses', [$this, 'add_wc_refund_status']);
+        add_filter('woocommerce_order_is_paid_statuses', [$this, 'add_refund_request_to_paid_statuses']);
     }
     /**
      * @return void
@@ -30,5 +31,10 @@ class RegisterOrderStatus implements Hookable
     {
         $statuses[self::REQUEST_REFUND_STATUS] = esc_html__('Refund Request', 'flexible-refund-and-return-order-for-woocommerce');
         return $statuses;
+    }
+    public function add_refund_request_to_paid_statuses(array $statuses): array
+    {
+        $statuses[] = substr(self::REQUEST_REFUND_STATUS, 3);
+        return array_values(array_unique($statuses));
     }
 }

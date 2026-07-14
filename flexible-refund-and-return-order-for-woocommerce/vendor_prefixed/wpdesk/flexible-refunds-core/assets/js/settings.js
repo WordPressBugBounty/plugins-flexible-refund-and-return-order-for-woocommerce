@@ -278,6 +278,22 @@
 			return parseInt( index_arr[ index_arr.length - 1 ] ) + 1;
 		},
 
+		toggleConditionMatch: function ( wrapper ) {
+			let matchable_types = [ 'products', 'product_cats' ];
+			let type = wrapper.find( '.condition-type' ).val();
+			let match_select = wrapper.find( '.condition-match-select' );
+			let match_placeholder = wrapper.find( '.condition-match-placeholder' );
+			let is_matchable = matchable_types.indexOf( type ) !== -1;
+
+			if( is_matchable ) {
+				match_select.prop( 'disabled', false ).show();
+				match_placeholder.hide();
+			} else {
+				match_select.val( 'any' ).prop( 'disabled', true ).hide();
+				match_placeholder.show();
+			}
+		},
+
 		conditionTable: function () {
 			let _this = this;
 			$( '.flexible-refund-conditions' ).on( 'change', '.condition-type', function () {
@@ -285,6 +301,7 @@
 				if( wrapper.length ) {
 					let tr_index = parseInt( wrapper.attr( 'data-index' ) );
 					wrapper.find( '.condition-type-select-wrapper' ).html( $( '#' + this.value + '_select' ).html().replace( /__index__/gi, tr_index ) );
+					_this.toggleConditionMatch( wrapper );
 					$( document.body ).trigger( 'wc-enhanced-select-init' );
 				}
 			} );
@@ -303,6 +320,7 @@
 
 					let html = $( '#condition_row' ).html().replace( /__index__/gi, row_index );
 					condition_table.find( 'tbody' ).append( html );
+					_this.toggleConditionMatch( condition_table.find( 'tbody tr:last' ) );
 					$( condition_table ).trigger( 'wc-enhanced-select-init' );
 					return false;
 				} );
@@ -314,6 +332,10 @@
 						return false;
 					}
 					return false;
+				} );
+
+				condition_table.find( 'tbody tr' ).each( function () {
+					_this.toggleConditionMatch( $( this ) );
 				} );
 			}
 

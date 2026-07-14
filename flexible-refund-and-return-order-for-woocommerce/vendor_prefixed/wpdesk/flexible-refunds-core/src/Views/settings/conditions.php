@@ -12,19 +12,21 @@ namespace FRFreeVendor;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 $condition_types = $field['value']['condition_type'] ?? [];
+$matchable_types = ['product_cats', 'products'];
 ?>
 <tr valign="top">
 	<th class="titledesc" scope="row">
 		<?php 
 $types_options = ['user_roles' => \esc_html__('User roles', 'flexible-refund-and-return-order-for-woocommerce'), 'order_statuses' => \esc_html__('Order statuses', 'flexible-refund-and-return-order-for-woocommerce'), 'product_cats' => \esc_html__('Product categories', 'flexible-refund-and-return-order-for-woocommerce'), 'products' => \esc_html__('Products', 'flexible-refund-and-return-order-for-woocommerce'), 'payment_methods' => \esc_html__('Payment methods', 'flexible-refund-and-return-order-for-woocommerce')];
 $operator_options = ['is' => \esc_html__('is', 'flexible-refund-and-return-order-for-woocommerce'), 'is_not' => \esc_html__('is not', 'flexible-refund-and-return-order-for-woocommerce')];
+$match_options = ['any' => \esc_html__('ANY', 'flexible-refund-and-return-order-for-woocommerce'), 'all' => \esc_html__('ALL', 'flexible-refund-and-return-order-for-woocommerce')];
 ?>
 		<?php 
 \esc_html_e('Button visibility', 'flexible-refund-and-return-order-for-woocommerce');
 ?>
 	</th>
 	<td>
-		<table class="flexible-refund-conditions widefat" style="width: 860px">
+		<table class="flexible-refund-conditions widefat" style="width: 980px">
 			<thead>
 			<tr>
 				<td colspan="3"></td>
@@ -61,7 +63,9 @@ if (Integration::is_super()) {
     if (!empty($condition_types)) {
         foreach ($condition_types as $condition_key => $condition_type) {
             $condition_operator = $field['value']['condition_operator'][$condition_key] ?? 'is';
+            $condition_match = $field['value']['condition_match'][$condition_key] ?? (\in_array($condition_type, $matchable_types, \true) && 'is_not' === $condition_operator ? 'all' : 'any');
             $condition_value = $field['value']['condition_values'][$condition_key][$condition_type] ?? [];
+            $show_match = \in_array($condition_type, $matchable_types, \true);
             ?>
 						<tr data-index="<?php 
             echo $condition_key;
@@ -69,6 +73,34 @@ if (Integration::is_super()) {
 							<td class="label-col"><?php 
             \esc_html_e('Enable if', 'flexible-refund-and-return-order-for-woocommerce');
             ?></td>
+							<td class="match-col">
+								<select class="condition-match-select" name="fr_refund_refund_conditions_setting[condition_match][<?php 
+            echo \esc_attr($condition_key);
+            ?>]" style="width: 90px !important; line-height: 2;<?php 
+            echo $show_match ? '' : 'display:none;';
+            ?>" <?php 
+            \disabled($show_match, \false);
+            ?>>
+									<?php 
+            foreach ($match_options as $match_key => $match_label) {
+                ?>
+										<option <?php 
+                echo \selected($match_key, $condition_match);
+                ?> value="<?php 
+                echo \esc_attr($match_key);
+                ?>"><?php 
+                echo \esc_html($match_label);
+                ?></option>
+									<?php 
+            }
+            ?>
+								</select>
+								<span class="condition-match-placeholder" style="<?php 
+            echo $show_match ? 'display:none;' : '';
+            ?>"><?php 
+            \esc_html_e('-', 'flexible-refund-and-return-order-for-woocommerce');
+            ?></span>
+							</td>
 							<td class="type-col">
 								<select class="condition-type" name="fr_refund_refund_conditions_setting[condition_type][<?php 
             echo \esc_attr($condition_key);
@@ -165,6 +197,24 @@ echo $custom_fields->get_payment_methods_select(['index' => '__index__']);
 		<td class="label-col"><?php 
 \esc_html_e('Enable if', 'flexible-refund-and-return-order-for-woocommerce');
 ?></td>
+		<td class="match-col">
+			<select class="condition-match-select" name="fr_refund_refund_conditions_setting[condition_match][__index__]" style="width: 90px !important; line-height: 2;display:none;" disabled="disabled">
+				<?php 
+foreach ($match_options as $match_key => $match_label) {
+    ?>
+					<option <?php 
+    echo \selected($match_key, 'any');
+    ?> value="<?php 
+    echo \esc_attr($match_key);
+    ?>"><?php 
+    echo \esc_html($match_label);
+    ?></option>
+				<?php 
+}
+?>
+			</select>
+			<span class="condition-match-placeholder">-</span>
+		</td>
 		<td class="type-col">
 			<select class="condition-type" name="fr_refund_refund_conditions_setting[condition_type][__index__]" style="width: 200px !important; line-height: 2;">
 				<?php 

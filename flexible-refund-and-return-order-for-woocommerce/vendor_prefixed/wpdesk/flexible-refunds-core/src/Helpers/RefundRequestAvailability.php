@@ -43,6 +43,9 @@ class RefundRequestAvailability
     }
     private function meets_refund_conditions(WC_Order $order): bool
     {
+        if (!Integration::is_super()) {
+            return \true;
+        }
         $conditions = $this->settings->get_fallback('refund_conditions_setting', []);
         if (!is_array($conditions)) {
             $conditions = [];

@@ -39,6 +39,7 @@ class FieldRenderer
     public function output(): string
     {
         $fields = $this->settings->get_fallback('form_builder', []);
+        $fields = is_array($fields) ? FormBuilder::get_supported_fields($fields) : [];
         $field_factory = new FieldFactory($this->get_renderer());
         $output_fields = '';
         if (is_array($fields) && !empty($fields)) {
