@@ -81,7 +81,7 @@ if (Integration::is_super()) {
             ?>" <?php 
             \disabled($show_match, \false);
             ?>>
-									<?php 
+						<?php 
             foreach ($match_options as $match_key => $match_label) {
                 ?>
 										<option <?php 
@@ -105,7 +105,7 @@ if (Integration::is_super()) {
 								<select class="condition-type" name="fr_refund_refund_conditions_setting[condition_type][<?php 
             echo \esc_attr($condition_key);
             ?>]" style="width: 200px !important; line-height: 2;">
-									<?php 
+						<?php 
             foreach ($types_options as $type_key => $type_label) {
                 ?>
 										<option <?php 
@@ -124,7 +124,7 @@ if (Integration::is_super()) {
 								<select name="fr_refund_refund_conditions_setting[condition_operator][<?php 
             echo \esc_attr($condition_key);
             ?>]" style="width: 120px !important; line-height: 2;">
-									<?php 
+						<?php 
             foreach ($operator_options as $operator_key => $operator_label) {
                 ?>
 										<option <?php 
@@ -141,7 +141,7 @@ if (Integration::is_super()) {
 								</select>
 							</td>
 							<td class="condition-type-select-wrapper">
-								<?php 
+						<?php 
             echo $custom_fields->get_field($condition_type, $condition_key, $condition_value);
             ?>
 							</td>

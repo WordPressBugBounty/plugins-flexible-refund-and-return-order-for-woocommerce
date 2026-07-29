@@ -18,7 +18,7 @@ class DateCondition extends AbstractCondition
             }
             $time_value = $conditions['time_value'] ?? 1;
             $time_period = $conditions['time_period'] ?? 'year';
-            $order_date = $this->get_order()->get_date_created();
+            $order_date = clone $this->get_order()->get_date_created();
             $order_date->modify($time_value . ' ' . $time_period);
             $order_date->setTimezone(new DateTimeZone('UTC'));
             return $order_date->getTimestamp() > time();
