@@ -11,10 +11,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Emails\AbstractRefundEmail;
 use function WC;
 abstract class AbstractRequest implements Request
 {
-    /**
-     * @var PersistentContainer
-     */
-    protected $settings;
+    protected PersistentContainer $settings;
     public function __construct(PersistentContainer $settings)
     {
         $this->settings = $settings;

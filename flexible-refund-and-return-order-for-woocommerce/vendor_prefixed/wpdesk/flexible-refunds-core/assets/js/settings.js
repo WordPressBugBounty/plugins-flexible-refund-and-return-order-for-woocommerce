@@ -16,10 +16,10 @@
 				let is_pro = $( this ).attr( 'data-pro' )
 				if( is_pro === 'yes' ) {
 					$( '.fb-field-pro' ).show();
-					$( '.fb-field-wrapper' ).hide();
+					$( '#form-builder-field-selector .fb-field-wrapper' ).hide();
 				} else {
 					$( '.fb-field-pro' ).hide();
-					$( '.fb-field-wrapper' ).show();
+					$( '#form-builder-field-selector .fb-field-wrapper' ).show();
 				}
 				$( '#fb-field-type' ).val( $( this ).attr( 'data-type' ) );
 				return false;
@@ -77,6 +77,8 @@
 				if( validation === true ) {
 					let form_builder_data = {
 						action: 'fr_fb_insert_field',
+						nonce: fr_fb_i18n.nonce,
+						input_prefix: fr_fb_i18n.input_prefix,
 						type: type.val(),
 						label: _this.encodeHTML( label.val() ),
 						name: _this.sanitizeKey( name.val() )
@@ -262,6 +264,41 @@
 			} );
 			auto_hide_field.trigger( 'change' );
 		},
+		copyShortcode: function () {
+			$( document ).on( 'click', '.fr-shortcode-copy__button', function () {
+				let button = $( this );
+				let input = button.siblings( '.fr-shortcode-copy__value' ).get( 0 );
+				let status = button.siblings( '.fr-shortcode-copy__status' );
+				let original_label = button.text();
+				let copied_label = button.data( 'copied-label' );
+
+				let showCopied = function () {
+					button.text( copied_label ).addClass( 'is-copied' );
+					status.text( copied_label );
+					window.clearTimeout( button.data( 'copy-timeout' ) );
+					button.data( 'copy-timeout', window.setTimeout( function () {
+						button.text( original_label ).removeClass( 'is-copied' );
+						status.text( '' );
+					}, 2000 ) );
+				};
+
+				let copyWithSelection = function () {
+					input.focus();
+					input.select();
+					return document.execCommand( 'copy' );
+				};
+
+				if( navigator.clipboard && navigator.clipboard.writeText ) {
+					navigator.clipboard.writeText( input.value ).then( showCopied ).catch( function () {
+						if( copyWithSelection() ) {
+							showCopied();
+						}
+					} );
+				} else if( copyWithSelection() ) {
+					showCopied();
+				}
+			} );
+		},
 
 		getIndex: function () {
 			let index, index_arr = [];
@@ -366,6 +403,7 @@
 	FormBuilder.removeField();
 	FormBuilder.removeSubmitButton();
 	FormBuilder.autoHideRefundButton();
+	FormBuilder.copyShortcode();
 	FormBuilder.conditionTable();
 
 

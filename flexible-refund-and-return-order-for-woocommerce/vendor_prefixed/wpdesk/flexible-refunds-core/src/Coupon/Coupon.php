@@ -12,10 +12,7 @@ use WC_Order;
  */
 class Coupon
 {
-    /**
-     * @var WC_Order
-     */
-    private $order;
+    private WC_Order $order;
     public function __construct(WC_Order $order)
     {
         $this->order = $order;

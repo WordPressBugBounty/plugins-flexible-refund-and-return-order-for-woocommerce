@@ -54,10 +54,10 @@ if ($type === 'html') {
 						<span><?php 
     \esc_html_e('HTML', 'flexible-refund-and-return-order-for-woocommerce');
     ?></span>
-						<textarea class="regular-text" style="width: 100%; min-height: 300px;" name="<?php 
+						<textarea class="fr-fb-html-editor regular-text" rows="8" name="<?php 
     echo \esc_attr($field_name);
     ?>[html]"><?php 
-    echo $html;
+    echo \esc_textarea($html);
     ?></textarea>
 					</label>
 					<input type="hidden" value="<?php 
@@ -67,7 +67,7 @@ if ($type === 'html') {
     ?>[type]"/>
 				</p>
 				<p>
-					<label>
+					<label class="fr-fb-toggle-label">
 						<input <?php 
     \checked((int) $enable, 1);
     ?> type="checkbox" value="1" name="<?php 
@@ -82,7 +82,7 @@ if ($type === 'html') {
 } else {
     ?>
 			<ul class="fr-fb-body-menu">
-				<li><span data-tab="general"><?php 
+				<li><span class="active" data-tab="general"><?php 
     \esc_html_e('General', 'flexible-refund-and-return-order-for-woocommerce');
     ?></span></li>
 				<li><span data-tab="advanced"><?php 
@@ -123,7 +123,7 @@ if ($type === 'html') {
 					</label>
 				</p>
 				<p>
-					<label>
+					<label class="fr-fb-toggle-label">
 						<input <?php 
     \checked((int) $enable, 1);
     ?> type="checkbox" value="1" name="<?php 
@@ -134,7 +134,7 @@ if ($type === 'html') {
 					</label>
 				</p>
 				<p>
-					<label>
+					<label class="fr-fb-toggle-label">
 						<input <?php 
     \checked((int) $required, 1);
     ?> type="checkbox" value="1" name="<?php 

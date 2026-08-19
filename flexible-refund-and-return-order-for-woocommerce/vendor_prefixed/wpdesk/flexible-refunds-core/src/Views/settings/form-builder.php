@@ -7,12 +7,12 @@ namespace FRFreeVendor;
  */
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\FormBuilder;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin;
-use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\FormBuilderTab;
+$input_prefix = $field['id'] ?? 'fr_refund_form_builder';
 ?>
 <table class="form-builder-table">
 	<tbody>
 	<tr valign="top">
-		<td style="width: 30%">
+		<td class="fr-form-builder-sidebar">
 			<div class="form-builder-metabox" id="form-builder-field-selector">
 				<header><h3><?php 
 \esc_html_e('Add new field', 'flexible-refund-and-return-order-for-woocommerce');
@@ -105,7 +105,7 @@ echo \esc_url(Plugin::get_url_to_pro());
 				</section>
 			</div>
 		</td>
-		<td style="padding-left: 2em;" valign="top">
+		<td class="fr-form-builder-canvas" valign="top">
 			<div class="form-builder-metabox" id="form_builder_selected_fields">
 				<header><h3><?php 
 \esc_html_e('Edit form', 'flexible-refund-and-return-order-for-woocommerce');
@@ -113,7 +113,7 @@ echo \esc_url(Plugin::get_url_to_pro());
 				<section>
 					<div class="form-builder-selected-fields-wrapper">
 						<input type="hidden" value="" name="<?php 
-echo \esc_attr(FormBuilderTab::SETTING_PREFIX . 'form_builder');
+echo \esc_attr($input_prefix);
 ?>"/>
 						<?php 
 $fields = $field['value'] ?? [];
@@ -132,7 +132,7 @@ if (!empty($fields)) {
         $maxlength = $field['maxlength'] ?? '';
         $minlength = $field['minlength'] ?? '';
         $files_limit = $field['files_limit'] ?? '';
-        $field_name = FormBuilderTab::SETTING_PREFIX . 'form_builder[' . $name . ']';
+        $field_name = $input_prefix . '[' . $name . ']';
         require __DIR__ . '/form-builder-field.php';
     }
 }
@@ -146,5 +146,4 @@ if (!empty($fields)) {
 	</tr>
 	</tbody>
 </table>
-
 <?php 

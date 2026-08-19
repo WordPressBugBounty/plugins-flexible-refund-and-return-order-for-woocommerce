@@ -9,6 +9,7 @@ class Statuses
     const SHIPMENT_STATUS = 'shipment';
     const VERIFYING_STATUS = 'verifying';
     const REFUSED_STATUS = 'refused';
+    const CANCELED_STATUS = 'canceled';
     public static function get_statuses($exclude = []): array
     {
         $statuses = [self::REQUESTED_STATUS => esc_html__('Requested', 'flexible-refund-and-return-order-for-woocommerce'), self::APPROVED_STATUS => esc_html__('Approved', 'flexible-refund-and-return-order-for-woocommerce'), self::SHIPMENT_STATUS => esc_html__('Shipment', 'flexible-refund-and-return-order-for-woocommerce'), self::VERIFYING_STATUS => esc_html__('Verifying', 'flexible-refund-and-return-order-for-woocommerce'), self::REFUSED_STATUS => esc_html__('Refused', 'flexible-refund-and-return-order-for-woocommerce')];
@@ -26,7 +27,7 @@ class Statuses
      */
     public static function get_status_label(string $status_key): string
     {
-        $statuses = self::get_statuses();
+        $statuses = self::get_statuses() + [self::CANCELED_STATUS => esc_html__('Canceled', 'flexible-refund-and-return-order-for-woocommerce')];
         return $statuses[$status_key] ?? 'unknown';
     }
     /**
@@ -34,6 +35,6 @@ class Statuses
      */
     public static function get_all_statuses(): array
     {
-        return [self::REQUESTED_STATUS, self::APPROVED_STATUS, self::SHIPMENT_STATUS, self::VERIFYING_STATUS, self::REFUSED_STATUS];
+        return [self::REQUESTED_STATUS, self::APPROVED_STATUS, self::SHIPMENT_STATUS, self::VERIFYING_STATUS, self::REFUSED_STATUS, self::CANCELED_STATUS];
     }
 }

@@ -8,6 +8,7 @@ namespace FRFreeVendor;
  * @var WC_Order $order ;
  */
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FormValuesRenderer;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\SettingsIntegration;
 ?>
 <div class="panel-wrap woocommerce">
 	<div id="refund_data" class="panel woocommerce-refund-data">
@@ -32,7 +33,7 @@ if (!empty($form_values)) {
     ?>
 					<p class="description">
 						<?php 
-    \printf(\esc_html__('The return form has not been created yet, you can do it %1$shere &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . \admin_url('admin.php?page=wc-settings&tab=flexible_refunds&section=form') . '"><strong>', '</strong></a>');
+    \printf(\esc_html__('The return form has not been created yet, you can do it %1$shere &rarr;%2$s', 'flexible-refund-and-return-order-for-woocommerce'), '<a href="' . \admin_url('admin.php?page=' . SettingsIntegration::PAGE_REFUND) . '"><strong>', '</strong></a>');
     ?>
 					</p>
 					<?php 

@@ -7,10 +7,7 @@ use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
 class RequestsFactory
 {
-    /**
-     * @var PersistentContainer
-     */
-    private $settings;
+    private PersistentContainer $settings;
     public function __construct(PersistentContainer $settings)
     {
         $this->settings = $settings;

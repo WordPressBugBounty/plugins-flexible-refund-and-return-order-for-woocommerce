@@ -9,10 +9,7 @@ class OrderReferenceResolver
     public const SEARCH_BY_ORDER_NUMBER_OPTION = 'refund_search_by_order_number';
     private const ORDER_REFERENCE_META_KEYS_FILTER = 'flexible_refunds_order_reference_meta_keys';
     private const ORDER_REFERENCE_RESOLVER_FILTER = 'flexible_refunds_resolve_order_reference';
-    /**
-     * @var PersistentContainer
-     */
-    private $settings;
+    private PersistentContainer $settings;
     public function __construct(PersistentContainer $settings)
     {
         $this->settings = $settings;
@@ -67,17 +64,8 @@ class OrderReferenceResolver
     {
         $orders = [];
         $seen = [];
-        if (is_numeric($reference)) {
-            $this->append_order_by_id($orders, $seen, (int) $reference);
-        }
-        if (function_exists('wc_order_search')) {
-            $order_ids = wc_order_search($reference);
-            if (is_array($order_ids)) {
-                foreach ($order_ids as $order_id) {
-                    $this->append_order_by_id($orders, $seen, (int) $order_id);
-                }
-            }
-        }
+        // Exact order-number metadata must win over an unrelated order whose ID
+        // happens to be equal to the visible order number.
         foreach ($this->get_searchable_meta_keys($reference) as $meta_key) {
             if (!function_exists('wc_get_orders')) {
                 break;
@@ -89,6 +77,17 @@ class OrderReferenceResolver
             foreach ($order_ids as $order_id) {
                 $this->append_order_by_id($orders, $seen, (int) $order_id);
             }
+        }
+        if (function_exists('wc_order_search')) {
+            $order_ids = wc_order_search($reference);
+            if (is_array($order_ids)) {
+                foreach ($order_ids as $order_id) {
+                    $this->append_order_by_id($orders, $seen, (int) $order_id);
+                }
+            }
+        }
+        if (is_numeric($reference)) {
+            $this->append_order_by_id($orders, $seen, (int) $reference);
         }
         return $orders;
     }

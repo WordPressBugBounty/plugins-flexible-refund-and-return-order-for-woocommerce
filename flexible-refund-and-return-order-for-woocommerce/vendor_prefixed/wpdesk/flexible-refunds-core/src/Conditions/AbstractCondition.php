@@ -5,14 +5,8 @@ namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Conditions;
 use WC_Order;
 abstract class AbstractCondition implements Condition
 {
-    /**
-     * @var array
-     */
-    private $conditions;
-    /**
-     * @var WC_Order
-     */
-    private $order;
+    private array $conditions;
+    private WC_Order $order;
     /**
      * @param array    $conditions
      * @param WC_Order $order

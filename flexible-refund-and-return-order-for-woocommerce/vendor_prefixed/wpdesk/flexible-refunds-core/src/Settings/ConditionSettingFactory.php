@@ -7,17 +7,12 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\RegisterOrderSta
 use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 class ConditionSettingFactory
 {
-    /**
-     * @var Renderer
-     */
-    private $renderer;
-    /**
-     * @var string
-     */
-    private $prefix;
-    public function __construct(Renderer $renderer)
+    private Renderer $renderer;
+    private string $prefix;
+    public function __construct(Renderer $renderer, string $prefix = 'fr_refund_refund_conditions_setting')
     {
         $this->renderer = $renderer;
+        $this->prefix = $prefix;
     }
     /**
      * @param int|string $index
@@ -26,7 +21,7 @@ class ConditionSettingFactory
      */
     private function get_prefix($index): string
     {
-        return 'fr_refund_refund_conditions_setting[condition_values][' . $index . ']';
+        return $this->prefix . '[condition_values][' . $index . ']';
     }
     /**
      * @param string     $type

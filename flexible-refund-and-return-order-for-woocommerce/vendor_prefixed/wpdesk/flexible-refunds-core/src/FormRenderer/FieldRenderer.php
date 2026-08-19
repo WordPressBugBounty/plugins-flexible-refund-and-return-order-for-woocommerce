@@ -13,13 +13,14 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\Tabs\RefundOrderTab
 class FieldRenderer
 {
     const FIELD_PREFIX = 'fr_refund_form';
-    /**
-     * @var WordpressOptionsContainer
-     */
-    private $settings;
-    public function __construct()
+    private array $fields;
+    public function __construct(?array $fields = null)
     {
-        $this->settings = new WordpressOptionsContainer(RefundOrderTab::SETTING_PREFIX);
+        if (null === $fields) {
+            $settings = new WordpressOptionsContainer(RefundOrderTab::SETTING_PREFIX);
+            $fields = $settings->get_fallback('form_builder', []);
+        }
+        $this->fields = is_array($fields) ? $fields : [];
     }
     /**
      * @return Renderer
@@ -38,8 +39,7 @@ class FieldRenderer
      */
     public function output(): string
     {
-        $fields = $this->settings->get_fallback('form_builder', []);
-        $fields = is_array($fields) ? FormBuilder::get_supported_fields($fields) : [];
+        $fields = FormBuilder::get_supported_fields($this->fields);
         $field_factory = new FieldFactory($this->get_renderer());
         $output_fields = '';
         if (is_array($fields) && !empty($fields)) {

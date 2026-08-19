@@ -5,21 +5,23 @@ namespace FRFreeVendor;
 //phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\FormDefinition;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\RequestType;
 \defined('ABSPATH') || exit;
 /**
  * @var WC_Order      $order
  * @var FieldRenderer $fields
  * @var string        $show_shipping
+ * @var FormDefinition $form
  */
 if (!$order) {
     return;
 }
 $order_items = $order->get_items();
-$order_items = $order->get_items();
-$refund_meta = $order->get_meta('fr_refund_request_data');
 $request_status = $order->get_meta('fr_refund_request_status');
 $request_note = $order->get_meta('fr_refund_request_note');
-if (\in_array($request_status, ['approved', 'rejected'])) {
+$is_refund = RequestType::REFUND === $form->get_request_type();
+if ($is_refund && \in_array($request_status, ['approved', 'rejected'], \true)) {
     ?>
 	<h2><?php 
     \printf(\esc_html__('Refund status: %s', 'flexible-refund-and-return-order-for-woocommerce'), Statuses::get_status_label($request_status));
@@ -35,10 +37,17 @@ if (\in_array($request_status, ['approved', 'rejected'])) {
 }
 ?>
 <form method="post" class="refund-front-form" action="" enctype="multipart/form-data">
+	<input type="hidden" name="fr_refund_form[form_id]" value="<?php 
+echo \esc_attr($form->get_id());
+?>" />
 	<section id="fr_refund_table" class="woocommerce-refund-details">
+		<h2><?php 
+echo \esc_html($form->get_button_label());
+?></h2>
 		<?php 
 \do_action('wpdesk/fr/code/user-account/before-refund-table', $order);
 ?>
+		<div id="fr-front-refund-table-errors" role="alert"></div>
 		<div class="woocommerce-table-refund-details-wrapper">
 			<table class="woocommerce-table woocommerce-table-refund-details">
 				<thead>
@@ -46,18 +55,30 @@ if (\in_array($request_status, ['approved', 'rejected'])) {
 					<th class="product-name"><?php 
 \esc_html_e('Product', 'flexible-refund-and-return-order-for-woocommerce');
 ?></th>
-					<th class="item-cost"><?php 
-\esc_html_e('Cost', 'flexible-refund-and-return-order-for-woocommerce');
-?></th>
-					<th class="item-total"><?php 
-\esc_html_e('Total', 'flexible-refund-and-return-order-for-woocommerce');
-?></th>
+					<?php 
+if ($is_refund) {
+    ?>
+						<th class="item-cost"><?php 
+    \esc_html_e('Cost', 'flexible-refund-and-return-order-for-woocommerce');
+    ?></th>
+						<th class="item-total"><?php 
+    \esc_html_e('Total', 'flexible-refund-and-return-order-for-woocommerce');
+    ?></th>
+					<?php 
+}
+?>
 					<th class="item-qty"><?php 
-\esc_html_e('Quantity to refund', 'flexible-refund-and-return-order-for-woocommerce');
+echo \esc_html($is_refund ? \__('Quantity to refund', 'flexible-refund-and-return-order-for-woocommerce') : \__('Requested quantity', 'flexible-refund-and-return-order-for-woocommerce'));
 ?></th>
-					<th class="item-total"><?php 
-\esc_html_e('Requested refund Total', 'flexible-refund-and-return-order-for-woocommerce');
-?></th>
+					<?php 
+if ($is_refund) {
+    ?>
+						<th class="item-total"><?php 
+    \esc_html_e('Requested refund total', 'flexible-refund-and-return-order-for-woocommerce');
+    ?></th>
+					<?php 
+}
+?>
 				</tr>
 				</thead>
 				<tbody>
@@ -78,6 +99,7 @@ foreach ($order_items as $item_id => $item) {
     $total_qty += $qty;
     $total_refund_sum += $order->get_item_total($item, \true);
     $item_total = $item->get_total() + $item->get_total_tax();
+    $item_price = $order->get_item_total($item, \true, \false);
     ?>
 					<tr class="product_item">
 						<td class="item-name">
@@ -102,17 +124,24 @@ foreach ($order_items as $item_id => $item) {
     }
     ?>
 						</td>
-						<td class="item-cost">
-							<?php 
-    echo \wc_price($order->get_item_total($item, \true), ['currency' => $order->get_currency()]);
+						<?php 
+    if ($is_refund) {
+        ?>
+							<td class="item-cost">
+								<?php 
+        echo \wc_price($order->get_item_total($item, \true), ['currency' => $order->get_currency()]);
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+        ?>
+							</td>
+							<td class="item-total">
+								<?php 
+        echo \wc_price($item_total, ['currency' => $order->get_currency()]);
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+        ?>
+							</td>
+						<?php 
+    }
     ?>
-						</td>
-						<td class="item-total">
-							<?php 
-    echo \wc_price($item_total, ['currency' => $order->get_currency()]);
-    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-    ?>
-						</td>
 						<td class="item-qty" style="width:160px;">
 							<?php 
     if ($qty < 1) {
@@ -124,7 +153,7 @@ foreach ($order_items as $item_id => $item) {
 									</svg>
 								</span>
 								<?php 
-        \esc_html_e('Refunded', 'flexible-refund-and-return-order-for-woocommerce');
+        echo \esc_html($is_refund ? \__('Refunded', 'flexible-refund-and-return-order-for-woocommerce') : \__('Unavailable', 'flexible-refund-and-return-order-for-woocommerce'));
         ?>
 							<?php 
     } else {
@@ -143,7 +172,7 @@ foreach ($order_items as $item_id => $item) {
         echo \esc_attr($item_id);
         ?>][qty]"
 										data-item-price="<?php 
-        echo \esc_attr($order->get_item_total($item, \true));
+        echo \esc_attr($item_price);
         ?>"
 										data-item-total="<?php 
         echo \esc_attr($item_total);
@@ -157,18 +186,24 @@ foreach ($order_items as $item_id => $item) {
     }
     ?>
 						</td>
-						<td class="item-total">
-							<span class="item-total-refund-qty">
-							<?php 
-    if ($qty < 1) {
-        echo '-';
-    } else {
-        echo \wc_price($item_total, ['currency' => $order->get_currency()]);
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						<?php 
+    if ($is_refund) {
+        ?>
+							<td class="item-total">
+								<span class="item-total-refund-qty">
+								<?php 
+        if ($qty < 1) {
+            echo '-';
+        } else {
+            echo \wc_price($item_total, ['currency' => $order->get_currency()]);
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        }
+        ?>
+								</span>
+							</td>
+						<?php 
     }
     ?>
-							</span>
-						</td>
 					</tr>
 				<?php 
 }
@@ -258,20 +293,25 @@ if ($show_shipping === 'yes') {
     }
 }
 ?>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td>
-						<input type="hidden" id="refund-total-qty-input" value="0" name="fr_refund_form[total_refund_qty]"/>
-					</td>
-					<td><span class="refund-total-calc"><?php 
-echo \wc_price(0, ['currency' => $order->get_currency()]);
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
-?></span></td>
-				</tr>
+				<?php 
+if ($is_refund) {
+    ?>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td><span class="refund-total-calc"><?php 
+    echo \wc_price(0, ['currency' => $order->get_currency()]);
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+    ?></span></td>
+					</tr>
+				<?php 
+}
+?>
 				</tbody>
 			</table>
+			<input type="hidden" id="refund-total-qty-input" value="0" name="fr_refund_form[total_refund_qty]"/>
 		</div>
 		<p class="check-all-button">
 			<button type="button"

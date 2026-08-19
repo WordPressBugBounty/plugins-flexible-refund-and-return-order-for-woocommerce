@@ -6,6 +6,8 @@ use Exception;
 use WC_Email;
 use WC_Order;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\RequestType;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Request\RequestRecord;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\EmailHelper;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\MyAccount;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
@@ -18,6 +20,7 @@ use FRFreeVendor\WPDesk\View\Resolver\DirResolver;
 abstract class AbstractRefundEmail extends WC_Email
 {
     const ID = 'unknown';
+    private ?RequestRecord $request = null;
     public function __construct()
     {
         $this->id = static::ID;
@@ -26,7 +29,7 @@ abstract class AbstractRefundEmail extends WC_Email
         $this->template_html = 'emails/fr-refund.php';
         $this->template_plain = 'emails/plain/fr-refund.php';
         parent::__construct();
-        $this->placeholders = ['{shop_title}' => '', '{shop_address}' => '', '{shop_url}' => '', '{shop_email}' => '', '{refund_url}' => '', '{refund_note}' => '', '{refund_order_table}' => '', '{customer_name}' => '', '{order_id}' => '', '{order_date}' => '', '{order_number}' => '', '{order_payment_method}' => '', '{coupon_code}' => '', '{admin_order_url}' => '', '{admin_refunds_url}' => '', '{refund_info_page}' => '', '{refund_request_date}' => ''];
+        $this->placeholders = ['{shop_title}' => '', '{shop_address}' => '', '{shop_url}' => '', '{shop_email}' => '', '{refund_url}' => '', '{refund_note}' => '', '{refund_order_table}' => '', '{customer_name}' => '', '{order_id}' => '', '{order_date}' => '', '{order_number}' => '', '{order_payment_method}' => '', '{coupon_code}' => '', '{admin_order_url}' => '', '{admin_refunds_url}' => '', '{refund_info_page}' => '', '{refund_request_date}' => '', '{request_id}' => '', '{request_type}' => '', '{request_type_label}' => '', '{request_label}' => '', '{refund_specific_content}' => ''];
         $this->append_wp_editor_to_fields();
     }
     /**
@@ -48,10 +51,15 @@ abstract class AbstractRefundEmail extends WC_Email
      *
      * @return string
      */
-    public function get_refund_table($order_id): string
+    public function get_refund_table($order_id, ?RequestRecord $request = null): string
     {
         $order = wc_get_order($order_id);
         if ($order) {
+            if (null !== $request) {
+                $snapshot = $request->get_form_snapshot();
+                $settings = is_array($snapshot['settings'] ?? null) ? $snapshot['settings'] : [];
+                return $this->get_renderer()->render('myaccount/request-table', ['order' => $order, 'request' => $request, 'show_shipping' => RequestType::REFUND === $request->get_request_type() ? $settings['refund_shipping'] ?? 'no' : 'no']);
+            }
             return $this->get_renderer()->render('myaccount/refund-table', ['show_shipping' => $this->get_settings()->get_fallback('refund_enable_shipment', 'no'), 'order' => $order, 'fields' => new FieldRenderer()]);
         }
         return '';
@@ -62,22 +70,27 @@ abstract class AbstractRefundEmail extends WC_Email
      * @return void
      * @throws Exception
      */
-    public function trigger($order)
+    public function trigger($order, ?RequestRecord $request = null)
     {
         $order = \is_object($order) ? $order : \wc_get_order($order);
+        if (!$order instanceof WC_Order) {
+            return;
+        }
         $this->setup_locale();
         $this->object = $order;
+        $this->request = $request;
         if ($this->is_customer_email()) {
             $this->recipient = $this->object->get_billing_email();
         }
         $coupon_codes = $this->object->get_meta('fr_coupon_codes');
+        $countries = WC()->countries;
         $this->placeholders['{shop_title}'] = $this->get_blogname();
-        $this->placeholders['{shop_address}'] = wp_parse_url(home_url(), \PHP_URL_HOST);
+        $this->placeholders['{shop_address}'] = $countries->get_formatted_address(['address_1' => $countries->get_base_address(), 'address_2' => $countries->get_base_address_2(), 'city' => $countries->get_base_city(), 'state' => $countries->get_base_state(), 'postcode' => $countries->get_base_postcode(), 'country' => $countries->get_base_country()]);
         $this->placeholders['{shop_url}'] = wp_parse_url(home_url(), \PHP_URL_HOST);
         $this->placeholders['{shop_email}'] = get_option('admin_email');
-        $this->placeholders['{refund_url}'] = MyAccount::get_refund_url($this->object);
-        $this->placeholders['{refund_note}'] = $this->object->get_meta('fr_refund_request_note');
-        $this->placeholders['{refund_order_table}'] = $this->get_refund_table($order->get_id());
+        $this->placeholders['{refund_url}'] = MyAccount::get_refund_url($this->object, null !== $request ? $request->get_form_id() : 0);
+        $this->placeholders['{refund_note}'] = null !== $request ? $request->get_note() : $this->object->get_meta('fr_refund_request_note');
+        $this->placeholders['{refund_order_table}'] = $this->get_refund_table($order->get_id(), $request);
         $this->placeholders['{customer_name}'] = $this->object->get_formatted_billing_full_name();
         $this->placeholders['{order_id}'] = $this->object->get_id();
         $this->placeholders['{order_date}'] = wc_format_datetime($this->object->get_date_created());
@@ -90,6 +103,11 @@ abstract class AbstractRefundEmail extends WC_Email
         // TODO: handle links with HPOS. For now WC does the redirect.
         $this->placeholders['{admin_refunds_url}'] = admin_url('edit.php?post_status=wc-refund-request&post_type=shop_order');
         $this->placeholders['{refund_info_page}'] = $this->get_refund_info_page_content();
+        $this->placeholders['{request_id}'] = null !== $request ? (string) $request->get_id() : '';
+        $this->placeholders['{request_type}'] = null !== $request ? $request->get_request_type() : RequestType::REFUND;
+        $this->placeholders['{request_type_label}'] = RequestType::get_label(null !== $request ? $request->get_request_type() : RequestType::REFUND);
+        $this->placeholders['{request_label}'] = null !== $request ? $this->get_request_label($request) : RequestType::get_label(RequestType::REFUND);
+        $this->placeholders['{refund_specific_content}'] = $this->get_request_specific_content($order, $request);
         if ($this->is_enabled() && $this->get_recipient()) {
             $this->send($this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments());
         }
@@ -97,30 +115,54 @@ abstract class AbstractRefundEmail extends WC_Email
     }
     public function get_content_html(): string
     {
-        return wc_get_template_html($this->template_html, ['order' => $this->object, 'email_heading' => $this->get_heading(), 'additional_content' => $this->get_additional_content(), 'sent_to_admin' => \false, 'plain_text' => \false, 'email' => $this], '', $this->template_base);
+        return wc_get_template_html($this->template_html, ['order' => $this->object, 'email_heading' => $this->get_heading(), 'additional_content' => $this->get_additional_content(), 'sent_to_admin' => \false, 'plain_text' => \false, 'email' => $this, 'request' => $this->request, 'request_label' => null !== $this->request ? $this->get_request_label($this->request) : RequestType::get_label(RequestType::REFUND), 'request_type_label' => RequestType::get_label(null !== $this->request ? $this->request->get_request_type() : RequestType::REFUND)], '', $this->template_base);
     }
     private function get_refund_info_page_content(): string
     {
         $info_page_id = get_option('fr_refund_selected_post_id');
+        if (null !== $this->request) {
+            $snapshot = $this->request->get_form_snapshot();
+            $settings = is_array($snapshot['settings'] ?? null) ? $snapshot['settings'] : [];
+            $info_page_id = (int) ($settings['policy_page_id'] ?? 0);
+        }
         $info_page_link = '';
         if (!empty($info_page_id)) {
             $url = get_permalink($info_page_id);
             $title = get_the_title($info_page_id);
             if ($url && $title) {
                 $info_page_link = sprintf('<a href="%s">%s</a>', esc_url($url), esc_html($title));
-                $info_page_link = __('If you want to learn more about the returns process, please refer to ', 'flexible-refund-and-return-order-for-woocommerce') . $info_page_link;
+                $info_page_link = __('If you want to learn more about the request process, please refer to ', 'flexible-refund-and-return-order-for-woocommerce') . $info_page_link;
             }
         }
         return $info_page_link;
     }
     private function get_refund_request_date(): string
     {
+        if (null !== $this->request) {
+            return $this->request->get_created_at();
+        }
         $timestamp = (int) $this->object->get_meta('fr_refund_request_date');
         return $timestamp ? wc_format_datetime((new \WC_DateTime())->setTimestamp($timestamp), wc_date_format() . ' ' . wc_time_format()) : '';
     }
     public function get_content_plain(): string
     {
-        return wc_get_template_html($this->template_plain, ['order' => $this->object, 'email_heading' => $this->get_heading(), 'additional_content' => $this->get_additional_content(), 'sent_to_admin' => \true, 'plain_text' => \true, 'email' => $this], '', $this->template_base);
+        return wc_get_template_html($this->template_plain, ['order' => $this->object, 'email_heading' => $this->get_heading(), 'additional_content' => $this->get_additional_content(), 'sent_to_admin' => \true, 'plain_text' => \true, 'email' => $this, 'request' => $this->request, 'request_label' => null !== $this->request ? $this->get_request_label($this->request) : RequestType::get_label(RequestType::REFUND), 'request_type_label' => RequestType::get_label(null !== $this->request ? $this->request->get_request_type() : RequestType::REFUND)], '', $this->template_base);
+    }
+    private function get_request_label(RequestRecord $request): string
+    {
+        $snapshot = $request->get_form_snapshot();
+        return isset($snapshot['button_label']) && '' !== trim((string) $snapshot['button_label']) ? (string) $snapshot['button_label'] : RequestType::get_label($request->get_request_type());
+    }
+    protected function get_refund_specific_content(WC_Order $order): string
+    {
+        return '';
+    }
+    protected function get_request_specific_content(WC_Order $order, ?RequestRecord $request): string
+    {
+        if (null !== $request && RequestType::REFUND !== $request->get_request_type()) {
+            return '';
+        }
+        return $this->get_refund_specific_content($order);
     }
     private function append_wp_editor_to_fields()
     {

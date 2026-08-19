@@ -17,45 +17,47 @@ $time_period = $field['value']['time_period'] ?? 'days';
 <tr valign="top" id="auto-hide-row">
 	<td></td>
 	<td>
-		<span><?php 
-\esc_html_e('Hide the time button after', 'flexible-refund-and-return-order-for-woocommerce');
+		<div class="refunds-auto-hide-container">
+			<span><?php 
+\esc_html_e('Hide the refund button after', 'flexible-refund-and-return-order-for-woocommerce');
 ?></span>
-		<span>
-		<input <?php 
+			<span>
+			<input <?php 
 echo $disabled ? 'disabled="disabled"' : '';
 ?>
-			size="5"
-			type="number"
-			min="1"
-			max="10000"
-			name="<?php 
+				size="5"
+				type="number"
+				min="1"
+				max="10000"
+				name="<?php 
 echo \esc_attr($name);
 ?>[time_value]"
-			placeholder="1"
+				placeholder="1"
 
-			value="<?php 
+				value="<?php 
 echo (int) $time_value;
 ?>"
-		/>
-		</span>
-		<span>
-		<select <?php 
+			/>
+			</span>
+			<span>
+			<select <?php 
 echo $disabled ? 'disabled="disabled"' : '';
 ?> name="<?php 
 echo \esc_attr($name);
 ?>[time_period]" style="width: 200px !important; line-height: 2;">
-			<?php 
+				<?php 
 foreach ($periods as $period_value => $period_label) {
     echo '<option value="' . \esc_attr($period_value) . '" ' . \selected($time_period, $period_value, \false) . '>' . \esc_html($period_label) . '</option>';
 }
 ?>
-		</select>
-		</span>
-		<span>
-		<?php 
+			</select>
+			</span>
+			<span>
+			<?php 
 \esc_html_e('after placing the order.', 'flexible-refund-and-return-order-for-woocommerce');
 ?>
-		</span>
+			</span>
+		</div>
 	</td>
 </tr>
 <?php 

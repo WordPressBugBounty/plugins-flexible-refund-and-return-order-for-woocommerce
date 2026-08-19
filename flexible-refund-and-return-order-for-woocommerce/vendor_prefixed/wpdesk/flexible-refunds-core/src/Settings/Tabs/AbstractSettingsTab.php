@@ -6,10 +6,7 @@ use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\ConditionSettingFactory;
 abstract class AbstractSettingsTab
 {
-    /**
-     * @var Renderer
-     */
-    protected $renderer;
+    protected Renderer $renderer;
     /**
      * @param Renderer $renderer
      */

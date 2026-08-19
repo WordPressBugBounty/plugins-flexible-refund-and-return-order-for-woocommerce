@@ -10,12 +10,13 @@ class RefundCondition extends AbstractCondition
     /**
      * @return bool
      */
-    public function should_show(): bool
+    public function should_show(bool $allow_cancelled_order = \false): bool
     {
-        if (in_array('wc-' . $this->get_order()->get_status(), self::EXCLUDED_CONDITIONS, \true)) {
+        $order_status = 'wc-' . $this->get_order()->get_status();
+        if (in_array($order_status, self::EXCLUDED_CONDITIONS, \true) && (!$allow_cancelled_order || 'wc-cancelled' !== $order_status)) {
             return \false;
         }
-        if ('wc-' . $this->get_order()->get_status() === RegisterOrderStatus::REQUEST_REFUND_STATUS) {
+        if ($order_status === RegisterOrderStatus::REQUEST_REFUND_STATUS) {
             return \true;
         }
         $conditions = $this->get_conditions();

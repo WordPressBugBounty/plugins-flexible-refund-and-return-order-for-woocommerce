@@ -62,8 +62,8 @@ foreach ($order_items as $item_id => $item) {
     }
     $qty_to_refund = $refund_meta['items'][$item_id]['qty'] ?? 0;
     $qty_to_refund = $qty_to_refund > $qty_display ? $qty_display : $qty_to_refund;
-    $item_price = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity();
-    $item_price_refund = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity() * (int) $refunded_qty;
+    $item_price = $order->get_item_total($item, \true, \false);
+    $item_price_refund = \round($item_price * (int) $refunded_qty, \wc_get_price_decimals());
     $item_total = $item->get_total() + $item->get_total_tax();
     if ($product && \is_a($product, 'WC_Product')) {
         $post_id = $product->is_type('variation') ? $product->get_parent_id() : $product->get_id();

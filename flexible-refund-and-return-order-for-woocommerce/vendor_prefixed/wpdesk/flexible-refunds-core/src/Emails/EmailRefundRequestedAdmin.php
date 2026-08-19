@@ -11,8 +11,8 @@ class EmailRefundRequestedAdmin extends AbstractRefundEmail
     public function __construct()
     {
         $this->id = self::ID;
-        $this->title = esc_html__('[Flexible Refund] New Refund Request', 'flexible-refund-and-return-order-for-woocommerce');
-        $this->description = esc_html__('New refund request', 'flexible-refund-and-return-order-for-woocommerce');
+        $this->title = esc_html__('[Flexible Refund] New Request Notification', 'flexible-refund-and-return-order-for-woocommerce');
+        $this->description = esc_html__('New request notification for the store administrator.', 'flexible-refund-and-return-order-for-woocommerce');
         $this->init_form_fields();
         $this->init_settings();
         parent::__construct();
@@ -28,14 +28,14 @@ class EmailRefundRequestedAdmin extends AbstractRefundEmail
     }
     public function get_default_subject()
     {
-        return esc_html__('[{shop_title}] New refund request #{order_number}', 'flexible-refund-and-return-order-for-woocommerce');
+        return esc_html__('[{shop_title}] New {request_type_label} request #{order_number}', 'flexible-refund-and-return-order-for-woocommerce');
     }
     public function get_default_heading()
     {
-        return esc_html__('The new order refund request has been requested!', 'flexible-refund-and-return-order-for-woocommerce');
+        return esc_html__('A new {request_type_label} request has been submitted!', 'flexible-refund-and-return-order-for-woocommerce');
     }
     public function get_default_additional_content()
     {
-        return wpautop(wp_kses(__("Hi Admin,\n\nA new refund request for the order {order_number} appeared in {shop_url}\n\n<a href=\"{admin_order_url}\" target=\"_blank\">Click here to go to the order.</a>\n<a href=\"{admin_refunds_url}\" target=\"_blank\">Or click here to go to refund requests list.</a>", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
+        return wpautop(wp_kses(__("Hi Admin,\n\nA new {request_type_label} request for order {order_number} was submitted in {shop_url}.\n\n<a href=\"{admin_order_url}\" target=\"_blank\">Click here to go to the order.</a>\n<a href=\"{admin_refunds_url}\" target=\"_blank\">Or click here to go to the requests list.</a>", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
     }
 }

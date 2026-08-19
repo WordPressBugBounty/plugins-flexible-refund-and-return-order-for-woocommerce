@@ -7,6 +7,76 @@
 	display: none;
 }
 
+#shop_order_fr_meta_box .fr-request-meta-box {
+	padding: 0;
+}
+
+#shop_order_fr_meta_box .fr-request-heading {
+	padding: 18px 24px 0;
+	margin: 0;
+	color: #1d2327;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+#shop_order_fr_meta_box .fr-request-selector {
+	display: flex;
+	gap: 8px;
+	padding: 12px 24px 18px;
+	overflow-x: auto;
+}
+
+#shop_order_fr_meta_box .fr-request-selector .button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	flex: 0 0 auto;
+}
+
+#shop_order_fr_meta_box .fr-request-selector .button.is-completed:not(.button-primary) {
+	border-color: #b8d8c0;
+	color: #176b2c;
+}
+
+#shop_order_fr_meta_box .fr-request-selector .button .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+	line-height: 16px;
+}
+
+#shop_order_fr_meta_box .fr-request-summary {
+	padding: 16px;
+	margin: 0 24px 4px;
+	background: #f6f7f7;
+	border-left: 4px solid #2271b1;
+}
+
+#shop_order_fr_meta_box .fr-request-summary h2 {
+	margin-top: 0;
+}
+
+#shop_order_fr_meta_box .fr-request-fields,
+#shop_order_fr_meta_box .fr-refund-order-meta-box-actions {
+	padding-top: 20px;
+}
+
+#shop_order_fr_meta_box .col-request .fr-request-fields {
+	padding-top: 0;
+}
+
+#shop_order_fr_meta_box #fr_refund_request_note,
+#shop_order_fr_meta_box .fr-refund-request-note {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 100px;
+}
+
+#shop_order_fr_meta_box .fr-request-content[hidden] {
+	display: none;
+}
+
 .woocommerce-refund-data table, .woocommerce-refund-data table td, #poststuff .woocommerce-refund-data h2 {
 	padding: 0;
 	margin: 0;
@@ -157,6 +227,11 @@
 	#shop_order_fr_meta_box .flex-wrapper .col-table {
 		width: 100%;
 		flex-shrink: 0;
+		box-sizing: border-box;
+	}
+
+	#shop_order_fr_meta_box .flex-wrapper .col-request {
+		width: 100%;
 		box-sizing: border-box;
 	}
 }

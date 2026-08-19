@@ -9,10 +9,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
 class RefundRequestAvailability
 {
-    /**
-     * @var PersistentContainer
-     */
-    private $settings;
+    private PersistentContainer $settings;
     public function __construct(PersistentContainer $settings)
     {
         $this->settings = $settings;

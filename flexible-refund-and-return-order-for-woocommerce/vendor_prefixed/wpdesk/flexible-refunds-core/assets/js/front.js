@@ -26,7 +26,13 @@
 		},
 
 		number_format: function ( value ) {
-			return this.formatMoney( value.toString(), 2, fr_front_i18n.decimal_point, fr_front_i18n.thousand_point );
+			return this.formatMoney( value.toString(), fr_front_i18n.price_decimals, fr_front_i18n.decimal_point, fr_front_i18n.thousand_point );
+		},
+
+		roundMoney: function ( value ) {
+			const precision = 10 ** fr_front_i18n.price_decimals;
+
+			return Math.round( ( value + Number.EPSILON ) * precision ) / precision;
 		},
 
 		calculateRefundTotals: function () {
@@ -43,6 +49,7 @@
 					}
 				}
 
+				value = _this.roundMoney( value );
 				$( this ).closest( 'tr' ).find( '.item-total-refund-qty' ).html( _this.number_format( value ) );
 
 				let total_amount = 0;
@@ -65,7 +72,7 @@
 					}
 
 
-					total_amount += parseFloat( total_value );
+					total_amount += _this.roundMoney( parseFloat( total_value ) );
 					total_qty += parseInt( qty );
 				} )
 
@@ -97,7 +104,40 @@
 			} );
 		},
 
+		hasRequiredFieldValue: function ( field_row ) {
+			let has_value = false;
+			let fields = field_row.find( 'input[name]:not([type="hidden"]), textarea[name], select[name]' );
+
+			fields.each( function () {
+				let field = $( this );
+				let type = field.attr( 'type' );
+				let value = field.val();
+
+				if ( type === 'radio' || type === 'checkbox' ) {
+					has_value = has_value || field.prop( 'checked' );
+				} else if ( type === 'file' ) {
+					has_value = has_value || Boolean( this.files && this.files.length );
+				} else if ( Array.isArray( value ) ) {
+					has_value = has_value || value.length > 0;
+				} else {
+					has_value = has_value || String( value || '' ).trim() !== '';
+				}
+			} );
+
+			return has_value;
+		},
+
 		validateRefundForm: function () {
+			let _this = this;
+			let required_fields = 'input[name]:not([type="hidden"]), textarea[name], select[name]';
+
+			$( '.refund-front-form' ).on( 'input change', required_fields, function () {
+				let field_row = $( this ).closest( '.field-required' );
+				if ( field_row.length && _this.hasRequiredFieldValue( field_row ) ) {
+					field_row.find( '.fr-required-field-notice' ).html( '' );
+				}
+			} );
+
 			$( '.refund-front-form' ).submit( function () {
 				let is_valid = true;
 				let qty_total = 0;
@@ -119,33 +159,19 @@
 				}
 
 				if ( ! is_valid ) {
-					$( '#fr-front-refund-table-errors' ).html( '<p class="required fr-form-error">' + fr_front_i18n.qty_empty + '</p>' );
+					$( '#fr-front-refund-table-errors' ).html( '<ul class="woocommerce-error fr-form-error"><li>' + fr_front_i18n.qty_empty + '</li></ul>' );
 				} else {
 					$( '#fr-front-refund-table-errors' ).html( '' );
 				}
 
-				var name_map = {};
-				$( '.field-required' ).find( 'input,textarea,select' ).each( function ( i, v ) {
-					let field = $( v );
-					let type = field.attr( 'type' );
-					let name = field.attr( 'name' );
-					let notice_wrapper = field.closest( '.field-row' ).find( '.fr-required-field-notice' );
-					if ( type === 'radio' || type === 'checkbox' ) {
-						if ( $( 'input[name^="' + name + '"]:checked' ).length < 1 ) {
-							is_valid = false;
-							name_map[ name ] = field;
-							notice_wrapper.html( '<span class="label-error-required">' + fr_front_i18n.required_field + '</span>' );
-						} else {
-							notice_wrapper.html( '' )
-						}
+				$( this ).find( '.field-required' ).each( function () {
+					let field_row = $( this );
+					let notice_wrapper = field_row.find( '.fr-required-field-notice' );
+					if ( _this.hasRequiredFieldValue( field_row ) ) {
+						notice_wrapper.html( '' );
 					} else {
-						if ( field.val() === '' ) {
-							is_valid = false;
-							name_map[ name ] = field;
-							notice_wrapper.html( '<span class="label-error-required">' + fr_front_i18n.required_field + '</span>' );
-						} else {
-							notice_wrapper.html( '' )
-						}
+						is_valid = false;
+						notice_wrapper.html( '<span class="label-error-required">' + fr_front_i18n.required_field + '</span>' );
 					}
 				} );
 
@@ -247,7 +273,12 @@
 			$( document ).ready( function () {
 				let multiselect = $( '.multiselect' );
 				if ( multiselect.length ) {
-					multiselect.select2();
+					multiselect.each( function () {
+						let field = $( this );
+						if ( ! field.hasClass( 'select2-hidden-accessible' ) ) {
+							field.select2( { width: '100%' } );
+						}
+					} );
 				}
 			} );
 		}

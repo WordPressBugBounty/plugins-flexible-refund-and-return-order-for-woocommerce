@@ -98,8 +98,8 @@ foreach ($order_items as $item_id => $item) {
     }
     $qty_to_refund = $refund_meta['items'][$item_id]['qty'] ?? 0;
     $qty_to_refund = $qty_to_refund > $qty_display ? $qty_display : $qty_to_refund;
-    $item_price = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity() * (int) $qty;
-    $item_price_refund = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity() * (int) $qty_to_refund;
+    $item_price = \round($order->get_item_total($item, \true, \false) * (int) $qty, \wc_get_price_decimals());
+    $item_price_refund = \round($order->get_item_total($item, \true, \false) * (int) $qty_to_refund, \wc_get_price_decimals());
     $total_refund_sum += $item_price_refund;
     $item_total = $item->get_total() + $item->get_total_tax();
     ?>

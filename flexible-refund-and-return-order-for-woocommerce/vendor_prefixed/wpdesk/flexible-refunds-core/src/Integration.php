@@ -12,8 +12,22 @@ use FRFreeVendor\WPDesk\View\Renderer\SimplePhpRenderer;
 use FRFreeVendor\WPDesk\View\Resolver\ChainResolver;
 use FRFreeVendor\WPDesk\View\Resolver\DirResolver;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\OrderReferenceResolver;
-use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\RefundRequestAvailability;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\SettingsForm;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Database\DatabaseManager;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Database\TableNames;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Migration\LegacyRequestMigrator;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Migration\Version_2026072001_CreateRequestTables;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Migration\Version_2026072002_SeedSystemForms;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Migration\Version_2026072003_ScheduleLegacyRequests;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Migration\Version_2026080401_EnsureSystemForms;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\WpdbFormRepository;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\WpdbRequestRepository;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\FormService;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\FormAvailability;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\RequestService;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\RequestWorkflow;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Emails\RequestEmailSender;
+use FRFreeVendor\WPDesk\Migrations\WpdbMigrator;
 /**
  * Main class for integrate library with plugin.
  *
@@ -23,18 +37,9 @@ class Integration implements Hookable
 {
     const SETTING_PREFIX = 'fr_refund_';
     use HookableParent;
-    /**
-     * @var Renderer
-     */
-    protected $renderer;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-    /**
-     * @var bool
-     */
-    private static $is_super = \true;
+    protected Renderer $renderer;
+    private LoggerInterface $logger;
+    private static bool $is_super = \true;
     /**
      * @param bool $is_super
      */
@@ -90,24 +95,29 @@ class Integration implements Hookable
      */
     public function hooks()
     {
+        global $wpdb;
         $renderer = $this->get_renderer();
         $settings = $this->get_settings();
+        $tables = new TableNames($wpdb->prefix);
+        $forms = new WpdbFormRepository($wpdb, $tables);
+        $requests = new WpdbRequestRepository($wpdb, $tables);
+        $request_service = new RequestService($requests);
+        $email_sender = new RequestEmailSender();
+        $workflow = new RequestWorkflow($requests, $request_service, $email_sender, new Integration\OrderNote());
+        $migrator = new LegacyRequestMigrator($forms, $requests);
+        $this->add_hookable(new DatabaseManager(WpdbMigrator::from_classes([Version_2026072001_CreateRequestTables::class, Version_2026072002_SeedSystemForms::class, Version_2026072003_ScheduleLegacyRequests::class, Version_2026080401_EnsureSystemForms::class], 'fr_refunds_migration_version'), $migrator));
         $this->add_hookable(new Integration\Assets(self::get_library_url()));
-        $this->add_hookable(new SettingsForm());
-        $ajax = new Integration\Ajax($settings, $renderer);
+        $this->add_hookable(new SettingsForm($forms, new FormService($forms), self::is_super()));
+        $ajax = new Integration\Ajax($settings, $renderer, $requests, $workflow);
         $order_reference_lookup = new OrderReferenceResolver($settings);
-        $refund_availability = new RefundRequestAvailability($settings);
-        $my_account = new Integration\MyAccount($renderer, $settings, $ajax, $order_reference_lookup, $refund_availability);
-        if (self::is_super()) {
-            $this->add_hookable(new Integration\PublicRefundShortcode($renderer, $my_account, $order_reference_lookup, $settings));
-        }
-        if ($settings->get_fallback('refund_button', 'no') === 'yes') {
-            $this->add_hookable($my_account);
-            $this->add_hookable(new Integration\AdminMenu());
-            $this->add_hookable(new Integration\OrderMetaBox($renderer, $settings));
-            $this->add_hookable(new Integration\OrderNote());
-            $this->add_hookable(new Emails\RegisterEmails());
-        }
+        $my_account = new Integration\MyAccount($renderer, $settings, $order_reference_lookup, $forms, $requests, $request_service, new FormAvailability(self::is_super()), $email_sender, $workflow);
+        $this->add_hookable($my_account);
+        $this->add_hookable(new Integration\PublicRefundShortcode($renderer, $my_account, $order_reference_lookup, $settings, self::is_super()));
+        $this->add_hookable(new Integration\AdminMenu());
+        $this->add_hookable(new Integration\OrderMetaBox($renderer, $settings, $requests));
+        $this->add_hookable(new Integration\OrderRequestColumn($requests));
+        $this->add_hookable(new Integration\OrderNote());
+        $this->add_hookable(new Emails\RegisterEmails());
         $this->add_hookable(new Integration\RegisterOrderStatus());
         $this->add_hookable($ajax);
         $this->hooks_on_hookable_objects();

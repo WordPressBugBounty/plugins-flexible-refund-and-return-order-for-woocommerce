@@ -5,11 +5,13 @@ namespace FRFreeVendor;
 //phpcs:disable
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\FormDefinition;
 \defined('ABSPATH') || exit;
 /**
  * @var WC_Order      $order
  * @var FieldRenderer $fields
  * @var string        $show_shipping
+ * @var FormDefinition $form
  */
 if (!$order) {
     return;
@@ -35,10 +37,17 @@ if (\in_array($request_status, ['approved', 'rejected'])) {
 }
 ?>
 <form method="post" class="refund-front-form" action="" enctype="multipart/form-data">
+	<input type="hidden" name="fr_refund_form[form_id]" value="<?php 
+echo \esc_attr($form->get_id());
+?>" />
 	<section id="fr_refund_table_free" class="woocommerce-refund-details">
+		<h2><?php 
+echo \esc_html($form->get_button_label());
+?></h2>
 		<?php 
 \do_action('wpdesk/fr/code/user-account/before-refund-table', $order);
 ?>
+		<div id="fr-front-refund-table-errors" role="alert"></div>
 		<div class="woocommerce-table-refund-details-wrapper">
 			<table class="woocommerce-table woocommerce-table-refund-details">
 				<thead>
@@ -78,6 +87,7 @@ foreach ($order_items as $item_id => $item) {
     $total_qty += $qty;
     $total_refund_sum += $order->get_item_total($item, \true);
     $item_total = $item->get_total() + $item->get_total_tax();
+    $item_price = $order->get_item_total($item, \true, \false);
     ?>
 					<tr class="product_item">
 						<td class="item-name">
@@ -135,7 +145,7 @@ foreach ($order_items as $item_id => $item) {
         echo \esc_attr($item_id);
         ?>][qty]"
 										data-item-price="<?php 
-        echo \esc_attr($order->get_item_total($item, \true));
+        echo \esc_attr($item_price);
         ?>"
 									/>
 								</label>

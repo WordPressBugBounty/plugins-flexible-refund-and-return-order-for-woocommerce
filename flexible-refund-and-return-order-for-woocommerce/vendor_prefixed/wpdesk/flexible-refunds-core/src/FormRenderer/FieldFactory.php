@@ -10,10 +10,7 @@ use FRFreeVendor\WPDesk\Forms\Field\TextAreaField;
 use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 class FieldFactory
 {
-    /**
-     * @var Renderer
-     */
-    private $renderer;
+    private Renderer $renderer;
     public function __construct(Renderer $renderer)
     {
         $this->renderer = $renderer;

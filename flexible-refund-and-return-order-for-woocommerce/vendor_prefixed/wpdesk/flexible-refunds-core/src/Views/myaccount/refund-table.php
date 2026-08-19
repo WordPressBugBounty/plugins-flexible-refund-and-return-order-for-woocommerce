@@ -53,7 +53,7 @@ foreach ($order_items as $item_id => $item) {
     $product = $item->get_product();
     $is_checked = $refund_meta['items'][$item_id]['enabled'] ?? 'no';
     $qty = $refund_meta['items'][$item_id]['qty'] ?? 0;
-    $item_price = ($item->get_total() + $item->get_total_tax()) / $item->get_quantity() * (int) $qty;
+    $item_price = \round($order->get_item_total($item, \true, \false) * (int) $qty, \wc_get_price_decimals());
     $total_refund_sum += $item_price;
     ?>
 			<tr class="product_item">
@@ -133,5 +133,4 @@ echo \wc_price($total_refund_sum, ['currency' => $order->get_currency()]);
 		</tfoot>
 	</table>
 </div>
-
 <?php 
