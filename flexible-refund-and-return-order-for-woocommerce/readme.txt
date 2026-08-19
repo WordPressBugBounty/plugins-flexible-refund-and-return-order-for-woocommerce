@@ -4,9 +4,9 @@ Contributors: wpdesk,marcinkolanko
 Donate link: https://www.wpdesk.net/sk/flexible-refund-donate/
 Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, one click return, eu return directive
 Requires at least: 6.5
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -304,6 +304,10 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 1.2.5 - 2026-08-19 =
+* Added support for WordPress 7.1
+* Added support for WooCommerce 11.1
 
 = 1.2.4 - 2026-07-29 =
 * Fixed auto-hide refund button checks no longer change the order creation date

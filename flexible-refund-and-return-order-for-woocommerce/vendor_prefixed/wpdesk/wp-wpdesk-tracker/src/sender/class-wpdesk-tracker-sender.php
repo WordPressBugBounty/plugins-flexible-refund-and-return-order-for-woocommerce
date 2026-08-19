@@ -5,7 +5,7 @@ namespace FRFreeVendor;
 if (!\defined('ABSPATH')) {
     exit;
 }
-if (!\class_exists('WPDesk_Tracker_Sender')) {
+if (!\interface_exists('WPDesk_Tracker_Sender')) {
     interface WPDesk_Tracker_Sender
     {
         /**

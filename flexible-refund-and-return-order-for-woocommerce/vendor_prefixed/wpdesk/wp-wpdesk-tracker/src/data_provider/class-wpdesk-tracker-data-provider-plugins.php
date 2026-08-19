@@ -14,7 +14,7 @@ namespace FRFreeVendor;
 if (!\defined('ABSPATH')) {
     exit;
 }
-if (!\class_exists('WPDesk_Tracker_Data_Provider')) {
+if (!\class_exists('FRFreeVendor\WPDesk_Tracker_Data_Provider_Plugins')) {
     /**
      * Class WPDesk_Tracker_Data_Provider_Plugins
      */
