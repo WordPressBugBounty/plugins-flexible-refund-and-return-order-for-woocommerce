@@ -3,6 +3,7 @@
 namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings;
 
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\RequestType;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\ShippingRefundPolicy;
 final class FormConfigurationSanitizer
 {
     private const FIELD_TYPES = ['text', 'textarea', 'checkbox', 'select', 'multiselect', 'radio', 'upload', 'html'];
@@ -23,7 +24,10 @@ final class FormConfigurationSanitizer
         if (RequestType::REFUND === $request_type) {
             $settings['refund_type'] = in_array($raw_settings['refund_type'] ?? '', ['bank', 'coupon'], \true) ? $raw_settings['refund_type'] : 'bank';
             $settings['auto_approval'] = $this->sanitize_checkbox($raw_settings['auto_approval'] ?? 'no');
-            $settings['refund_shipping'] = $this->sanitize_checkbox($raw_settings['refund_shipping'] ?? 'no');
+            $shipping_mode = $raw_settings['refund_shipping'] ?? ShippingRefundPolicy::DISABLED;
+            $raw_shipping_lowest_cost = $raw_settings['refund_shipping_lowest_cost'] ?? 0;
+            $settings['refund_shipping'] = in_array($shipping_mode, [ShippingRefundPolicy::DISABLED, ShippingRefundPolicy::FULL_COST, ShippingRefundPolicy::LOWEST_COST, ShippingRefundPolicy::CUSTOMER_CHOICE], \true) ? $shipping_mode : ShippingRefundPolicy::DISABLED;
+            $settings['refund_shipping_lowest_cost'] = wc_format_decimal(max(0.0, is_scalar($raw_shipping_lowest_cost) ? (float) $raw_shipping_lowest_cost : 0.0), wc_get_price_decimals());
         }
         return ['enabled' => 'yes' === ($input['enabled'] ?? 'no'), 'button_label' => $label, 'schema' => $this->sanitize_schema($input['schema'] ?? []), 'settings' => $settings];
     }

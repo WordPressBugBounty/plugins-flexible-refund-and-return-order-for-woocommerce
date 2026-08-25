@@ -11,6 +11,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\FormDefinition;
  * @var WC_Order      $order
  * @var FieldRenderer $fields
  * @var string        $show_shipping
+ * @var float         $shipping_lowest_cost
  * @var FormDefinition $form
  */
 if (!$order) {
@@ -44,6 +45,15 @@ echo \esc_attr($form->get_id());
 		<h2><?php 
 echo \esc_html($form->get_button_label());
 ?></h2>
+		<?php 
+if (\in_array($show_shipping, ['yes', 'lowest_cost'], \true)) {
+    ?>
+			<p><?php 
+    \esc_html_e('Shipping costs will be added automatically when all remaining products are returned.', 'flexible-refund-and-return-order-for-woocommerce');
+    ?></p>
+		<?php 
+}
+?>
 		<?php 
 \do_action('wpdesk/fr/code/user-account/before-refund-table', $order);
 ?>
@@ -170,7 +180,7 @@ foreach ($order_items as $item_id => $item) {
 ?>
 				<?php 
 $shipping_total = 0;
-if ($show_shipping === 'yes') {
+if ($form && 'no' !== $show_shipping) {
     $shipping_items = $order->get_items('shipping');
     foreach ($shipping_items as $shipping_item) {
         /**
@@ -218,9 +228,9 @@ if ($show_shipping === 'yes') {
 									<?php 
             if ($shipping_total > 0) {
                 ?>
-										<label style="display: none;">
+										<label>
 											<input
-												class="qty-input"
+												class="qty-input shipping-refund-checkbox"
 												type="checkbox"
 												value="1"
 												name="fr_refund_form[items][<?php 
@@ -229,7 +239,18 @@ if ($show_shipping === 'yes') {
 												data-item-price="<?php 
                 echo \esc_attr((float) $shipping_item->get_total() + (float) $shipping_item->get_total_tax());
                 ?>"
-												checked="checked"
+												data-partial-limit="<?php 
+                echo \esc_attr($shipping_lowest_cost);
+                ?>"
+												data-partial-mode="<?php 
+                echo \esc_attr($show_shipping);
+                ?>"
+												<?php 
+                \checked('customer_choice' !== $show_shipping);
+                ?>
+												<?php 
+                \disabled('customer_choice' !== $show_shipping);
+                ?>
 											/>
 										</label>
 									<?php 

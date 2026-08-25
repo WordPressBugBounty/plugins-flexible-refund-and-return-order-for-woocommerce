@@ -11,6 +11,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Coupon\Coupon;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\OrderNote;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\ShippingRefundPolicy;
 class Approved extends AbstractRequest
 {
     const COUPON_REFUND_TYPE = 'coupon';
@@ -107,6 +108,10 @@ class Approved extends AbstractRequest
     {
         $total_amount = 0;
         $refund_items = [];
+        $shipping_mode = $this->settings->get_fallback('refund_shipping', $this->settings->get_fallback('refund_enable_shipment', ShippingRefundPolicy::DISABLED));
+        $shipping_cost = (float) $this->settings->get_fallback('refund_shipping_lowest_cost', 0);
+        $shipping_policy = new ShippingRefundPolicy();
+        $post_data['items'] = $shipping_policy->apply($order, $post_data['items'], $shipping_mode, $shipping_cost);
         foreach ($post_data['items'] as $refund_item_id => $refund_item) {
             $refund_qty = (int) $refund_item['qty'];
             if ($refund_qty === 0) {
@@ -131,6 +136,12 @@ class Approved extends AbstractRequest
             } elseif ($item->get_type() === 'shipping') {
                 $item_amount = $item->get_total();
                 $refund_taxes = $this->calc_refund_taxes($taxes, (int) $refund_item['qty'], $item->get_quantity());
+                if (isset($refund_item['refund_amount'])) {
+                    [$item_amount, $shipping_tax, $total] = $shipping_policy->calculate_refund_amounts((float) $item->get_total(), $refund_taxes['total'], (float) $refund_item['refund_amount'], wc_get_price_decimals());
+                    $refund_items[$refund_item_id] = ['qty' => 1, 'refund_total' => $item_amount, 'refund_tax' => $shipping_tax];
+                    $total_amount += $total;
+                    continue;
+                }
                 if (isset($refund_taxes['total'])) {
                     $total = (float) $item_amount + array_sum($refund_taxes['total']);
                 } else {

@@ -22,6 +22,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\RequestRepository
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\FormAvailability;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\RequestService;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\RequestWorkflow;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\ShippingRefundPolicy;
 class MyAccount implements Hookable
 {
     const QUERY_VAR_KEY = 'fr-refund';
@@ -255,7 +256,7 @@ class MyAccount implements Hookable
             return;
         }
         $settings = $form->get_settings();
-        $this->renderer->output_render('myaccount/' . $this->get_template_name('refund'), ['show_shipping' => RequestType::REFUND === $form->get_request_type() ? $settings['refund_shipping'] ?? 'no' : 'no', 'order' => $order, 'fields' => new FieldRenderer($form->get_schema()), 'request_status' => '', 'form' => $form]);
+        $this->renderer->output_render('myaccount/' . $this->get_template_name('refund'), ['show_shipping' => RequestType::REFUND === $form->get_request_type() ? $settings['refund_shipping'] ?? 'no' : 'no', 'shipping_lowest_cost' => (float) ($settings['refund_shipping_lowest_cost'] ?? 0), 'order' => $order, 'fields' => new FieldRenderer($form->get_schema()), 'request_status' => '', 'form' => $form]);
     }
     /**
      * @param mixed $order_id Order ID is passed as string.
@@ -491,7 +492,9 @@ class MyAccount implements Hookable
         $values = [];
         $items = [];
         $settings = $form->get_settings();
-        $allow_shipping = RequestType::REFUND === $form->get_request_type() && 'yes' === ($settings['refund_shipping'] ?? 'no');
+        $shipping_mode = RequestType::REFUND === $form->get_request_type() ? $settings['refund_shipping'] ?? ShippingRefundPolicy::DISABLED : ShippingRefundPolicy::DISABLED;
+        $shipping_cost = (float) ($settings['refund_shipping_lowest_cost'] ?? 0);
+        $allow_shipping = in_array($shipping_mode, [ShippingRefundPolicy::FULL_COST, ShippingRefundPolicy::LOWEST_COST, ShippingRefundPolicy::CUSTOMER_CHOICE], \true);
         $limits = $this->get_requestable_item_quantities($order, $allow_shipping);
         foreach ((array) ($post_data['items'] ?? []) as $item_id => $item) {
             $item_id = absint($item_id);
@@ -500,6 +503,7 @@ class MyAccount implements Hookable
                 $items[$item_id] = ['qty' => min($qty, $limits[$item_id])];
             }
         }
+        $items = (new ShippingRefundPolicy())->apply($order, $items, $shipping_mode, $shipping_cost);
         $values['items'] = $items;
         $values['total_refund_qty'] = array_sum(array_column($items, 'qty'));
         $values['attachments'] = is_array($post_data['attachments'] ?? null) ? $post_data['attachments'] : [];

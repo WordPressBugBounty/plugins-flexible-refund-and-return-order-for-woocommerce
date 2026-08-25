@@ -264,6 +264,15 @@
 			} );
 			auto_hide_field.trigger( 'change' );
 		},
+		shippingRefundCost: function () {
+			let shipping_mode = $( '#fr-refund-shipping, #fr_refund_refund_enable_shipment' );
+			shipping_mode.on( 'change', function () {
+				let mode = $( this ).val();
+				$( '#fr-refund-shipping-lowest-cost, #fr_refund_refund_shipping_lowest_cost' ).closest( 'tr' ).toggle( 'lowest_cost' === mode );
+				$( this ).closest( 'td' ).find( '.description' ).first().text( fr_fb_i18n.shipping_refund_descriptions[ mode ] );
+			} );
+			shipping_mode.trigger( 'change' );
+		},
 		copyShortcode: function () {
 			$( document ).on( 'click', '.fr-shortcode-copy__button', function () {
 				let button = $( this );
@@ -403,6 +412,7 @@
 	FormBuilder.removeField();
 	FormBuilder.removeSubmitButton();
 	FormBuilder.autoHideRefundButton();
+	FormBuilder.shippingRefundCost();
 	FormBuilder.copyShortcode();
 	FormBuilder.conditionTable();
 

@@ -352,6 +352,7 @@ class ComposerStaticInitbfdfb631d87ec1cc4425762e4196249a
         'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Service\\MonetaryRefundTracker' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Service/MonetaryRefundTracker.php',
         'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Service\\RequestService' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Service/RequestService.php',
         'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Service\\RequestWorkflow' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Service/RequestWorkflow.php',
+        'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Service\\ShippingRefundPolicy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Service/ShippingRefundPolicy.php',
         'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Settings\\ConditionSettingFactory' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Settings/ConditionSettingFactory.php',
         'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Settings\\FieldHelper' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Settings/FieldHelper.php',
         'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Settings\\Fields\\FormBuilderField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Settings/Fields/FormBuilderField.php',

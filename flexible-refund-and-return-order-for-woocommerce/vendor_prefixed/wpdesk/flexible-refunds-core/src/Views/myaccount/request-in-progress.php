@@ -13,10 +13,8 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\MyAccount;
 $label = RequestType::get_label($request->get_request_type());
 $values = $request->get_submitted_values();
 $requested_items = \is_array($values['items'] ?? null) ? $values['items'] : [];
-$snapshot = $request->get_form_snapshot();
-$settings = \is_array($snapshot['settings'] ?? null) ? $snapshot['settings'] : [];
 $is_refund = RequestType::supports_monetary_refund($request->get_request_type());
-$show_shipping = $is_refund && 'yes' === ($settings['refund_shipping'] ?? 'no');
+$show_shipping = $is_refund;
 $request_total = 0.0;
 if ($is_refund) {
     ?>
@@ -168,7 +166,7 @@ if ($show_shipping) {
         ?>
 					<?php 
         $shipping_total = (float) $item->get_total() + (float) $item->get_total_tax();
-        $requested_shipping_total = $requested_quantity > 0 ? $shipping_total : 0.0;
+        $requested_shipping_total = $requested_quantity > 0 ? (float) ($requested_items[$item_id]['refund_amount'] ?? $shipping_total) : 0.0;
         $request_total += $requested_shipping_total;
         ?>
 					<tr class="shipping-item">

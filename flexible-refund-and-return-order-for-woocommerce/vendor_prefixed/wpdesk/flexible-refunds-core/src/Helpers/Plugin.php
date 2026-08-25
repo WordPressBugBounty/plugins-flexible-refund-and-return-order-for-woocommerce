@@ -12,12 +12,7 @@ class Plugin
      */
     public static function get_url_to_pro(string $source = ''): string
     {
-        switch ($source) {
-            case 'email':
-                return self::get_url_with_suffix('plugin-email');
-            default:
-                return self::get_url_with_suffix('plugin');
-        }
+        return get_locale() === 'pl_PL' ? 'https://wpdesk.link/flexible-refund-and-return-order-for-woocommerce-plugin-pl' : 'https://wpdesk.link/flexible-refund-and-return-order-for-woocommerce-plugin-en';
     }
     /**
      * Get URL to the docs page.

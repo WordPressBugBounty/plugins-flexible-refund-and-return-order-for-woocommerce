@@ -3,7 +3,7 @@
 
 	const FormBuilder = {
 
-		refund_form_qty_fields: $( '#fr_refund_table' ),
+		refund_form_qty_fields: $( '#fr_refund_table, #fr_refund_table_free' ),
 
 		init: function () {
 			$( '#fb-field-type' ).val( '' );
@@ -35,15 +35,55 @@
 			return Math.round( ( value + Number.EPSILON ) * precision ) / precision;
 		},
 
+		updateShippingRefundState: function ( table ) {
+			let product_inputs = table.find( '.product_item .qty-input[type="number"]' );
+			let full_return = product_inputs.length > 0;
+			let has_selected_product = false;
+			product_inputs.each( function () {
+				let quantity = parseInt( $( this ).val() );
+				full_return = full_return && quantity === parseInt( $( this ).attr( 'max' ) );
+				has_selected_product = has_selected_product || quantity > 0;
+			} );
+
+			let shipping_inputs = table.find( '.shipping-refund-checkbox' );
+			let lowest_cost_left = parseFloat( shipping_inputs.first().attr( 'data-partial-limit' ) ) || 0;
+			shipping_inputs.each( function () {
+				let input = $( this );
+				let mode = input.attr( 'data-partial-mode' );
+				let full_price = parseFloat( input.attr( 'data-item-price' ) ) || 0;
+				let automatic_full_return = full_return && 'customer_choice' !== mode;
+				let refund_price = 'lowest_cost' === mode && ! full_return ? Math.min( lowest_cost_left, full_price ) : full_price;
+
+				if ( 'yes' === mode || 'lowest_cost' === mode ) {
+					input.prop( 'checked', has_selected_product ).prop( 'disabled', true );
+					input.attr( 'data-active-price', refund_price );
+				} else if ( automatic_full_return ) {
+					input.prop( 'checked', true ).prop( 'disabled', true );
+					input.attr( 'data-active-price', refund_price );
+				} else {
+					if ( 'no' === mode ) {
+						input.prop( 'checked', false );
+					}
+					input.prop( 'disabled', 'no' === mode );
+					input.attr( 'data-active-price', refund_price );
+				}
+				if ( 'lowest_cost' === mode && input.prop( 'checked' ) ) {
+					lowest_cost_left -= refund_price;
+				}
+			} );
+		},
+
 		calculateRefundTotals: function () {
 			let _this = this;
 			_this.refund_form_qty_fields.on( 'change', '.item-qty input', function () {
+				let table = $( this ).closest( 'table' );
+				_this.updateShippingRefundState( table );
 				let qty = $( this ).val();
 				let qty_max = parseInt( $( this ).attr( 'max' ) );
 				let value = parseFloat( $( this ).attr( 'data-item-price' ) ) * qty;
 				if ( $( this ).attr( 'type' ) === 'checkbox' ) {
 					if ( $( this ).prop( 'checked' ) ) {
-						value = parseFloat( $( this ).attr( 'data-item-price' ) );
+						value = parseFloat( $( this ).attr( 'data-active-price' ) || $( this ).attr( 'data-item-price' ) );
 					} else {
 						value = 0;
 					}
@@ -57,13 +97,13 @@
 				let total_amount_wrapper = $( '.refund-total-calc' );
 				let total_qty_wrapper = $( '.refund-total-qty' );
 				let total_qty_input = $( '#refund-total-qty-input' );
-				$( this ).closest( 'table' ).find( '.item-qty input' ).each( function () {
+				table.find( '.item-qty input' ).each( function () {
 					let qty = $( this ).val();
 					let qty_max = parseInt( $( this ).attr( 'max' ) );
 					let total_value = parseFloat( $( this ).attr( 'data-item-price' ) ) * qty;
 					if ( $( this ).attr( 'type' ) === 'checkbox' ) {
 						if ( $( this ).prop( 'checked' ) ) {
-							total_value = parseFloat( $( this ).attr( 'data-item-price' ) );
+							total_value = parseFloat( $( this ).attr( 'data-active-price' ) || $( this ).attr( 'data-item-price' ) );
 							qty = 1;
 						} else {
 							total_value = 0;
@@ -72,7 +112,9 @@
 					}
 
 
-					total_amount += _this.roundMoney( parseFloat( total_value ) );
+					total_value = _this.roundMoney( parseFloat( total_value ) );
+					$( this ).closest( 'tr' ).find( '.item-total-refund-qty' ).html( _this.number_format( total_value ) );
+					total_amount += total_value;
 					total_qty += parseInt( qty );
 				} )
 
@@ -211,7 +253,7 @@
 
 		isAllInputChecked: function () {
 			let is_checked = true;
-			$( '.qty-input', this.refund_form_qty_fields ).each( function ( i, v ) {
+			$( '.qty-input:not(.shipping-refund-checkbox)', this.refund_form_qty_fields ).each( function ( i, v ) {
 				let field = $( v );
 				let qty = field.attr( 'max' );
 				let type = field.attr( 'type' );
@@ -231,7 +273,7 @@
 		},
 
 		checkAllInputs: function ( attr, prop ) {
-			$( '.qty-input', this.refund_form_qty_fields ).each( function ( i, v ) {
+			$( '.qty-input:not(.shipping-refund-checkbox)', this.refund_form_qty_fields ).each( function ( i, v ) {
 				let field = $( v );
 				let qty = field.attr( attr );
 				let type = field.attr( 'type' );

@@ -41,6 +41,16 @@
 			}
 		},
 
+		serializeRefundItems: function ( $scope ) {
+			const $inputs = $scope.find( ".qty-input" );
+			const values = $inputs.serializeArray();
+			$inputs.filter( ':checkbox:not(:checked)' ).each( function () {
+				values.push( { name: this.name, value: "0" } );
+			} );
+
+			return $.param( values );
+		},
+
 		sendRequest: function () {
 			$( metaBoxSelector ).on( "click", ".fr-refund-button", function () {
 				const $request = $( this ).closest( ".fr-request-content" );
@@ -66,7 +76,7 @@
 						order_ID: orderId,
 						request_id: $scope.find( ".fr-refund-request-id, #fr_refund_request_id" ).first().val() || 0,
 						nonce: fr_meta_box.nonce,
-						form: $scope.find( ".qty-input" ).serialize()
+						form: FR_Ajax.serializeRefundItems( $scope )
 					},
 					success: function ( response ) {
 						if ( response.success === true ) {
@@ -108,6 +118,35 @@
 			const precision = 10 ** fr_meta_box.price_decimals;
 
 			return Math.round( ( value + Number.EPSILON ) * precision ) / precision;
+		},
+
+		shippingRefundCheckboxes: function () {
+			$( metaBoxSelector ).on( "change", ".fr-request-content .qty-input", function () {
+				const $request = $( this ).closest( ".fr-request-content" );
+				let fullReturn = $request.attr( "data-full-return" ) === "yes";
+				$request.find( '.qty-input[type="number"]' ).each( function () {
+					fullReturn = fullReturn && parseInt( $( this ).val() ) === parseInt( $( this ).attr( "max" ) );
+				} );
+
+				$request.find( ".shipping-refund-checkbox" ).each( function () {
+					const $input = $( this );
+					const wasFullReturn = $input.data( "full-return" ) === true;
+					const automaticFullReturn = fullReturn && $input.attr( "data-partial-mode" ) !== "customer_choice";
+					if ( automaticFullReturn ) {
+						$input.prop( "checked", true ).prop( "disabled", true );
+					} else {
+						if ( wasFullReturn || $input.attr( "data-partial-mode" ) === "no" ) {
+							$input.prop( "checked", false );
+						}
+						$input.prop( "disabled", $input.attr( "data-partial-mode" ) === "no" );
+					}
+					$input.data( "full-return", automaticFullReturn );
+				} );
+			} );
+
+			$( metaBoxSelector ).find( ".fr-request-content" ).each( function () {
+				$( this ).find( ".qty-input" ).first().trigger( "change" );
+			} );
 		},
 
 		calculateRefundTotals: function () {
@@ -161,6 +200,7 @@
 		$( metaBoxSelector ).prependTo( "#normal-sortables" );
 		FR_Ajax.switchRequests();
 		FR_Ajax.sendRequest();
+		FR_Ajax.shippingRefundCheckboxes();
 		FR_Ajax.calculateRefundTotals();
 	} );
 

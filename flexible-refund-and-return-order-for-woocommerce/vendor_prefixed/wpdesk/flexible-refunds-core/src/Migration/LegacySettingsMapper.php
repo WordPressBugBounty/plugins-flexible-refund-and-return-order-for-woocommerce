@@ -30,7 +30,7 @@ final class LegacySettingsMapper
         if (!is_array($schema)) {
             $schema = [];
         }
-        return new FormDefinition(null, RequestType::REFUND, 'yes' === $this->get_option('refund_button', 'no'), __('Refund', 'flexible-refund-and-return-order-for-woocommerce'), 1, $schema, ['subtype' => RequestType::REFUND, 'visibility_conditions' => $this->get_array_option('refund_conditions_setting'), 'auto_hide' => $this->get_option('refund_auto_hide', 'no'), 'auto_hide_settings' => $this->get_array_option('refund_auto_hide_settings'), 'refund_type' => $this->get_option('refund_type', 'bank'), 'auto_approval' => $this->get_option('refund_auto_accept', 'no'), 'refund_shipping' => $this->get_option('refund_enable_shipment', 'no'), 'policy_page_id' => (int) $this->get_option('selected_post_id', 0)], $now, $now);
+        return new FormDefinition(null, RequestType::REFUND, 'yes' === $this->get_option('refund_button', 'no'), __('Refund', 'flexible-refund-and-return-order-for-woocommerce'), 1, $schema, ['subtype' => RequestType::REFUND, 'visibility_conditions' => $this->get_array_option('refund_conditions_setting'), 'auto_hide' => $this->get_option('refund_auto_hide', 'no'), 'auto_hide_settings' => $this->get_array_option('refund_auto_hide_settings'), 'refund_type' => $this->get_option('refund_type', 'bank'), 'auto_approval' => $this->get_option('refund_auto_accept', 'no'), 'refund_shipping' => $this->get_option('refund_enable_shipment', 'no'), 'refund_shipping_lowest_cost' => $this->get_option('refund_shipping_lowest_cost', 0), 'policy_page_id' => (int) $this->get_option('selected_post_id', 0)], $now, $now);
     }
     private function get_default_form(string $request_type, string $label, string $now): FormDefinition
     {

@@ -91,7 +91,7 @@ foreach ($order_items as $item_id => $item) {
 		<?php 
 $shipping_items = $order->get_items('shipping');
 foreach ($shipping_items as $shipping_item) {
-    if ($show_shipping === 'yes') {
+    if ('no' !== $show_shipping) {
         /**
          * @var WC_Order_Item_Shipping $shipping_item
          */

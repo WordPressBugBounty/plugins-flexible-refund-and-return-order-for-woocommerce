@@ -552,10 +552,23 @@
 	opacity: 0.75;
 }
 
-.fr-settings-page .form-table>tbody>tr>td>label {
+.fr-settings-page .form-table>tbody>tr>td>label,
+.fr-settings-page .fr-pro-option>label {
 	display: flex;
 	align-items: center;
 	min-height: 30px;
+}
+
+.fr-settings-page .fr-pro-option {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.fr-settings-page .fr-pro-link {
+	color: #d27334;
+	font-weight: 600;
+	white-space: nowrap;
 }
 
 .fr-settings-header .fr-settings-docs a {

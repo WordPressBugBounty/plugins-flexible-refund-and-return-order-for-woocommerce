@@ -24,6 +24,9 @@ $show_shipping = $settings->get_fallback('refund_enable_shipment', 'no');
 <p class="description"><?php 
 \esc_html_e('Select your return status. Confirming the selection will send a message to the customer.', 'flexible-refund-and-return-order-for-woocommerce');
 ?></p>
+<p class="description"><?php 
+\esc_html_e('Shipping costs will be added automatically when all remaining products are refunded.', 'flexible-refund-and-return-order-for-woocommerce');
+?></p>
 
 <table class="fr-refund-table">
 	<thead>

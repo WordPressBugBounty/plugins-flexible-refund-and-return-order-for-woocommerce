@@ -56,9 +56,7 @@ abstract class AbstractRefundEmail extends WC_Email
         $order = wc_get_order($order_id);
         if ($order) {
             if (null !== $request) {
-                $snapshot = $request->get_form_snapshot();
-                $settings = is_array($snapshot['settings'] ?? null) ? $snapshot['settings'] : [];
-                return $this->get_renderer()->render('myaccount/request-table', ['order' => $order, 'request' => $request, 'show_shipping' => RequestType::REFUND === $request->get_request_type() ? $settings['refund_shipping'] ?? 'no' : 'no']);
+                return $this->get_renderer()->render('myaccount/request-table', ['order' => $order, 'request' => $request, 'show_shipping' => RequestType::REFUND === $request->get_request_type() ? 'yes' : 'no']);
             }
             return $this->get_renderer()->render('myaccount/refund-table', ['show_shipping' => $this->get_settings()->get_fallback('refund_enable_shipment', 'no'), 'order' => $order, 'fields' => new FieldRenderer()]);
         }
@@ -138,11 +136,8 @@ abstract class AbstractRefundEmail extends WC_Email
     }
     private function get_refund_request_date(): string
     {
-        if (null !== $this->request) {
-            return $this->request->get_created_at();
-        }
-        $timestamp = (int) $this->object->get_meta('fr_refund_request_date');
-        return $timestamp ? wc_format_datetime((new \WC_DateTime())->setTimestamp($timestamp), wc_date_format() . ' ' . wc_time_format()) : '';
+        $timestamp = null !== $this->request ? wc_string_to_timestamp($this->request->get_created_at()) : (int) $this->object->get_meta('fr_refund_request_date');
+        return $timestamp ? wp_date(wc_date_format() . ' ' . wc_time_format(), $timestamp) : '';
     }
     public function get_content_plain(): string
     {

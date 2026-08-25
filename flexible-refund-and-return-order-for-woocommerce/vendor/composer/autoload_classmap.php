@@ -324,6 +324,7 @@ return array(
     'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Service\\MonetaryRefundTracker' => $baseDir . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Service/MonetaryRefundTracker.php',
     'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Service\\RequestService' => $baseDir . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Service/RequestService.php',
     'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Service\\RequestWorkflow' => $baseDir . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Service/RequestWorkflow.php',
+    'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Service\\ShippingRefundPolicy' => $baseDir . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Service/ShippingRefundPolicy.php',
     'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Settings\\ConditionSettingFactory' => $baseDir . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Settings/ConditionSettingFactory.php',
     'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Settings\\FieldHelper' => $baseDir . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Settings/FieldHelper.php',
     'FRFreeVendor\\WPDesk\\Library\\FlexibleRefundsCore\\Settings\\Fields\\FormBuilderField' => $baseDir . '/vendor_prefixed/wpdesk/flexible-refunds-core/src/Settings/Fields/FormBuilderField.php',

@@ -6,6 +6,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\RequestType;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Request\RequestRecord;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FormValuesRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Statuses;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\ShippingRefundPolicy;
 \defined('ABSPATH') || exit;
 /** @var WC_Order $order */
 /** @var RequestRecord $request */
@@ -15,6 +16,7 @@ $snapshot = $request->get_form_snapshot();
 $settings = \is_array($snapshot['settings'] ?? null) ? $snapshot['settings'] : [];
 $values = $request->get_submitted_values();
 $selected_items = \is_array($values['items'] ?? null) ? $values['items'] : [];
+$is_full_return = (new ShippingRefundPolicy())->is_full_return($order, $selected_items);
 ?>
 <div
 	id="fr-request-details-<?php 
@@ -23,6 +25,9 @@ echo \esc_attr($request_id);
 	class="fr-request-content"
 	data-request-id="<?php 
 echo \esc_attr($request_id);
+?>"
+	data-full-return="<?php 
+echo \esc_attr($is_full_return ? 'yes' : 'no');
 ?>"
 	<?php 
 if (!$is_expanded) {
@@ -59,6 +64,9 @@ echo \esc_html($request->get_created_at());
 \esc_html_e('Product', 'flexible-refund-and-return-order-for-woocommerce');
 ?></th>
 							<th><?php 
+\esc_html_e('Price', 'flexible-refund-and-return-order-for-woocommerce');
+?></th>
+							<th><?php 
 \esc_html_e('Requested quantity', 'flexible-refund-and-return-order-for-woocommerce');
 ?></th>
 						</tr>
@@ -76,6 +84,9 @@ foreach ($order->get_items() as $item_id => $item) {
 								<tr>
 									<td><?php 
         echo \esc_html($item->get_name());
+        ?></td>
+									<td><?php 
+        echo \wp_kses_post(\wc_price($order->get_item_total($item, \true), ['currency' => $order->get_currency()]));
         ?></td>
 									<td>
 										<?php 
@@ -107,7 +118,7 @@ foreach ($order->get_items() as $item_id => $item) {
 ?>
 
 						<?php 
-if (RequestType::REFUND === $request->get_request_type() && 'yes' === ($settings['refund_shipping'] ?? 'no')) {
+if (RequestType::REFUND === $request->get_request_type()) {
     ?>
 							<?php 
     foreach ($order->get_items('shipping') as $item_id => $item) {
@@ -119,10 +130,17 @@ if (RequestType::REFUND === $request->get_request_type() && 'yes' === ($settings
 										<td><?php 
             echo \esc_html(\sprintf(\__('Shipping: %s', 'flexible-refund-and-return-order-for-woocommerce'), $item->get_name()));
             ?></td>
+										<td><?php 
+            echo \wp_kses_post(\wc_price((float) ($selected_items[$item_id]['refund_amount'] ?? (float) $item->get_total() + (float) $item->get_total_tax()), ['currency' => $order->get_currency()]));
+            ?></td>
 										<td>
-											<input class="qty-input" type="checkbox" checked value="1" name="fr_refund_form[items][<?php 
+											<input class="qty-input shipping-refund-checkbox" type="checkbox" checked value="1" name="fr_refund_form[items][<?php 
             echo \esc_attr($item_id);
-            ?>][qty]" />
+            ?>][qty]" data-partial-mode="<?php 
+            echo \esc_attr($settings['refund_shipping'] ?? 'no');
+            ?>" <?php 
+            \disabled($is_full_return && ShippingRefundPolicy::CUSTOMER_CHOICE !== ($settings['refund_shipping'] ?? 'no'));
+            ?> />
 										</td>
 									</tr>
 								<?php 

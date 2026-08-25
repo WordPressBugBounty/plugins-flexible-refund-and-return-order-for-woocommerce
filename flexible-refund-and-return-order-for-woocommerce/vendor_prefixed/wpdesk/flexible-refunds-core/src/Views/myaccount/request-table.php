@@ -50,7 +50,7 @@ foreach ($order->get_items() as $item_id => $item) {
 }
 ?>
 		<?php 
-if ('yes' === $show_shipping) {
+if ('no' !== $show_shipping) {
     ?>
 			<?php 
     foreach ($order->get_items('shipping') as $item_id => $item) {
