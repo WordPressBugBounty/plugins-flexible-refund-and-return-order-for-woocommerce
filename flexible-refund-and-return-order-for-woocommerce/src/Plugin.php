@@ -35,8 +35,7 @@ class Plugin extends AbstractPlugin implements HookableCollection {
 		$this->plugin_info = $plugin_info;
 		parent::__construct( $this->plugin_info );
 
-		$this->start_here_url = admin_url( 'admin.php?page=wc-settings&tab=flexible_refunds&section=support' );
-		$this->settings_url   = admin_url( 'admin.php?page=wc-settings&tab=flexible_refunds' );
+		$this->settings_url   = admin_url( 'admin.php?page=flexible-refunds' );
 		$this->docs_url       = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-refund-plugin-docs-pl' : 'https://www.wpdesk.net/sk/flexible-refund-plugin-docs-en';
 		$this->support_url    = 'https://wpdesk.link/flexible-refund-plugin-support/';
 		$this->upgrade_url    = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-refund-plugin-upgrade-pl' : 'https://wpdesk.net/sk/flexible-refund-plugin-upgrade-en';
@@ -44,8 +43,6 @@ class Plugin extends AbstractPlugin implements HookableCollection {
 
 	public function links_filter( $links ) {
 		$links_array  = parent::links_filter( $links );
-		$start_link = '<a href="' . $this->start_here_url . '" style="font-weight: bold;color: #007050">' . esc_html__( 'Start here', 'flexible-refund-and-return-order-for-woocommerce' ) . '</a>';
-		array_splice( $links_array, 0, 0, $start_link );
 
 		$upgrade_link = '<a href="' . $this->upgrade_url . '" style="font-weight: bold;color: #FF9743">' . esc_html__( 'Upgrade to PRO &rarr;', 'flexible-refund-and-return-order-for-woocommerce' ) . '</a>';
 		array_splice( $links_array, 3, 0, $upgrade_link );

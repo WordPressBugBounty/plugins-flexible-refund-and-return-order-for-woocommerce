@@ -6,7 +6,7 @@ Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, one cli
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -304,6 +304,9 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 2.0.2 - 2026-09-10 =
+* Fixed the plugin settings page link
 
 = 2.0.1 - 2026-08-25 =
 * Added option to automatically refund shipping costs when all remaining products are returned
