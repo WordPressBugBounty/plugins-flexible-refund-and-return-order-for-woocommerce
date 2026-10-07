@@ -6,7 +6,7 @@ Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, one cli
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -304,6 +304,9 @@ We may also focus on better compatibility with invoicing plugins.
 19. Refund request without logging in (PRO).
 
 == Changelog ==
+
+= 2.0.4 - 2026-10-07 =
+* Added support for WooCommerce 11.2
 
 = 2.0.3 - 2026-09-23 =
 * Removed refund type in email headers
