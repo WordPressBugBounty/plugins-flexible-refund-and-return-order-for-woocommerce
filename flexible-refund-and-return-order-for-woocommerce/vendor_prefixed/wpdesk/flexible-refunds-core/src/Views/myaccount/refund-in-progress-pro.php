@@ -36,25 +36,7 @@ if (!empty($request_note)) {
 if (\in_array($request_status, ['requested', 'verifying'])) {
     ?>
 	<?php 
-    $cancel_request_url = \wp_nonce_url(\add_query_arg(['delete_refund_request' => $order->get_id()]), MyAccount::CANCEL_NONCE_ACTION);
-    ?>
-	<section id="fr-cancel-request-section" class="fr-cancel-request-description">
-		<p><?php 
-    \esc_html_e('You can cancel the request until the administrator accepts or rejects your request', 'flexible-refund-and-return-order-for-woocommerce');
-    ?></p>
-		<a href="#" class="button primary-button cr-button"><?php 
-    \esc_html_e('Cancel Request', 'flexible-refund-and-return-order-for-woocommerce');
-    ?></a>
-		<a style="display: none;" href="#" class="button secondary-button ds-button"><?php 
-    \esc_html_e('No, not yet!', 'flexible-refund-and-return-order-for-woocommerce');
-    ?></a>
-		<a style="display: none;" href="<?php 
-    echo \esc_url($cancel_request_url);
-    ?>" class="button secondary-button cf-button"><?php 
-    \esc_html_e('Yes, cancel request!', 'flexible-refund-and-return-order-for-woocommerce');
-    ?></a>
-	</section>
-<?php 
+    require __DIR__ . '/cancel-request.php';
 }
 ?>
 

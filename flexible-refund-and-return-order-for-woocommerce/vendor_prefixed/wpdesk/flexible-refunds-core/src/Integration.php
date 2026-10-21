@@ -26,6 +26,8 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\FormService;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\FormAvailability;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\RequestService;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\RequestWorkflow;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\PublicRequestPages;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\PublicRequestAccess;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Emails\RequestEmailSender;
 use FRFreeVendor\WPDesk\Migrations\WpdbMigrator;
 /**
@@ -112,12 +114,21 @@ class Integration implements Hookable
         $order_reference_lookup = new OrderReferenceResolver($settings);
         $my_account = new Integration\MyAccount($renderer, $settings, $order_reference_lookup, $forms, $requests, $request_service, new FormAvailability(self::is_super()), $email_sender, $workflow);
         $this->add_hookable($my_account);
-        $this->add_hookable(new Integration\PublicRefundShortcode($renderer, $my_account, $order_reference_lookup, $settings, self::is_super()));
+        $public_pages = new PublicRequestPages($forms);
+        if (self::is_super()) {
+            $this->add_hookable($public_pages);
+            $this->add_hookable(new Integration\PublicRequestPageNotice($forms, $public_pages));
+        }
+        $public_access = new PublicRequestAccess($requests, $order_reference_lookup);
+        $public_controller = new Integration\PublicRequestController($public_access, $public_pages, self::is_super());
+        $this->add_hookable(new Integration\PublicRefundShortcode($renderer, $my_account, $settings, $forms, $public_access, $public_controller, self::is_super()));
+        $this->add_hookable($public_controller);
         $this->add_hookable(new Integration\AdminMenu());
         $this->add_hookable(new Integration\OrderMetaBox($renderer, $settings, $requests));
         $this->add_hookable(new Integration\OrderRequestColumn($requests));
         $this->add_hookable(new Integration\OrderNote());
         $this->add_hookable(new Emails\RegisterEmails());
+        $this->add_hookable(new Integration\EmailTemplatesUpdateNotice());
         $this->add_hookable(new Integration\RegisterOrderStatus());
         $this->add_hookable($ajax);
         $this->hooks_on_hookable_objects();

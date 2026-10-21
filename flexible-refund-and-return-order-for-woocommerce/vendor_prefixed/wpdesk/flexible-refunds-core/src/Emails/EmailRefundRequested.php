@@ -22,6 +22,7 @@ class EmailRefundRequested extends AbstractRefundEmail
     }
     public function get_default_additional_content()
     {
-        return wpautop(wp_kses(__("Hi {customer_name},\n\nThank you. Your {request_type_label} request was submitted on {refund_request_date}. We will review it and notify you about the next steps. <a href='{refund_url}' target='_blank'>Click here to cancel your request</a>.\n\nBelow you will find the products included in your request.\n\n{refund_order_table}\n\n{refund_info_page}\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
+        $content = __("Hi {customer_name},\n\nThank you. Your {request_type_label} request was submitted on {refund_request_date}. We will review it and notify you about the next steps. <a href='{refund_url}' target='_blank'>Click here to view your request status</a>.\n\n{refund_management_link}\n\nBelow you will find the products included in your request.\n\n{refund_order_table}\n\n{refund_info_page}\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce');
+        return wpautop(wp_kses(str_replace('{refund_management_link}', $this->get_default_management_link(), $content), EmailHelper::allowed_tags()));
     }
 }

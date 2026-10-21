@@ -2,6 +2,7 @@
 
 namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service;
 
+use Throwable;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Exception\EntityNotFound;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\FormDefinition;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\FormRepository;
@@ -31,6 +32,13 @@ final class FormService
             throw new EntityNotFound(sprintf('Form %d does not exist.', $id));
         }
         $updated = $form->with_configuration($enabled, $button_label, $schema, $settings, gmdate('Y-m-d H:i:s'));
-        return $this->forms->save($updated);
+        $updated = $this->forms->save($updated);
+        try {
+            do_action('flexible_refunds_form_updated', $form, $updated);
+        } catch (Throwable $e) {
+            $this->forms->save($form);
+            throw $e;
+        }
+        return $updated;
     }
 }

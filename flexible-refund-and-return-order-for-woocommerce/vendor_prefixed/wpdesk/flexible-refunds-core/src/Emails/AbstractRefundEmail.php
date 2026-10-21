@@ -9,7 +9,11 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\FormRenderer\FieldRenderer;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\RequestType;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Request\RequestRecord;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\EmailHelper;
-use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\MyAccount;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\PublicRequestLink;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Database\TableNames;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\WpdbRequestRepository;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\WpdbFormRepository;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Migration\LegacyRequestMigrator;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 use FRFreeVendor\WPDesk\Persistence\Adapter\WordPress\WordpressOptionsContainer;
 use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
@@ -29,8 +33,15 @@ abstract class AbstractRefundEmail extends WC_Email
         $this->template_html = 'emails/fr-refund.php';
         $this->template_plain = 'emails/plain/fr-refund.php';
         parent::__construct();
-        $this->placeholders = ['{shop_title}' => '', '{shop_address}' => '', '{shop_url}' => '', '{shop_email}' => '', '{refund_url}' => '', '{refund_note}' => '', '{refund_order_table}' => '', '{customer_name}' => '', '{order_id}' => '', '{order_date}' => '', '{order_number}' => '', '{order_payment_method}' => '', '{coupon_code}' => '', '{admin_order_url}' => '', '{admin_refunds_url}' => '', '{refund_info_page}' => '', '{refund_request_date}' => '', '{request_id}' => '', '{request_type}' => '', '{request_type_label}' => '', '{request_label}' => '', '{refund_specific_content}' => ''];
+        $this->placeholders = ['{shop_title}' => '', '{shop_address}' => '', '{shop_url}' => '', '{shop_email}' => '', '{refund_url}' => '', '{refund_manage_url}' => '', '{refund_note}' => '', '{refund_order_table}' => '', '{customer_name}' => '', '{order_id}' => '', '{order_date}' => '', '{order_number}' => '', '{order_payment_method}' => '', '{coupon_code}' => '', '{admin_order_url}' => '', '{admin_refunds_url}' => '', '{refund_info_page}' => '', '{refund_request_date}' => '', '{request_id}' => '', '{request_type}' => '', '{request_type_label}' => '', '{request_label}' => '', '{refund_specific_content}' => ''];
         $this->append_wp_editor_to_fields();
+    }
+    protected function get_default_management_link(): string
+    {
+        if (!Integration::is_super()) {
+            return '';
+        }
+        return wp_kses(__('To manage your request, click <a href="{refund_manage_url}" target="_blank">here</a>.', 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags());
     }
     /**
      * Set renderer.
@@ -74,6 +85,12 @@ abstract class AbstractRefundEmail extends WC_Email
         if (!$order instanceof WC_Order) {
             return;
         }
+        if (Integration::is_super() && null === $request) {
+            global $wpdb;
+            $tables = new TableNames($wpdb->prefix);
+            $requests = new WpdbRequestRepository($wpdb, $tables);
+            $request = $requests->find_latest_by_order($order->get_id()) ?? (new LegacyRequestMigrator(new WpdbFormRepository($wpdb, $tables), $requests))->migrate_order($order);
+        }
         $this->setup_locale();
         $this->object = $order;
         $this->request = $request;
@@ -86,7 +103,8 @@ abstract class AbstractRefundEmail extends WC_Email
         $this->placeholders['{shop_address}'] = $countries->get_formatted_address(['address_1' => $countries->get_base_address(), 'address_2' => $countries->get_base_address_2(), 'city' => $countries->get_base_city(), 'state' => $countries->get_base_state(), 'postcode' => $countries->get_base_postcode(), 'country' => $countries->get_base_country()]);
         $this->placeholders['{shop_url}'] = wp_parse_url(home_url(), \PHP_URL_HOST);
         $this->placeholders['{shop_email}'] = get_option('admin_email');
-        $this->placeholders['{refund_url}'] = MyAccount::get_refund_url($this->object, null !== $request ? $request->get_form_id() : 0);
+        $this->placeholders['{refund_url}'] = PublicRequestLink::get_email_url($order, $request);
+        $this->placeholders['{refund_manage_url}'] = PublicRequestLink::get_management_email_url($order, $request);
         $this->placeholders['{refund_note}'] = null !== $request ? $request->get_note() : $this->object->get_meta('fr_refund_request_note');
         $this->placeholders['{refund_order_table}'] = $this->get_refund_table($order->get_id(), $request);
         $this->placeholders['{customer_name}'] = $this->object->get_formatted_billing_full_name();

@@ -4,9 +4,15 @@ namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings;
 
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\RequestType;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\ShippingRefundPolicy;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\PublicRequestPages;
 final class FormConfigurationSanitizer
 {
     private const FIELD_TYPES = ['text', 'textarea', 'checkbox', 'select', 'multiselect', 'radio', 'upload', 'html'];
+    private bool $is_pro;
+    public function __construct(bool $is_pro = \false)
+    {
+        $this->is_pro = $is_pro;
+    }
     public function sanitize(string $request_type, array $input, array $current_settings): array
     {
         RequestType::assert_valid($request_type);
@@ -21,6 +27,11 @@ final class FormConfigurationSanitizer
         $settings['policy_page_id'] = absint($raw_settings['policy_page_id'] ?? 0);
         $settings['auto_hide'] = $this->sanitize_checkbox($raw_settings['auto_hide'] ?? 'no');
         $settings['auto_hide_settings'] = $this->sanitize_auto_hide($raw_settings['auto_hide_settings'] ?? []);
+        if ($this->is_pro) {
+            $page_id = is_scalar($raw_settings[PublicRequestPages::PAGE_SETTING] ?? null) ? absint($raw_settings[PublicRequestPages::PAGE_SETTING]) : 0;
+            $page = $page_id > 0 ? get_post($page_id) : null;
+            $settings[PublicRequestPages::PAGE_SETTING] = $page instanceof \WP_Post && 'page' === $page->post_type && 'trash' !== $page->post_status ? $page_id : 0;
+        }
         if (RequestType::REFUND === $request_type) {
             $settings['refund_type'] = in_array($raw_settings['refund_type'] ?? '', ['bank', 'coupon'], \true) ? $raw_settings['refund_type'] : 'bank';
             $settings['auto_approval'] = $this->sanitize_checkbox($raw_settings['auto_approval'] ?? 'no');

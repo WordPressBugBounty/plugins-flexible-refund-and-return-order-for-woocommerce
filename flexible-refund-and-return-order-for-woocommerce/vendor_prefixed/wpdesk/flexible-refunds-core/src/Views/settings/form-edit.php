@@ -7,6 +7,8 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\RequestType;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\Plugin;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration\PublicRefundShortcode;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\FormsController;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\PublicRequestLink;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\PublicRequestPages;
 /** @var FormDefinition $form */
 /** @var string $active_tab */
 /** @var bool $is_pro */
@@ -129,6 +131,54 @@ if (FormsController::TAB_SETTINGS === $active_tab) {
 	<?php 
     if ($is_pro) {
         ?>
+	<tr>
+		<?php 
+        $page_labels = [RequestType::REFUND => \__('Select the page with the refund shortcode', 'flexible-refund-and-return-order-for-woocommerce'), RequestType::RECLAMATION => \__('Select the page with the reclamation shortcode', 'flexible-refund-and-return-order-for-woocommerce'), RequestType::REPAIR => \__('Select the page with the repair shortcode', 'flexible-refund-and-return-order-for-woocommerce')];
+        ?>
+		<th scope="row" class="titledesc"><label for="fr-public-page"><?php 
+        echo \esc_html($page_labels[$request_type]);
+        ?></label></th>
+		<td>
+			<?php 
+        \wp_dropdown_pages([
+            'name' => 'fr_form[settings][' . PublicRequestPages::PAGE_SETTING . ']',
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_dropdown_pages escapes attributes.
+            'id' => 'fr-public-page',
+            'class' => 'wc-enhanced-select',
+            'post_status' => ['publish', 'draft', 'pending', 'private', 'future'],
+            'show_option_none' => \esc_html__('Select page', 'flexible-refund-and-return-order-for-woocommerce'),
+            'option_none_value' => 0,
+            'selected' => (int) ($settings[PublicRequestPages::PAGE_SETTING] ?? 0),
+        ]);
+        ?>
+			<p class="description">
+				<?php 
+        \printf(
+            /* translators: %s: public request shortcode. */
+            \esc_html__('Choose the page where the %s shortcode is added.', 'flexible-refund-and-return-order-for-woocommerce'),
+            '<strong>' . \esc_html(PublicRefundShortcode::get_shortcode_for_type($request_type)) . '</strong>'
+        );
+        ?>
+				<br>
+				<strong><?php 
+        \esc_html_e('NOTE:', 'flexible-refund-and-return-order-for-woocommerce');
+        ?></strong>
+				<?php 
+        \esc_html_e('To comply with "One-Click Return" policy, add this page to your menu.', 'flexible-refund-and-return-order-for-woocommerce');
+        ?>
+				<a href="<?php 
+        echo \esc_url(\function_exists('wp_is_block_theme') && \wp_is_block_theme() ? \admin_url('site-editor.php?path=/navigation') : \admin_url('nav-menus.php'));
+        ?>"><?php 
+        \esc_html_e('Menu settings →', 'flexible-refund-and-return-order-for-woocommerce');
+        ?></a>
+			</p>
+			<p><a href="<?php 
+        echo \esc_url(PublicRequestLink::get_base_url($request_type));
+        ?>" target="_blank"><?php 
+        \esc_html_e('Open public request page', 'flexible-refund-and-return-order-for-woocommerce');
+        ?></a></p>
+		</td>
+	</tr>
 		<?php 
         $field = ['id' => 'fr_form[settings][visibility_conditions]', 'value' => $settings['visibility_conditions'] ?? []];
         $custom_fields = $condition_fields;

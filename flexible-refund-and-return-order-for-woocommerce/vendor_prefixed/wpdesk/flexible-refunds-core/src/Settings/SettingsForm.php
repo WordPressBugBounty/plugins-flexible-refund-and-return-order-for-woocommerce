@@ -28,7 +28,7 @@ class SettingsForm implements Hookable
     {
         add_filter('woocommerce_admin_settings_sanitize_option_fr_refund_form_builder', [$this, 'undo_sanitize_html_values'], 10, 3);
         $renderer = $this->get_renderer();
-        $controller = new FormsController($renderer, $this->forms, $this->form_service, new FormConfigurationSanitizer(), $this->is_pro);
+        $controller = new FormsController($renderer, $this->forms, $this->form_service, new FormConfigurationSanitizer($this->is_pro), $this->is_pro);
         (new SettingsIntegration($controller, $renderer))->hooks();
     }
     private function get_renderer(): SimplePhpRenderer

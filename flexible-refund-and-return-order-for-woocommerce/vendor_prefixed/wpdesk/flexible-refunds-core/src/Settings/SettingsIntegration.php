@@ -53,7 +53,7 @@ class SettingsIntegration implements Hookable
         if (!current_user_can('manage_woocommerce')) {
             return;
         }
-        $request_type = $this->get_current_request_type();
+        $request_type = self::get_current_request_type();
         $editor_tab = null === $request_type ? FormsController::TAB_SETTINGS : $this->forms_controller->get_active_tab($request_type, $this->get_current_editor_tab());
         ?>
 		<div class="wrap woocommerce fr-settings-page">
@@ -176,7 +176,7 @@ class SettingsIntegration implements Hookable
         if (!self::is_settings_page() || !current_user_can('manage_woocommerce') || 'POST' !== $request_method) {
             return;
         }
-        $request_type = $this->get_current_request_type();
+        $request_type = self::get_current_request_type();
         if (null !== $request_type) {
             $this->forms_controller->save($request_type, $this->get_current_editor_tab());
             return;
@@ -185,7 +185,7 @@ class SettingsIntegration implements Hookable
         WC_Admin_Settings::save_fields($this->get_global_settings());
         WC_Admin_Settings::add_message(__('Your settings have been saved.', 'flexible-refund-and-return-order-for-woocommerce'));
     }
-    private function get_current_request_type(): ?string
+    public static function get_current_request_type(): ?string
     {
         $page = isset($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : '';
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended

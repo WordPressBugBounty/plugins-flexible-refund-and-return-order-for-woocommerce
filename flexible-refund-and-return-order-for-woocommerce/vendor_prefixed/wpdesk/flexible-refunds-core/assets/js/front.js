@@ -290,7 +290,7 @@
 		refundCancelButtons: function () {
 			let cancel_button = $( '#fr-cancel-request-section a.cr-button' );
 			let dismiss_button = $( '#fr-cancel-request-section a.ds-button' );
-			let confirm_button = $( '#fr-cancel-request-section a.cf-button' );
+			let confirm_button = $( '#fr-cancel-request-section .cf-button' );
 			if ( cancel_button.length ) {
 				cancel_button.click( function () {
 					confirm_button.show();

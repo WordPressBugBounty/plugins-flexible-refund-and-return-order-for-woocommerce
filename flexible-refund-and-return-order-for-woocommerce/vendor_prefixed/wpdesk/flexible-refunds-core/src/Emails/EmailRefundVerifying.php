@@ -22,6 +22,7 @@ class EmailRefundVerifying extends AbstractRefundEmail
     }
     public function get_default_additional_content()
     {
-        return wpautop(wp_kses(__("Hi {customer_name},\n\nYour {request_type_label} request is currently being reviewed. We will notify you when its status changes.\n\n{refund_info_page}\n\nNote from store team: {refund_note}\n\n<a href='{refund_url}' target='_blank'>Click here if you wish to cancel your request</a>.\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce'), EmailHelper::allowed_tags()));
+        $content = __("Hi {customer_name},\n\nYour {request_type_label} request is currently being reviewed. We will notify you when its status changes.\n\n{refund_info_page}\n\nNote from store team: {refund_note}\n\n<a href='{refund_url}' target='_blank'>Click here to view your request status</a>.\n\n{refund_management_link}\n\nSincerely,\nStore Team", 'flexible-refund-and-return-order-for-woocommerce');
+        return wpautop(wp_kses(str_replace('{refund_management_link}', $this->get_default_management_link(), $content), EmailHelper::allowed_tags()));
     }
 }

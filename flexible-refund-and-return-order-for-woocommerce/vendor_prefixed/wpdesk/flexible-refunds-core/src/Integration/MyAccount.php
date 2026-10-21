@@ -20,6 +20,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\FormRepository;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\RequestRepository;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\FormAvailability;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\PublicRequestAccess;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\RequestService;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\RequestWorkflow;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\ShippingRefundPolicy;
@@ -79,7 +80,15 @@ class MyAccount implements Hookable
                 if (null === $form_id || !$this->form_availability->can_start($form, $order)) {
                     continue;
                 }
-                $actions['fr-request-' . $form->get_request_type()] = ['url' => Helpers\MyAccount::get_refund_url($order, $form_id), 'name' => esc_html($form->get_button_label())];
+                if (Integration::is_super()) {
+                    $url = Helpers\PublicRequestLink::get_base_url($form->get_request_type());
+                    if ($order->get_customer_id() > 0) {
+                        $url = add_query_arg(['fr_order' => $order->get_id(), 'form_id' => $form_id], $url);
+                    }
+                } else {
+                    $url = Helpers\MyAccount::get_refund_url($order, $form_id);
+                }
+                $actions['fr-request-' . $form->get_request_type()] = ['url' => $url, 'name' => esc_html($form->get_button_label())];
             }
         }
         if (Integration::is_super()) {
@@ -93,9 +102,20 @@ class MyAccount implements Hookable
         if ($current_user_id < 1 || $order->get_customer_id() !== $current_user_id) {
             return;
         }
-        $active_request = $this->get_active_request($order);
-        if (null !== $active_request) {
-            $this->renderer->output_render('myaccount/request-in-progress', ['order' => $order, 'request' => $active_request]);
+        if (Integration::is_super() && isset($_GET[Helpers\PublicRequestLink::REQUEST_KEY])) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            $request_id = is_scalar($_GET[Helpers\PublicRequestLink::REQUEST_KEY]) ? sanitize_text_field(wp_unslash((string) $_GET[Helpers\PublicRequestLink::REQUEST_KEY])) : '';
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            $request = ctype_digit($request_id) && (int) $request_id > 0 ? $this->requests->find((int) $request_id) : null;
+            if (null === $request || $request->get_order_id() !== $order->get_id()) {
+                $this->renderer->output_render('myaccount/invalid-order-or-user-id');
+                return;
+            }
+        } else {
+            $request = $this->get_active_request($order);
+        }
+        if (null !== $request) {
+            $this->renderer->output_render('myaccount/request-in-progress', ['order' => $order, 'request' => $request]);
             return;
         }
         if ($this->has_active_legacy_request($order)) {
@@ -183,7 +203,7 @@ class MyAccount implements Hookable
             if (!$order) {
                 return;
             }
-            if ($order->get_customer_id() !== get_current_user_id()) {
+            if (get_current_user_id() < 1 || $order->get_customer_id() !== get_current_user_id()) {
                 return;
             }
             if (!in_array($order->get_status(), self::CANCELABLE_STATUSEES, \true)) {
@@ -244,11 +264,11 @@ class MyAccount implements Hookable
     {
         $active_request = $this->get_active_request($order);
         if (null !== $active_request) {
-            $this->renderer->output_render('myaccount/request-in-progress', ['order' => $order, 'request' => $active_request]);
+            $this->renderer->output_render('myaccount/request-in-progress', ['order' => $order, 'request' => $active_request, 'public_request' => $allow_cancelled_order]);
             return;
         }
         if ($this->has_active_legacy_request($order)) {
-            $this->renderer->output_render('myaccount/' . $this->get_template_name('refund-in-progress'), ['order' => $order, 'fields' => new FieldRenderer(), 'show_shipping' => $this->settings->get_fallback('refund_enable_shipment', 'no'), 'request_status' => (string) $order->get_meta('fr_refund_request_status')]);
+            $this->renderer->output_render('myaccount/' . $this->get_template_name('refund-in-progress'), ['order' => $order, 'fields' => new FieldRenderer(), 'show_shipping' => $this->settings->get_fallback('refund_enable_shipment', 'no'), 'request_status' => (string) $order->get_meta('fr_refund_request_status'), 'public_request' => $allow_cancelled_order]);
             return;
         }
         if (null === $form || !$this->form_availability->can_start($form, $order, $allow_cancelled_order)) {
@@ -285,32 +305,18 @@ class MyAccount implements Hookable
     {
         RequestType::assert_valid($request_type);
         $order = wc_get_order($order_id);
-        if (!$order) {
+        if (!$order || !$this->is_public_refund_request_authorized($order) || $request_type !== PublicRequestAccess::get_public_request_type()) {
             return '';
         }
         ob_start();
-        $request = $this->get_latest_request_by_type($order->get_id(), $request_type);
-        if (null !== $request) {
-            $this->renderer->output_render('myaccount/request-in-progress', ['order' => $order, 'request' => $request]);
-        } else {
-            $this->handle_refund_request($order, $this->forms->find_by_type($request_type), \true);
-        }
+        $this->handle_refund_request($order, $this->forms->find_by_type($request_type), \true);
         return ob_get_clean();
-    }
-    private function get_latest_request_by_type(int $order_id, string $request_type): ?RequestRecord
-    {
-        foreach ($this->requests->find_by_order($order_id) as $request) {
-            if ($request_type === $request->get_request_type()) {
-                return $request->is_active() ? $request : null;
-            }
-        }
-        return null;
     }
     private function is_user_owner_of_the_order(\WC_Order $order): bool
     {
         $order_owner = $order->get_user_id();
         $current_user = get_current_user_id();
-        return $order_owner === $current_user;
+        return $current_user > 0 && $order_owner === $current_user;
     }
     private function is_public_refund_request_authorized(\WC_Order $order): bool
     {
@@ -374,7 +380,7 @@ class MyAccount implements Hookable
         if (!$nonce) {
             return;
         }
-        $is_authorized = $order->get_customer_id() === get_current_user_id();
+        $is_authorized = get_current_user_id() > 0 && $order->get_customer_id() === get_current_user_id();
         if (!$is_authorized) {
             $is_authorized = $this->is_public_refund_request_authorized($order);
         }
@@ -426,6 +432,11 @@ class MyAccount implements Hookable
             try {
                 $this->workflow->change_status($order, $request, RequestStatus::APPROVED, __('Your refund request has been accepted!', 'flexible-refund-and-return-order-for-woocommerce'), $post_data['items']);
                 wc_add_notice(__('Your request has been accepted.', 'flexible-refund-and-return-order-for-woocommerce'), 'success');
+                if ($is_public) {
+                    PublicRequestAccess::clear_public_request();
+                    wp_safe_redirect(Helpers\PublicRequestLink::get_url($request, \true));
+                    exit;
+                }
                 wp_safe_redirect(add_query_arg('request', 'auto-create'));
                 exit;
             } catch (Throwable $e) {
@@ -434,6 +445,11 @@ class MyAccount implements Hookable
         }
         $this->emails->send($order, $request, RequestStatus::REQUESTED);
         wc_add_notice(__('Your request has been sent.', 'flexible-refund-and-return-order-for-woocommerce'), 'success');
+        if ($is_public) {
+            PublicRequestAccess::clear_public_request();
+            wp_safe_redirect(Helpers\PublicRequestLink::get_url($request, \true));
+            exit;
+        }
         wp_safe_redirect(add_query_arg('request', 'send'));
         exit;
     }
@@ -444,24 +460,57 @@ class MyAccount implements Hookable
      */
     public function cancel_refund_request_by_user(): void
     {
-        global $current_user;
-        //phpcs:disable
-        $nonce_value = $_REQUEST['_wpnonce'] ?? '';
-        $order_ID = $_REQUEST['delete_refund_request'] ?? 0;
-        //phpcs:enable
-        $nonce = wp_verify_nonce($nonce_value, self::CANCEL_NONCE_ACTION);
-        if ($order_ID && $nonce) {
-            $order = wc_get_order($order_ID);
-            if ($order && $current_user->ID > 0 && $order->get_customer_id() === $current_user->ID) {
-                $this->cancel_request($order);
-                wp_safe_redirect(remove_query_arg(['delete_refund_request', '_wpnonce']), 301);
-            }
+        $is_public = isset($_POST['fr_cancel_order']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        $data = $is_public ? $_POST : $_GET;
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified below.
+        $order_id = $data[$is_public ? 'fr_cancel_order' : 'delete_refund_request'] ?? 0;
+        if (!is_scalar($order_id) || !ctype_digit((string) $order_id) || (int) $order_id <= 0) {
+            return;
         }
+        $nonce = $data['_wpnonce'] ?? '';
+        if (!is_string($nonce) || !wp_verify_nonce($nonce, self::CANCEL_NONCE_ACTION)) {
+            wc_add_notice(__('Form has expired. Please try again.', 'flexible-refund-and-return-order-for-woocommerce'), 'error');
+            return;
+        }
+        $order = wc_get_order((int) $order_id);
+        if (!$order) {
+            return;
+        }
+        $authorized = $is_public ? $this->is_public_refund_request_authorized($order) : get_current_user_id() > 0 && $order->get_customer_id() === get_current_user_id();
+        if (!$authorized) {
+            wc_add_notice(__('This request is unavailable or you do not have permission to cancel it.', 'flexible-refund-and-return-order-for-woocommerce'), 'error');
+            return;
+        }
+        $request = $this->requests->find_active_by_order($order->get_id());
+        $reference = $data['fr_cancel_request'] ?? null;
+        if (($is_public || null !== $reference) && (!is_scalar($reference) || (string) (null !== $request ? $request->get_id() : 0) !== (string) $reference || $is_public && (null !== $request ? $request->get_request_type() : RequestType::REFUND) !== $this->get_public_refund_request_type())) {
+            wc_add_notice(__('This request can no longer be cancelled.', 'flexible-refund-and-return-order-for-woocommerce'), 'error');
+            return;
+        }
+        try {
+            if (!$this->cancel_request($order, null !== $reference ? (int) $reference : null)) {
+                wc_add_notice(__('This request can no longer be cancelled.', 'flexible-refund-and-return-order-for-woocommerce'), 'error');
+                return;
+            }
+        } catch (Throwable $e) {
+            wc_add_notice(__('The request could not be cancelled. Please try again.', 'flexible-refund-and-return-order-for-woocommerce'), 'error');
+            return;
+        }
+        wc_add_notice(__('Your request has been cancelled.', 'flexible-refund-and-return-order-for-woocommerce'), 'success');
+        wp_safe_redirect(remove_query_arg(['delete_refund_request', '_wpnonce', 'fr_cancel_request']), 303);
+        exit;
     }
-    public function cancel_request(WC_Order $order): void
+    public function cancel_request(WC_Order $order, ?int $expected_request_id = null): bool
     {
         $active_request = $this->requests->find_active_by_order($order->get_id());
+        if (null !== $expected_request_id && $expected_request_id !== (null !== $active_request ? $active_request->get_id() : 0)) {
+            return \false;
+        }
         if (null !== $active_request && null !== $active_request->get_id()) {
+            if (!in_array($active_request->get_status(), [RequestStatus::REQUESTED, RequestStatus::VERIFYING], \true)) {
+                return \false;
+            }
             $this->request_service->change_status($active_request->get_id(), RequestStatus::CANCELED, __('Request cancelled by the customer.', 'flexible-refund-and-return-order-for-woocommerce'));
             if ('' !== $active_request->get_previous_order_status()) {
                 $order->set_status($active_request->get_previous_order_status());
@@ -470,13 +519,20 @@ class MyAccount implements Hookable
                 $this->delete_legacy_request_meta($order);
             }
         } elseif (!empty($order->get_meta('fr_refund_request_data'))) {
+            if (!in_array(RequestStatus::normalize_legacy((string) $order->get_meta('fr_refund_request_status')), [RequestStatus::REQUESTED, RequestStatus::VERIFYING], \true)) {
+                return \false;
+            }
             $previous_order_status = $order->get_meta('fr_refund_previous_order_status');
             $order->update_meta_data('fr_refund_request_status', RequestStatus::CANCELED);
             if (!empty($previous_order_status)) {
                 $order->set_status($previous_order_status);
             }
+        } else {
+            return \false;
         }
         $order->save();
+        unset($this->active_requests[$order->get_id()]);
+        return \true;
     }
     private function delete_legacy_request_meta(WC_Order $order): void
     {
@@ -576,47 +632,14 @@ class MyAccount implements Hookable
     }
     private function has_public_refund_request_order_reference(): bool
     {
-        return '' !== $this->get_public_refund_request_order_reference();
+        return null !== $this->get_public_refund_request_order();
     }
     private function get_public_refund_request_order(): ?WC_Order
     {
-        $reference = $this->get_public_refund_request_order_reference();
-        $email = $this->get_public_refund_request_email();
-        if ('' === $reference || '' === $email) {
-            return null;
-        }
-        return $this->order_reference_resolver->find_order($reference, $email);
-    }
-    private function get_public_refund_request_email(): string
-    {
-        $request_type = $this->get_public_refund_request_type();
-        if (null === $request_type) {
-            return '';
-        }
-        $email_field_name = PublicRefundShortcode::get_email_field_name($request_type);
-        //phpcs:disable WordPress.Security.NonceVerification.Recommended
-        return isset($_GET[$email_field_name]) ? sanitize_email(wp_unslash($_GET[$email_field_name])) : '';
-        //phpcs:enable
-    }
-    private function get_public_refund_request_order_reference(): string
-    {
-        $request_type = $this->get_public_refund_request_type();
-        if (null === $request_type) {
-            return '';
-        }
-        $order_field_name = PublicRefundShortcode::get_order_field_name($request_type);
-        //phpcs:disable WordPress.Security.NonceVerification.Recommended
-        return isset($_GET[$order_field_name]) ? sanitize_text_field(wp_unslash($_GET[$order_field_name])) : '';
-        //phpcs:enable
+        return PublicRequestAccess::get_public_request_order();
     }
     private function get_public_refund_request_type(): ?string
     {
-        foreach (RequestType::all() as $request_type) {
-            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-            if (isset($_GET[PublicRefundShortcode::get_submit_field_name($request_type)])) {
-                return $request_type;
-            }
-        }
-        return null;
+        return PublicRequestAccess::get_public_request_type();
     }
 }

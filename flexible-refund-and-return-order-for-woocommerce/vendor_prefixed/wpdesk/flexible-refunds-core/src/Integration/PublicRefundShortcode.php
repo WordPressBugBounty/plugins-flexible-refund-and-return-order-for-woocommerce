@@ -4,123 +4,112 @@ namespace FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Integration;
 
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Domain\Form\RequestType;
 use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\OrderReferenceResolver;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Helpers\PublicRequestLink;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Repository\FormRepository;
+use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Service\PublicRequestAccess;
 use FRFreeVendor\WPDesk\Persistence\PersistentContainer;
 use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use FRFreeVendor\WPDesk\View\Renderer\Renderer;
 class PublicRefundShortcode implements Hookable
 {
-    private Renderer $renderer;
-    private MyAccount $my_account;
-    private OrderReferenceResolver $order_reference_resolver;
-    private PersistentContainer $settings;
-    private bool $is_pro;
     public const REFUND_REQUEST_GET_KEY = 'send_public_refund';
     public const EMAIL_REQUEST_KEY = 'refund_email';
     public const ORDER_ID_REQUEST_KEY = 'refund_order_id';
-    private const CANCEL_NONCE_ACTION = 'cancel_refund';
-    private const NONCE_PREFIX = 'fr-request-';
-    private const REFUND_NONCE_NAME = '_shortcodenonce';
     private const SHORTCODES = [RequestType::REFUND => 'flexible_refund_public', RequestType::RECLAMATION => 'flexible_reclamation_public', RequestType::REPAIR => 'flexible_repair_public'];
-    public function __construct(Renderer $renderer, MyAccount $my_account, OrderReferenceResolver $order_reference_resolver, PersistentContainer $settings, bool $is_pro = \true)
+    private Renderer $renderer;
+    private MyAccount $my_account;
+    private PersistentContainer $settings;
+    private FormRepository $forms;
+    private PublicRequestAccess $access;
+    private PublicRequestController $controller;
+    private bool $is_pro;
+    public function __construct(Renderer $renderer, MyAccount $my_account, PersistentContainer $settings, FormRepository $forms, PublicRequestAccess $access, PublicRequestController $controller, bool $is_pro = \true)
     {
         $this->renderer = $renderer;
         $this->my_account = $my_account;
-        $this->order_reference_resolver = $order_reference_resolver;
         $this->settings = $settings;
+        $this->forms = $forms;
+        $this->access = $access;
+        $this->controller = $controller;
         $this->is_pro = $is_pro;
     }
-    public function hooks()
+    public function hooks(): void
     {
         foreach (self::SHORTCODES as $shortcode) {
             add_shortcode($shortcode, [$this, 'shortcode']);
         }
-        if ($this->is_pro) {
-            add_filter('wp', [$this, 'cancel_refund_request_by_order_id'], 999);
-        }
     }
-    public function shortcode($atts = [], $content = null, string $shortcode = '')
+    public function shortcode($atts = [], $content = null, string $shortcode = ''): string
     {
         if (!$this->is_pro) {
             return '';
         }
-        $request_type = self::get_request_type_for_shortcode($shortcode);
-        $submit_key = self::get_submit_field_name($request_type);
-        if (isset($_GET[$submit_key])) {
-            if (!$this->is_nonce_valid($request_type)) {
-                return $this->render_form_with_notice(__('Form has expired. Please try again.', 'flexible-refund-and-return-order-for-woocommerce'), $request_type);
+        $type = self::get_request_type_for_shortcode($shortcode);
+        if (isset($_GET[PublicRequestLink::REQUEST_KEY])) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            if (PublicRequestLink::is_management_link()) {
+                $order = $this->access->get_guest_management_order($type);
+                if ($this->controller->is_fallback()) {
+                    return $this->render_notice(__('The public request page is unavailable. Please contact the store.', 'flexible-refund-and-return-order-for-woocommerce'));
+                }
+                return null !== $order ? $this->render_request_form($type, $order) : $this->render_notice(__('This request link is invalid or unavailable.', 'flexible-refund-and-return-order-for-woocommerce'));
             }
-            //phpcs:disable
-            $email = sanitize_email(wp_unslash($_GET[self::get_email_field_name($request_type)] ?? ''));
-            $order_reference = sanitize_text_field(wp_unslash($_GET[self::get_order_field_name($request_type)] ?? ''));
-            //phpcs:enable
-            $order = $this->order_reference_resolver->find_order($order_reference, $email);
-            if ($order) {
-                return wc_print_notices(\true) . $this->my_account->refund_public_request($order->get_id(), $request_type);
-            }
-            return $this->render_form_with_notice($this->render_invalid_request(), $request_type);
+            $request = $this->access->get_status_request($type);
+            return null !== $request ? $this->renderer->render('public-refund/status', ['order_id' => $request->get_order_id(), 'status' => $request->get_status()]) : $this->render_notice(__('This request link is invalid or unavailable.', 'flexible-refund-and-return-order-for-woocommerce'));
         }
-        return $this->render_request_form($request_type);
+        if ($this->controller->is_fallback()) {
+            return $this->render_notice(__('The public request page is unavailable. Please contact the store.', 'flexible-refund-and-return-order-for-woocommerce'));
+        }
+        if ('' !== $this->controller->get_lookup_notice()) {
+            return $this->render_notice($this->controller->get_lookup_notice()) . $this->render_request_form($type);
+        }
+        $order = PublicRequestAccess::get_public_request_order();
+        if (null !== $order && $type === PublicRequestAccess::get_public_request_type()) {
+            return wc_print_notices(\true) . $this->my_account->refund_public_request($order->get_id(), $type);
+        }
+        $form = $this->forms->find_by_type($type);
+        if (null === $form || !$form->is_enabled()) {
+            return $this->render_notice(__('This request type is currently unavailable.', 'flexible-refund-and-return-order-for-woocommerce'));
+        }
+        return $this->render_request_form($type);
     }
-    public static function get_shortcode_for_type(string $request_type): string
+    public static function get_shortcode_for_type(string $type): string
     {
-        RequestType::assert_valid($request_type);
-        return '[' . self::SHORTCODES[$request_type] . ']';
+        RequestType::assert_valid($type);
+        return '[' . self::SHORTCODES[$type] . ']';
     }
-    public static function get_submit_field_name(string $request_type): string
+    public static function get_submit_field_name(string $type): string
     {
-        RequestType::assert_valid($request_type);
-        return RequestType::REFUND === $request_type ? self::REFUND_REQUEST_GET_KEY : 'send_public_' . $request_type;
+        RequestType::assert_valid($type);
+        return RequestType::REFUND === $type ? self::REFUND_REQUEST_GET_KEY : 'send_public_' . $type;
     }
-    public static function get_email_field_name(string $request_type): string
+    public static function get_email_field_name(string $type): string
     {
-        RequestType::assert_valid($request_type);
-        return RequestType::REFUND === $request_type ? self::EMAIL_REQUEST_KEY : $request_type . '_email';
+        RequestType::assert_valid($type);
+        return RequestType::REFUND === $type ? self::EMAIL_REQUEST_KEY : $type . '_email';
     }
-    public static function get_order_field_name(string $request_type): string
+    public static function get_order_field_name(string $type): string
     {
-        RequestType::assert_valid($request_type);
-        return RequestType::REFUND === $request_type ? self::ORDER_ID_REQUEST_KEY : $request_type . '_order_id';
+        RequestType::assert_valid($type);
+        return RequestType::REFUND === $type ? self::ORDER_ID_REQUEST_KEY : $type . '_order_id';
     }
     private static function get_request_type_for_shortcode(string $shortcode): string
     {
-        $request_type = array_search($shortcode, self::SHORTCODES, \true);
-        return \false === $request_type ? RequestType::REFUND : $request_type;
+        $type = array_search($shortcode, self::SHORTCODES, \true);
+        return \false === $type ? RequestType::REFUND : $type;
     }
-    private static function get_nonce_field_name(string $request_type): string
+    public static function get_nonce_field_name(string $type): string
     {
-        return RequestType::REFUND === $request_type ? self::REFUND_NONCE_NAME : '_' . $request_type . '_shortcodenonce';
+        return RequestType::REFUND === $type ? '_shortcodenonce' : '_' . $type . '_shortcodenonce';
     }
-    private function is_nonce_valid(string $request_type): bool
+    private function render_request_form(string $type, ?\WC_Order $order = null): string
     {
-        $nonce_name = self::get_nonce_field_name($request_type);
-        return isset($_GET[$nonce_name]) && \wp_verify_nonce(\sanitize_text_field(\wp_unslash($_GET[$nonce_name])), self::NONCE_PREFIX . $request_type);
+        $submit_labels = [RequestType::REFUND => __('View refund form', 'flexible-refund-and-return-order-for-woocommerce'), RequestType::RECLAMATION => __('View reclamation form', 'flexible-refund-and-return-order-for-woocommerce'), RequestType::REPAIR => __('View repair form', 'flexible-refund-and-return-order-for-woocommerce')];
+        $login_descriptions = [RequestType::REFUND => __('Log in to submit a refund request from your order history.', 'flexible-refund-and-return-order-for-woocommerce'), RequestType::RECLAMATION => __('Log in to submit a reclamation request from your order history.', 'flexible-refund-and-return-order-for-woocommerce'), RequestType::REPAIR => __('Log in to submit a repair request from your order history.', 'flexible-refund-and-return-order-for-woocommerce')];
+        return wc_print_notices(\true) . $this->renderer->render('public-refund/public-refund', ['submit_label' => $submit_labels[$type], 'form_action' => remove_query_arg([PublicRequestLink::REQUEST_KEY, PublicRequestLink::TOKEN_KEY, PublicRequestLink::MANAGEMENT_KEY, 'delete_refund_request', '_wpnonce']), 'order_reference' => null !== $order ? $this->settings->get_fallback(OrderReferenceResolver::SEARCH_BY_ORDER_NUMBER_OPTION, 'no') === 'yes' ? $order->get_order_number() : $order->get_id() : '', 'email' => null !== $order ? $order->get_billing_email() : '', 'login_description' => $login_descriptions[$type], 'submit_field_name' => self::get_submit_field_name($type), 'email_field_name' => self::get_email_field_name($type), 'order_field_name' => self::get_order_field_name($type), 'order_reference_label' => $this->settings->get_fallback(OrderReferenceResolver::SEARCH_BY_ORDER_NUMBER_OPTION, 'no') === 'yes' ? __('Order number', 'flexible-refund-and-return-order-for-woocommerce') : __('Order ID', 'flexible-refund-and-return-order-for-woocommerce'), 'nonce' => PublicRequestAccess::NONCE_PREFIX . $type, 'nonce_field_name' => self::get_nonce_field_name($type), 'login_url' => PublicRequestController::get_login_url()]);
     }
-    private function render_request_form(string $request_type): string
+    private function render_notice(string $message): string
     {
-        $order_reference_label = $this->settings->get_fallback(OrderReferenceResolver::SEARCH_BY_ORDER_NUMBER_OPTION, 'no') === 'yes' ? esc_html__('Order number', 'flexible-refund-and-return-order-for-woocommerce') : esc_html__('Order ID', 'flexible-refund-and-return-order-for-woocommerce');
-        return $this->renderer->render('public-refund/public-refund', ['submit_field_name' => self::get_submit_field_name($request_type), 'email_field_name' => self::get_email_field_name($request_type), 'order_field_name' => self::get_order_field_name($request_type), 'order_reference_label' => $order_reference_label, 'nonce' => self::NONCE_PREFIX . $request_type, 'nonce_field_name' => self::get_nonce_field_name($request_type)]);
-    }
-    private function render_invalid_request(): string
-    {
-        return $this->renderer->render('public-refund/invalid-order-id-or-email');
-    }
-    private function render_form_with_notice(string $notice, string $request_type): string
-    {
-        return $notice . $this->render_request_form($request_type);
-    }
-    public function cancel_refund_request_by_order_id(): void
-    {
-        //phpcs:disable
-        $nonce_value = $_REQUEST['_wpnonce'] ?? '';
-        $order_ID = $_REQUEST['delete_refund_request'] ?? 0;
-        //phpcs:enable
-        $nonce = wp_verify_nonce($nonce_value, self::CANCEL_NONCE_ACTION);
-        if ($order_ID && $nonce) {
-            $order = wc_get_order($order_ID);
-            if ($order) {
-                $this->my_account->cancel_request($order);
-            }
-            wp_safe_redirect(remove_query_arg(['delete_refund_request', '_wpnonce']), 301);
-        }
+        return '<p class="woocommerce-info" role="status">' . esc_html($message) . '</p>';
     }
 }

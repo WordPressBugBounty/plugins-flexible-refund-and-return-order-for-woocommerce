@@ -11,4 +11,9 @@ class MyAccount
         $url = wc_get_endpoint_url(self::QUERY_REFUND_KEY, $order->get_id(), wc_get_page_permalink('myaccount'));
         return $form_id > 0 ? add_query_arg('form_id', $form_id, $url) : $url;
     }
+    public static function get_request_view_url(WC_Order $order, int $request_id = 0): string
+    {
+        $url = $order->get_view_order_url();
+        return $request_id > 0 ? add_query_arg(PublicRequestLink::REQUEST_KEY, $request_id, $url) : $url;
+    }
 }

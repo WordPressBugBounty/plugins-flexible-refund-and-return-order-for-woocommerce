@@ -266,16 +266,63 @@ table.fr-dark th {
 	box-shadow: none;
 }
 
-.fr-refund-shortcode-wrapper {
-	display: flex;
-	align-items: flex-start;
-	justify-content: flex-start;
-	flex-direction: column;
+/* Public order lookup and account login. */
+.fr-refund-shortcode-columns {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 40px;
+	padding-top: 4px;
+	max-width: 896px;
 }
+
+.fr-refund-shortcode-columns h2 {
+	font-size: 22px;
+	font-weight: 400;
+	margin: 0 0 16px;
+}
+
+.fr-refund-shortcode-wrapper {
+	max-width: 384px;
+	margin: 0;
+}
+
 .fr-refund-shortcode-field-wrapper {
-	display: flex;
-	align-items: flex-start;
-	justify-content: flex-start;
-	flex-direction: column;
-	margin-bottom: 10px;
+	margin-bottom: 16px;
+}
+
+.fr-refund-shortcode-label {
+	display: block;
+	font-size: 13px;
+	font-weight: 400;
+	margin-bottom: 6px;
+}
+
+.fr-refund-shortcode-field {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.fr-refund-shortcode-submit {
+	margin-top: 8px;
+}
+
+.fr-refund-shortcode-account p {
+	font-size: 14px;
+	margin: 0 0 24px;
+}
+
+@media (min-width: 768px) {
+	.fr-refund-shortcode-columns {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.fr-refund-shortcode-columns h2 {
+		font-size: 24px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.fr-refund-shortcode-columns {
+		gap: 64px;
+	}
 }
