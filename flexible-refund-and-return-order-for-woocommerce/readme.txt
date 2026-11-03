@@ -6,7 +6,7 @@ Tags: woocommerce refund, woocommerce returns, woocommerce cancel order, one cli
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -296,6 +296,9 @@ We may also focus on better compatibility with invoicing plugins.
 20. Partial refund request form with product and quantity selection (PRO).
 
 == Changelog ==
+
+= 2.1.1 - 2026-11-03 =
+* Fixed refund pages in My Account requiring a manual permalink save when endpoint rewrite rules were missing
 
 = 2.1.0 - 2026-10-21 =
 * Added an option to restore the latest default email templates

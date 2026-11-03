@@ -59,6 +59,7 @@ class MyAccount implements Hookable
         add_filter('woocommerce_endpoint_' . self::QUERY_VAR_KEY . '_title', [$this, 'refund_endpoint_title'], 100);
         add_filter('woocommerce_account_' . self::QUERY_VAR_KEY . '_endpoint', [$this, 'refund_account_endpoint'], 100, 1);
         add_filter('woocommerce_get_query_vars', [$this, 'add_query_vars'], 10);
+        add_action('wp_loaded', [$this, 'maybe_flush_rewrite_rules']);
         add_filter('wp', [$this, 'save_refund_request'], 999);
         add_filter('wp', [$this, 'cancel_refund_request_by_user'], 999);
         add_action('wp', [$this, 'process_cancel_unpaid_order'], 999);
@@ -241,6 +242,19 @@ class MyAccount implements Hookable
     {
         $query_vars[self::QUERY_VAR_KEY] = self::QUERY_VAR_KEY;
         return $query_vars;
+    }
+    public function maybe_flush_rewrite_rules(): void
+    {
+        if ('' === get_option('permalink_structure', '')) {
+            return;
+        }
+        foreach ((array) get_option('rewrite_rules', []) as $query) {
+            if (\false !== strpos($query, '&' . self::QUERY_VAR_KEY . '=')) {
+                return;
+            }
+        }
+        // WooCommerce must register its endpoints on init before rebuilding the saved rules.
+        flush_rewrite_rules(\false);
     }
     /**
      * @param string $template
