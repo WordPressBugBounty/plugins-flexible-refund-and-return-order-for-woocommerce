@@ -7,7 +7,7 @@ use FRFreeVendor\WPDesk\Library\FlexibleRefundsCore\Settings\SettingsIntegration
 use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 class Assets implements Hookable
 {
-    const SCRIPT_VERSION = 1;
+    const SCRIPT_VERSION = 1.1;
     const SETTINGS_PAGE_ID = 'woocommerce_page_wc-settings';
     const SETTINGS_EMAIL_SECTION_ID = 'fr_email_refund_admin_requested';
     private string $scripts_version;
@@ -15,7 +15,7 @@ class Assets implements Hookable
     public function __construct(string $plugin_url)
     {
         $this->plugin_url = trailingslashit($plugin_url);
-        $this->scripts_version = self::SCRIPT_VERSION . time();
+        $this->scripts_version = self::SCRIPT_VERSION;
     }
     /**
      * @return string
