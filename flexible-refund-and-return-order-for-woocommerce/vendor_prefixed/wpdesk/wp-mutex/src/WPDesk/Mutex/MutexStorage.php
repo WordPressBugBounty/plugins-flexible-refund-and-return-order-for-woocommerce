@@ -1,24 +1,11 @@
 <?php
 
+declare (strict_types=1);
 namespace FRFreeVendor\WPDesk\Mutex;
 
 interface MutexStorage
 {
-    /**
-     * @param string $name
-     * @param Mutex  $mutex
-     */
-    public function addToStorage($name, $mutex);
-    /**
-     * @param string $name
-     *
-     * @return null|Mutex
-     */
-    public function getFromStorage($name);
-    /**
-     * @param string $name
-     *
-     * @return void
-     */
-    public function removeFromStorage($name);
+    public function addToStorage(string $name, Mutex $mutex): void;
+    public function getFromStorage(string $name): ?Mutex;
+    public function removeFromStorage(string $name): void;
 }

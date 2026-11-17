@@ -16,7 +16,7 @@ final class ProjectConfigReader
         $plugin = $this->pluginConfig($raw, $paths);
         $dependencies = $this->arrayValue($raw['dependencies'] ?? []);
         $legacyPlugins = $this->arrayValue($raw['plugins'] ?? []);
-        return new ProjectConfig($plugin['directory'], $plugin['file'], $plugin['slug'], $plugin['title'], $plugin['product_id'], $plugin['activate'], $this->stringList($dependencies['wordpress_org'] ?? $legacyPlugins['repository'] ?? []), $this->stringList($dependencies['local'] ?? $legacyPlugins['local'] ?? []), $this->stringList($dependencies['activate'] ?? $legacyPlugins['activate'] ?? []), $this->setupCommands($raw));
+        return new ProjectConfig($plugin['directory'], $plugin['file'], $plugin['slug'], $plugin['title'], $plugin['product_id'], $plugin['activate'], $this->stringList($dependencies['wordpress_org'] ?? $legacyPlugins['repository'] ?? []), $this->stringList($dependencies['local'] ?? $legacyPlugins['local'] ?? []), $this->stringList($dependencies['activate'] ?? $legacyPlugins['activate'] ?? []), $this->stringValue($raw['theme'] ?? null), $this->prepareCommands($raw), $this->runBeforeScripts($raw));
     }
     /**
      * @return array{directory: string, file: string, slug: string, title: string, product_id: string, activate: bool}
@@ -64,11 +64,20 @@ final class ProjectConfigReader
     /**
      * @return list<string>
      */
-    private function setupCommands(array $raw): array
+    private function prepareCommands(array $raw): array
     {
+        $prepare = $this->arrayValue($raw['prepare'] ?? []);
         $setup = $this->arrayValue($raw['setup'] ?? []);
-        $commands = $setup['wp_cli'] ?? $raw['prepare-database'] ?? [];
+        $commands = $prepare['wp_cli'] ?? $setup['wp_cli'] ?? $raw['prepare-database'] ?? [];
         return $this->stringList($commands);
+    }
+    /**
+     * @return list<string>
+     */
+    private function runBeforeScripts(array $raw): array
+    {
+        $runBeforeScripts = $this->arrayValue($raw['run_before_scripts'] ?? []);
+        return $this->stringList($runBeforeScripts['wp_cli'] ?? []);
     }
     /**
      * @return array<string, mixed>

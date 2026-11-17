@@ -2,8 +2,8 @@
 
 namespace FRFreeVendor\WPDesk\Notice;
 
-use FRFreeVendor\WPDesk\PluginBuilder\Plugin\HookablePluginDependant;
-use FRFreeVendor\WPDesk\PluginBuilder\Plugin\PluginAccess;
+use FRFreeVendor\WPDesk\Notice\Plugin\HookablePluginDependant;
+use FRFreeVendor\WPDesk\Notice\Plugin\PluginAccess;
 /**
  * Class AjaxHandler
  *
@@ -31,7 +31,7 @@ class AjaxHandler implements HookablePluginDependant
      */
     public function __construct($assetsURL = null)
     {
-        $this->assetsURL = $assetsURL ?? plugins_url('/assets/', dirname(__FILE__, 3));
+        $this->assetsURL = $assetsURL ?? plugins_url('/assets/', dirname(__DIR__, 2));
     }
     /**
      * Hooks.
@@ -72,14 +72,14 @@ class AjaxHandler implements HookablePluginDependant
     public function processAjaxNoticeDismiss()
     {
         if (isset($_POST[self::POST_FIELD_NOTICE_NAME])) {
-            $noticeName = sanitize_text_field($_POST[self::POST_FIELD_NOTICE_NAME]);
+            $noticeName = sanitize_text_field(wp_unslash($_POST[self::POST_FIELD_NOTICE_NAME]));
             $optionName = PermanentDismissibleNotice::OPTION_NAME_PREFIX . $noticeName;
             check_ajax_referer($optionName, self::POST_FIELD_SECURITY);
             if (!current_user_can('edit_posts')) {
                 wp_send_json_error();
             }
             if (isset($_POST[self::POST_FIELD_SOURCE])) {
-                $source = sanitize_text_field($_POST[self::POST_FIELD_SOURCE]);
+                $source = sanitize_text_field(wp_unslash($_POST[self::POST_FIELD_SOURCE]));
             } else {
                 $source = null;
             }

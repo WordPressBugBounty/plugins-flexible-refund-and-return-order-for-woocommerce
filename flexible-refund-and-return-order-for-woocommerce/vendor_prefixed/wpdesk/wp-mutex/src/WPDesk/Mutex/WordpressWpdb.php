@@ -1,19 +1,16 @@
 <?php
 
+declare (strict_types=1);
 namespace FRFreeVendor\WPDesk\Mutex;
 
 trait WordpressWpdb
 {
-    /** @var \wpdb wpdb. */
-    private $wpdb;
-    /**
-     * Get wpdb.
-     *
-     * @return \wpdb
-     */
-    private function getWpdbFromGlobal()
+    private function getWpdbFromGlobal(): \wpdb
     {
         global $wpdb;
+        if (!$wpdb instanceof \wpdb) {
+            throw new MutexException('WordPress database connection is unavailable.');
+        }
         return $wpdb;
     }
 }

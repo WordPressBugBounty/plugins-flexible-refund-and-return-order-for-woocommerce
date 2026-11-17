@@ -13,13 +13,22 @@
     "prefer-stable": true,
     "authors": [
         {
-            "name": "grola",
-            "email": "grola@wpdesk.net"
+            "name": "WP Desk",
+            "homepage": "https:\/\/wpdesk.net"
+        },
+        {
+            "name": "Octolize",
+            "homepage": "https:\/\/octolize.com"
+        },
+        {
+            "name": "Bartek Jaskulski",
+            "email": "bjaskulski@protonmail.com",
+            "role": "Developer"
         }
     ],
     "require": {
-        "php": ">=7.0",
-        "squizlabs\/php_codesniffer": "^3.6",
+        "php": ">=7.2 | ^8.0",
+        "squizlabs\/php_codesniffer": "^3",
         "wp-coding-standards\/wpcs": "^3",
         "phpcompatibility\/phpcompatibility-wp": "^2.1.1"
     },

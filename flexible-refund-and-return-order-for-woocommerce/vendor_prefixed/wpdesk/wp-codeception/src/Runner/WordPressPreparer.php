@@ -14,6 +14,14 @@ final class WordPressPreparer
     }
     public function prepare(ProjectPaths $paths, ProjectConfig $config, RuntimeEnvironment $environment, OutputInterface $output): void
     {
+        $this->prepareEnvironment($paths, $config, $environment, $output, \false);
+    }
+    public function prepareDatabase(ProjectPaths $paths, ProjectConfig $config, RuntimeEnvironment $environment, OutputInterface $output): void
+    {
+        $this->prepareEnvironment($paths, $config, $environment, $output, \true);
+    }
+    private function prepareEnvironment(ProjectPaths $paths, ProjectConfig $config, RuntimeEnvironment $environment, OutputInterface $output, bool $createsDump): void
+    {
         $preparation = PreparationOutput::start($output);
         $output = $preparation->output();
         $this->exportConfigEnvironment($config);
@@ -21,6 +29,10 @@ final class WordPressPreparer
         $preparation->step('WordPress root directory prepared.');
         $this->waitForWordPressBootstrap($environment, $output);
         $this->waitForDatabase($paths, $environment, $output);
+        if ($createsDump) {
+            $this->resetDatabase($paths, $environment, $output);
+            $preparation->step('Database reset.');
+        }
         $this->ensureWordPressInstalled($paths, $environment, $output);
         $this->prepareSiteOptions($paths, $environment, $output);
         $preparation->step('WordPress site prepared.');
@@ -30,13 +42,16 @@ final class WordPressPreparer
         if ($config->wordpressOrgDependencies !== [] || $config->localDependencies !== []) {
             $preparation->step('Dependencies installed.');
         }
-        if (is_file($paths->defaultDumpPath())) {
+        if (!$createsDump && !is_file($paths->defaultDumpPath())) {
+            throw new \RuntimeException('Project database dump was not found. Run "vendor/bin/wptest prepare" first.');
+        }
+        if (!$createsDump) {
             $this->importDump($paths, $environment, $output);
             $preparation->step('Project database dump imported.');
         }
-        $this->prepareDefaultWooCommerceTheme($paths, $config, $environment, $output);
-        if ($config->hasWooCommerce()) {
-            $preparation->step('WooCommerce theme prepared.');
+        $this->prepareTheme($paths, $config, $environment, $output);
+        if ($config->theme !== '' || $config->hasWooCommerce()) {
+            $preparation->step('Theme prepared.');
         }
         $this->activatePlugins($paths, $config, $environment, $output);
         if ($config->pluginsToActivate() !== []) {
@@ -44,13 +59,23 @@ final class WordPressPreparer
         }
         $this->updateDatabases($paths, $config, $environment, $output);
         $preparation->step('Databases updated.');
-        $this->runSetupCommands($paths, $config, $environment, $output);
-        if ($config->setupCommands !== []) {
-            $preparation->step('Setup commands completed.');
+        if ($createsDump) {
+            $this->runWpCliCommands($config->prepareCommands, $paths, $environment, $output);
+            if ($config->prepareCommands !== []) {
+                $preparation->step('Prepare commands completed.');
+            }
+        }
+        $this->runWpCliCommands($config->runBeforeScripts, $paths, $environment, $output);
+        if ($config->runBeforeScripts !== []) {
+            $preparation->step('Run-before scripts completed.');
         }
         $this->exportDump($paths, $environment, $output);
         $preparation->step('Database dump exported.');
         $preparation->finish();
+    }
+    private function resetDatabase(ProjectPaths $paths, RuntimeEnvironment $environment, OutputInterface $output): void
+    {
+        $this->wp(['db', 'reset', '--yes'], $paths, $environment, $output);
     }
     private function exportConfigEnvironment(ProjectConfig $config): void
     {
@@ -184,15 +209,14 @@ HTACCESS;
             $this->wp(['plugin', 'activate', $plugin], $paths, $environment, $output);
         }
     }
-    private function prepareDefaultWooCommerceTheme(ProjectPaths $paths, ProjectConfig $config, RuntimeEnvironment $environment, OutputInterface $output): void
+    private function prepareTheme(ProjectPaths $paths, ProjectConfig $config, RuntimeEnvironment $environment, OutputInterface $output): void
     {
-        if (!$config->hasWooCommerce()) {
+        $theme = $config->theme;
+        if ($theme === '' && !$config->hasWooCommerce()) {
             return;
         }
-        if ($this->wpAllowFailure(['theme', 'is-installed', self::DEFAULT_WOOCOMMERCE_THEME], $paths, $environment, $output) !== 0) {
-            $this->wp(['theme', 'install', self::DEFAULT_WOOCOMMERCE_THEME], $paths, $environment, $output);
-        }
-        $this->wp(['theme', 'activate', self::DEFAULT_WOOCOMMERCE_THEME], $paths, $environment, $output);
+        $theme = $theme !== '' ? $theme : self::DEFAULT_WOOCOMMERCE_THEME;
+        $this->wp(['theme', 'install', $theme, '--force', '--activate'], $paths, $environment, $output);
     }
     private function updateDatabases(ProjectPaths $paths, ProjectConfig $config, RuntimeEnvironment $environment, OutputInterface $output): void
     {
@@ -205,9 +229,12 @@ HTACCESS;
         }
         $this->wp(['wc', 'update'], $paths, $environment, $output);
     }
-    private function runSetupCommands(ProjectPaths $paths, ProjectConfig $config, RuntimeEnvironment $environment, OutputInterface $output): void
+    /**
+     * @param list<string> $commands
+     */
+    private function runWpCliCommands(array $commands, ProjectPaths $paths, RuntimeEnvironment $environment, OutputInterface $output): void
     {
-        foreach ($config->setupCommands as $command) {
+        foreach ($commands as $command) {
             $userArgument = preg_match('/(?:^|\s)--user(?:[=\s]|$)/', $command) === 1 ? '' : ' --user=' . escapeshellarg($environment->adminUsername);
             $this->processRunner->mustRunShellQuietly(sprintf('%s %s --allow-root%s --path=%s', self::WP, $command, $userArgument, escapeshellarg($environment->wpRoot)), $paths->projectRoot(), $output, $environment->processEnvironment());
         }

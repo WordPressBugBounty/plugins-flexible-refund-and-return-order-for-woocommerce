@@ -1,38 +1,21 @@
 <?php
 
+declare (strict_types=1);
 namespace FRFreeVendor\WPDesk\Mutex;
 
 class StaticMutexStorage implements MutexStorage
 {
-    /**
-     * @var Mutex[]
-     */
-    public static $mutexStorage;
-    /**
-     * Add to storage.
-     *
-     * @param string $name
-     * @param Mutex $mutex
-     */
-    public function addToStorage($name, $mutex)
+    /** @var Mutex[] */
+    public static array $mutexStorage = [];
+    public function addToStorage(string $name, Mutex $mutex): void
     {
         self::$mutexStorage[$name] = $mutex;
     }
-    /**
-     * @param string $name
-     *
-     * @return null|Mutex
-     */
-    public function getFromStorage($name)
+    public function getFromStorage(string $name): ?Mutex
     {
-        return isset(self::$mutexStorage[$name]) ? self::$mutexStorage[$name] : null;
+        return self::$mutexStorage[$name] ?? null;
     }
-    /**
-     * @param string $name
-     *
-     * @return void
-     */
-    public function removeFromStorage($name)
+    public function removeFromStorage(string $name): void
     {
         if (isset(self::$mutexStorage[$name])) {
             unset(self::$mutexStorage[$name]);

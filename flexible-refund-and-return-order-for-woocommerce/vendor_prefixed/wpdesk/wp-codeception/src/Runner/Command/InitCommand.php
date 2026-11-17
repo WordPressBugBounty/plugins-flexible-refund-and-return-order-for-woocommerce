@@ -79,7 +79,12 @@ dependencies:
   activate:
     - woocommerce
 
-setup:
+theme: storefront
+
+prepare:
+  wp_cli: []
+
+run_before_scripts:
   wp_cli: []
 
 YAML;
@@ -143,7 +148,7 @@ modules:
             adminPassword: '%TEST_SITE_ADMIN_PASSWORD%'
             adminPath: '%TEST_SITE_WP_ADMIN_PATH%'
             wait: 10
-            restart: false
+            restart: true
             clear_cookies: true
             log_js_errors: true
             capabilities:

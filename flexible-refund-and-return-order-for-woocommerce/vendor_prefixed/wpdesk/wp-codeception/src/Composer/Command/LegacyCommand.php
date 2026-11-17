@@ -14,6 +14,7 @@ final class LegacyCommand extends BaseCommand
     private const MODE_DOCKER_RUN = 'docker_run';
     private const MODE_LOCAL_RUN = 'local_run';
     private const MODE_LOCAL_COVERAGE = 'local_coverage';
+    private const MODE_PREPARE = 'prepare';
     private const MODE_NOOP = 'noop';
     /**
      * @param list<string> $aliases
@@ -44,6 +45,10 @@ final class LegacyCommand extends BaseCommand
     public static function createLocalCoverageRunCommand(): self
     {
         return new self('run-local-codeception-tests-with-coverage', 'Run local codeception tests with coverage.', self::MODE_LOCAL_COVERAGE, ['run-local-codeception-test-with-coverage']);
+    }
+    public static function createPrepareCommand(): self
+    {
+        return new self('prepare-codeception-db', 'Prepare codeception database.', self::MODE_PREPARE);
     }
     /**
      * @param list<string> $aliases
@@ -82,6 +87,9 @@ final class LegacyCommand extends BaseCommand
             }
             return $exitCode;
         }
+        if ($this->mode === self::MODE_PREPARE) {
+            return $this->runProcess([$this->projectBin('wptest'), 'prepare'], $output);
+        }
         return $this->runProcess($this->localRunCommand($input), $output);
     }
     private function deprecationNotice(OutputInterface $output)
@@ -99,6 +107,8 @@ final class LegacyCommand extends BaseCommand
                 return 'vendor/bin/wptest init';
             case self::MODE_DOCKER_RUN:
                 return 'vendor/bin/wptest run acceptance';
+            case self::MODE_PREPARE:
+                return 'vendor/bin/wptest prepare';
             case self::MODE_LOCAL_RUN:
             case self::MODE_LOCAL_COVERAGE:
                 return 'vendor/bin/wptest-direct run acceptance';

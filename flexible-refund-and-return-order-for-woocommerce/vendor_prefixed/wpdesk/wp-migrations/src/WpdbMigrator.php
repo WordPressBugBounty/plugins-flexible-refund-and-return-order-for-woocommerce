@@ -46,6 +46,7 @@ class WpdbMigrator implements Migrator
     }
     private static function create_mutex(string $option_name): Mutex
     {
+        // @phpstan-ignore new.deprecatedClass
         return new WordpressPostMutex(self::MUTEX_POST_ID, self::get_mutex_name($option_name), self::MUTEX_TIMEOUT, self::MUTEX_WAIT_FOR_LOCK_TIMEOUT);
     }
     private static function get_mutex_name(string $option_name): string
@@ -66,6 +67,7 @@ class WpdbMigrator implements Migrator
     {
         return new Version(get_option($this->option_name, ''));
     }
+    /** @phpstan-impure Reads a migration version that another process may update. */
     private function needs_migration(): bool
     {
         $migrations = $this->migrations_repository->get_migrations();
@@ -81,6 +83,10 @@ class WpdbMigrator implements Migrator
     public function migrate(): void
     {
         require_once \ABSPATH . 'wp-admin/includes/upgrade.php';
+        if (!$this->needs_migration()) {
+            $this->migration_error_notice->clear();
+            return;
+        }
         $mutex = $this->mutex;
         if (!$mutex->acquireLock()) {
             $this->logger->warning('DB update skipped because another migration process is running');
@@ -88,6 +94,7 @@ class WpdbMigrator implements Migrator
             return;
         }
         try {
+            // Recheck, after lock is acquired
             if (!$this->needs_migration()) {
                 $this->migration_error_notice->clear();
                 return;

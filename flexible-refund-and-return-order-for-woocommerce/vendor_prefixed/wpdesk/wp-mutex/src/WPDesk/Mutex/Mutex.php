@@ -1,19 +1,10 @@
 <?php
 
+declare (strict_types=1);
 namespace FRFreeVendor\WPDesk\Mutex;
 
 interface Mutex
 {
-    /**
-     * Tries to set lock and returns true if successful
-     *
-     * @return bool
-     */
-    public function acquireLock();
-    /**
-     * Releases lock
-     *
-     * @return void
-     */
-    public function releaseLock();
+    public function acquireLock(): bool;
+    public function releaseLock(): void;
 }

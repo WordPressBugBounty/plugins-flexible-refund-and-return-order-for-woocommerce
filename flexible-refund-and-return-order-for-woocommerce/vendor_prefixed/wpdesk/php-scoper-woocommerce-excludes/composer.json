@@ -22,7 +22,7 @@
     "require-dev": {
         "php": "^7.2",
         "sniccowp\/php-scoper-excludes": "dev-master",
-        "php-stubs\/woocommerce-stubs": "*"
+        "php-stubs\/woocommerce-stubs": "11.3.0"
     },
     "config": {
         "platform": {

@@ -6,6 +6,7 @@ namespace FRFreeVendor\WPDesk\Notice;
  * Class Notice
  *
  * WordPress admin notice.
+ *
  * @package WPDesk\Notice
  */
 class Notice
@@ -35,11 +36,13 @@ class Notice
     protected $dismissible;
     /**
      * Notice hook priority.
+     *
      * @var int;
      */
     protected $priority;
     /**
      * Is action added?
+     *
      * @var bool
      */
     private $actionAdded = \false;
@@ -48,7 +51,7 @@ class Notice
      *
      * @var string[]
      */
-    protected $attributes = array();
+    protected $attributes = [];
     /**
      * Show notice in gutenberg editor.
      *
@@ -65,7 +68,7 @@ class Notice
      * @param array $attributes Attributes.
      * @param bool $showInGutenberg Show notice in gutenberg editor.
      */
-    public function __construct($noticeContent, $noticeType = 'info', $dismissible = \false, $priority = 10, $attributes = array(), $showInGutenberg = \false)
+    public function __construct($noticeContent, $noticeType = 'info', $dismissible = \false, $priority = 10, $attributes = [], $showInGutenberg = \false)
     {
         $this->noticeContent = $noticeContent;
         $this->noticeType = $noticeType;

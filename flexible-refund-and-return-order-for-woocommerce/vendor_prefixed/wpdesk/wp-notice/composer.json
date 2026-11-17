@@ -7,12 +7,15 @@
         "notice",
         "admin"
     ],
-    "homepage": "https:\/\/gitlab.com\/wpdesk\/wp-notice",
     "minimum-stability": "stable",
     "authors": [
         {
-            "name": "grola",
-            "email": "grola@wpdesk.net"
+            "name": "WP Desk",
+            "homepage": "https:\/\/wpdesk.net"
+        },
+        {
+            "name": "Octolize",
+            "homepage": "https:\/\/octolize.com"
         }
     ],
     "config": {
@@ -21,21 +24,23 @@
         },
         "allow-plugins": {
             "kylekatarnls\/update-helper": true,
-            "wpdesk\/wp-codeception": true
+            "wpdesk\/wp-codeception": true,
+            "dealerdirect\/phpcodesniffer-composer-installer": true
         }
     },
     "require": {
-        "php": ">=7.4",
-        "wpdesk\/wp-builder": "^1.0|^2.0"
+        "php": ">=7.4 || ^8"
+    },
+    "suggest": {
+        "wpdesk\/wp-builder": "Enables WP Builder integration."
     },
     "require-dev": {
-        "wp-coding-standards\/wpcs": "^0.14.1",
-        "squizlabs\/php_codesniffer": "^3.0.2",
-        "mockery\/mockery": "*",
         "10up\/wp_mock": "*",
-        "wimg\/php-compatibility": "^8",
-        "wpdesk\/wp-codeception": "^2",
-        "phpunit\/phpunit": "^8"
+        "mockery\/mockery": "*",
+        "phpunit\/phpunit": "^8 || ^9",
+        "wpdesk\/wp-builder": "^1.0|^2.0",
+        "wpdesk\/wp-code-sniffer": "^1",
+        "wpdesk\/wp-codeception": "^2"
     },
     "autoload": {
         "psr-4": {
@@ -47,16 +52,11 @@
     },
     "autoload-dev": {},
     "scripts": {
-        "phpcs": "phpcs",
+        "phpcs": "phpcs --warning-severity=0",
+        "lint": "phpcs --warning-severity=0",
         "phpunit-unit": "phpunit --configuration phpunit-unit.xml --coverage-text --colors=never",
         "phpunit-unit-fast": "phpunit --configuration phpunit-unit.xml --no-coverage",
         "phpunit-integration": "phpunit --configuration phpunit-integration.xml --coverage-text --colors=never",
         "phpunit-integration-fast": "phpunit --configuration phpunit-integration.xml --no-coverage"
-    },
-    "repositories": {
-        "wpdesk": {
-            "type": "composer",
-            "url": "https:\/\/gitlab.wpdesk.dev\/api\/v4\/group\/wpdesk\/-\/packages\/composer\/"
-        }
     }
 }

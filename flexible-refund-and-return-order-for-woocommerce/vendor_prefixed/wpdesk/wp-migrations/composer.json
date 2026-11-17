@@ -5,15 +5,19 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Bart Jaskulski",
-            "email": "bartek.jaskulski@wpdesk.net"
+            "name": "WP Desk",
+            "homepage": "https:\/\/wpdesk.net"
+        },
+        {
+            "name": "Octolize",
+            "homepage": "https:\/\/octolize.com"
         }
     ],
     "require": {
         "php": "^7.4|^8",
         "ext-json": "*",
         "psr\/log": "^1",
-        "wpdesk\/wp-mutex": "^1.1",
+        "wpdesk\/wp-mutex": "^1.1 | ^2",
         "wpdesk\/wp-notice": "^3.3"
     },
     "autoload": {

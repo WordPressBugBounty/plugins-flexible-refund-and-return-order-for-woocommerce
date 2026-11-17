@@ -43,7 +43,6 @@ if (\PHP_VERSION_ID > 50300) {
     // all optional vars must be cleared
     unset($plugin_init_factory);
 } else {
-    /** @noinspection PhpDeprecationInspection */
-    $php52_function = \create_function('', 'echo sprintf( __("<p><strong style=\'color: red;\'>PHP version is older than 5.3 so no WP Desk plugins will work. Please contact your host and ask them to upgrade. </strong></p>", \'wp-plugin-flow-common\') );');
-    \add_action('admin_notices', $php52_function);
+    require_once \dirname(__FILE__) . '/php52-functions.php';
+    \add_action('admin_notices', 'wpdesk_plugin_flow_php52_admin_notice');
 }

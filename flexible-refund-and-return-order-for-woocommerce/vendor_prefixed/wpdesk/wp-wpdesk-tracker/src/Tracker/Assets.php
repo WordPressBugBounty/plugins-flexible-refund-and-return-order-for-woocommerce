@@ -2,7 +2,6 @@
 
 namespace FRFreeVendor\WPDesk\Tracker;
 
-use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 /**
  * Can enqueue assets.
  */

@@ -350,7 +350,8 @@ if (!\class_exists('FRFreeVendor\WPDesk_Tracker')) {
         }
         public function wpdesk_tracker_deactivate()
         {
-            if (!\current_user_can('activate_plugins') || \false === \check_ajax_referer(self::WPDESK_TRACKER_ACTION, self::WPDESK_TRACKER_NONCE)) {
+            \check_ajax_referer(self::WPDESK_TRACKER_ACTION, self::WPDESK_TRACKER_NONCE);
+            if (!\current_user_can('activate_plugins')) {
                 die;
             }
             if (!$this->applies_to_current_plugin()) {
@@ -365,37 +366,40 @@ if (!\class_exists('FRFreeVendor\WPDesk_Tracker')) {
         }
         public function admin_init()
         {
-            if (isset($_GET['page']) && $_GET['page'] === 'wpdesk_tracker') {
-                if (isset($_GET['plugin']) && isset($_GET['allow'])) {
-                    if (!\current_user_can('activate_plugins') || \false === \check_ajax_referer(self::WPDESK_TRACKER_ACTION, self::WPDESK_TRACKER_NONCE)) {
-                        die;
-                    }
-                    $options = \get_option('wpdesk_helper_options', []);
-                    if (!\is_array($options)) {
-                        $options = [];
-                    }
-                    if ($_GET['allow'] == '0') {
-                        \remove_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10);
-                        unset($options['wpdesk_tracker_agree']);
-                        \update_option('wpdesk_helper_options', $options);
-                        \add_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
-                        $options['wpdesk_tracker_agree'] = '0';
-                        \update_option('wpdesk_helper_options', $options);
-                        \update_option('wpdesk_tracker_notice', '1');
-                    } else {
-                        \remove_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10);
-                        unset($options['wpdesk_tracker_agree']);
-                        \update_option('wpdesk_helper_options', $options);
-                        \add_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
-                        \delete_option('wpdesk_tracker_notice');
-                        \update_option('wpdesk_tracker_agree', '1');
-                        $options['wpdesk_tracker_agree'] = '1';
-                        \update_option('wpdesk_helper_options', $options);
-                    }
-                    \wp_safe_redirect(\admin_url('plugins.php'));
-                    exit;
-                }
+            if (!isset($_GET['page'], $_GET['plugin'], $_GET['allow'])) {
+                return;
             }
+            if ($_GET['page'] !== 'wpdesk_tracker') {
+                return;
+            }
+            \check_ajax_referer(self::WPDESK_TRACKER_ACTION, self::WPDESK_TRACKER_NONCE);
+            if (!\current_user_can('activate_plugins')) {
+                die;
+            }
+            $options = \get_option('wpdesk_helper_options', []);
+            if (!\is_array($options)) {
+                $options = [];
+            }
+            if (\absint(\wp_unslash($_GET['allow'])) === 0) {
+                \remove_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10);
+                unset($options['wpdesk_tracker_agree']);
+                \update_option('wpdesk_helper_options', $options);
+                \add_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
+                $options['wpdesk_tracker_agree'] = '0';
+                \update_option('wpdesk_helper_options', $options);
+                \update_option('wpdesk_tracker_notice', '1');
+            } else {
+                \remove_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10);
+                unset($options['wpdesk_tracker_agree']);
+                \update_option('wpdesk_helper_options', $options);
+                \add_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
+                \delete_option('wpdesk_tracker_notice');
+                \update_option('wpdesk_tracker_agree', '1');
+                $options['wpdesk_tracker_agree'] = '1';
+                \update_option('wpdesk_helper_options', $options);
+            }
+            \wp_safe_redirect(\admin_url('plugins.php'));
+            exit;
         }
         public function wpdesk_tracker_message_version($data)
         {

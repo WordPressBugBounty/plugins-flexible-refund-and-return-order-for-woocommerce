@@ -36,6 +36,13 @@ class WPThemeResolver implements Resolver
         if (!$templateFile) {
             throw new CanNotResolve("Cannot resolve {$name}");
         }
-        return $templateFile;
+        $full_name = realpath($templateFile);
+        foreach ([get_stylesheet_directory(), get_template_directory()] as $theme_directory) {
+            $base = realpath($theme_directory . '/' . $this->template_base_path);
+            if ($base && $full_name && strpos($full_name, $base . \DIRECTORY_SEPARATOR) === 0) {
+                return $full_name;
+            }
+        }
+        throw new CanNotResolve("Cannot resolve {$name}");
     }
 }

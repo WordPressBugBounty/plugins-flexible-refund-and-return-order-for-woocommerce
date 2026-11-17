@@ -9,9 +9,10 @@ final class ProjectConfig
      * @param list<string> $wordpressOrgDependencies
      * @param list<string> $localDependencies
      * @param list<string> $activatePlugins
-     * @param list<string> $setupCommands
+     * @param list<string> $prepareCommands
+     * @param list<string> $runBeforeScripts
      */
-    public function __construct(public readonly string $pluginDirectory, public readonly string $pluginFile, public readonly string $pluginSlug, public readonly string $pluginTitle, public readonly string $pluginProductId, public readonly bool $activatePlugin, public readonly array $wordpressOrgDependencies, public readonly array $localDependencies, public readonly array $activatePlugins, public readonly array $setupCommands)
+    public function __construct(public readonly string $pluginDirectory, public readonly string $pluginFile, public readonly string $pluginSlug, public readonly string $pluginTitle, public readonly string $pluginProductId, public readonly bool $activatePlugin, public readonly array $wordpressOrgDependencies, public readonly array $localDependencies, public readonly array $activatePlugins, public readonly string $theme, public readonly array $prepareCommands, public readonly array $runBeforeScripts)
     {
     }
     public function pluginRelativeFile(): string

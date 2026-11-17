@@ -2,7 +2,6 @@
 
 namespace FRFreeVendor\WPDesk\Tracker;
 
-use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 /**
  * Can add Plugin actions links: opt-in/opt-out to tracker.
  */

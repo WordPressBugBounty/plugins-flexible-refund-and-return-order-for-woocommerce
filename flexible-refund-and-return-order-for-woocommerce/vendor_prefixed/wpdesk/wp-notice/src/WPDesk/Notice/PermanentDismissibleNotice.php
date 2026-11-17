@@ -6,6 +6,7 @@ namespace FRFreeVendor\WPDesk\Notice;
  * Class PermanentDismissibleNotice
  *
  * WordPress admin dismissible notice.
+ *
  * @package WPDesk\Notice
  */
 class PermanentDismissibleNotice extends Notice
@@ -34,7 +35,7 @@ class PermanentDismissibleNotice extends Notice
      * @param array $attributes Attributes.
      * @param bool $showInGutenberg Show notice in gutenberg editor.
      */
-    public function __construct($noticeContent, $noticeName, $noticeType = 'info', $priority = 10, $attributes = array(), $showInGutenberg = \false)
+    public function __construct($noticeContent, $noticeName, $noticeType = 'info', $priority = 10, $attributes = [], $showInGutenberg = \false)
     {
         parent::__construct($noticeContent, $noticeType, \true, $priority, $attributes, $showInGutenberg);
         $this->noticeName = $noticeName;

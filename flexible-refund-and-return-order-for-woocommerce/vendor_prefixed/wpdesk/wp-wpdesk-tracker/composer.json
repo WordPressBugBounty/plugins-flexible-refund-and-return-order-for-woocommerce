@@ -13,7 +13,6 @@
     ],
     "require": {
         "php": ">=7.4 || ^8",
-        "wpdesk\/wp-builder": "^2.0",
         "wpdesk\/wp-notice": "^3.1",
         "wpdesk\/wp-view": "^2",
         "psr\/log": "^1 || ^2"
@@ -23,11 +22,15 @@
         "johnpbloch\/wordpress-core": "^6.9",
         "johnpbloch\/wordpress-core-installer": "^2",
         "wpdesk\/phpstan-rules": "^1",
+        "wpdesk\/wp-builder": "^2.0",
         "wpdesk\/wp-code-sniffer": "^1",
         "wp-phpunit\/wp-phpunit": "^6.9",
         "yoast\/phpunit-polyfills": "^4"
     },
     "autoload": {
+        "files": [
+            "src\/Tracker\/hookable-compat.php"
+        ],
         "classmap": [
             "src"
         ],

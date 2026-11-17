@@ -3,7 +3,6 @@
 namespace FRFreeVendor\WPDesk\Tracker;
 
 use FRFreeVendor\WPDesk\Notice\Notice;
-use FRFreeVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 class OptOut implements Hookable
 {
     /**

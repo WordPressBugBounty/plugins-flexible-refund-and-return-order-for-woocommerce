@@ -91,7 +91,7 @@ final class CodeceptionRunner
             if (!$file instanceof \SplFileInfo || !$file->isFile()) {
                 continue;
             }
-            if (!str_ends_with($file->getFilename(), '.php')) {
+            if (!preg_match('/(?:Cept|Cest|Test)\.php$/', $file->getFilename())) {
                 continue;
             }
             $files[] = $file->getPathname();

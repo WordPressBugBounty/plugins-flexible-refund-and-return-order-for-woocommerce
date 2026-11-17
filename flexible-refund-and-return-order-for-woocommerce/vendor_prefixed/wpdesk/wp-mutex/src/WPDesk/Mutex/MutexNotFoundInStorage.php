@@ -1,7 +1,8 @@
 <?php
 
+declare (strict_types=1);
 namespace FRFreeVendor\WPDesk\Mutex;
 
-class MutexNotFoundInStorage extends \RuntimeException
+class MutexNotFoundInStorage extends MutexException
 {
 }
